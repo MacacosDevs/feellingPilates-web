@@ -21,7 +21,15 @@ import ScheduleIcon from '@mui/icons-material/ScheduleOutlined';
 import { cerrarHorarioSalon, obtenerHistorialHorarios, versionarHorarioSalon } from '../../../api/salones';
 import type { HorarioOperacionVersionResponse, SalonDetalleResponse } from '../../../api/types';
 import { aIso, hoyIso } from '../fechas';
-import { CODIGOS_REQUIEREN_REFRESCO_HISTORIAL, codigoDeError, mensajeDeErrorHorario } from '../erroresHorario';
+import {
+  CODIGOS_REQUIEREN_REFRESCO_HISTORIAL,
+  codigoDeError,
+  MENSAJE_FECHA_PASADA,
+  mensajeDeErrorHorario,
+} from '../erroresHorario';
+
+const MENSAJE_SINCRONIZACION_FALLIDA =
+  'El cambio se guardó correctamente, pero no se pudo actualizar toda la información. Actualiza la pantalla para ver el estado más reciente.';
 
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
@@ -134,14 +142,24 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
   }
 
   async function despuesDeExito(mensajeExito: string) {
-    await onAplicado();
-    await cargarHistorial();
+    // La mutación (POST) ya tuvo éxito en este punto: lo que sigue es sólo sincronización de
+    // lectura (detalle + historial). Se intentan ambos aunque uno falle (allSettled), y un fallo
+    // aquí nunca se reporta como si el guardado hubiera fallado.
+    const resultados = await Promise.allSettled([onAplicado(), cargarHistorial()]);
     setVista({ tipo: 'lista' });
-    onExito(mensajeExito);
+    const huboFalloDeSincronizacion = resultados.some((r) => r.status === 'rejected');
+    onExito(huboFalloDeSincronizacion ? MENSAJE_SINCRONIZACION_FALLIDA : mensajeExito);
   }
 
   function mensajeSegunFecha(): string {
     return efectivoDesde === hoy ? 'Horario actualizado.' : `Cambio programado para el ${formatearFechaLegible(efectivoDesde)}.`;
+  }
+
+  function formularioInvalido(): boolean {
+    if (vista.tipo === 'lista') return false;
+    if (!efectivoDesde || efectivoDesde < hoy) return true;
+    if (vista.tipo === 'versionar' && horaCierre <= horaApertura) return true;
+    return false;
   }
 
   async function guardarVersionar(dia: number) {
@@ -152,6 +170,10 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
     }
     if (!efectivoDesde) {
       setError('Selecciona la fecha a partir de la cual aplica el cambio.');
+      return;
+    }
+    if (efectivoDesde < hoy) {
+      setError(MENSAJE_FECHA_PASADA);
       return;
     }
     setGuardando(true);
@@ -173,6 +195,10 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
     setError(null);
     if (!efectivoDesde) {
       setError('Selecciona la fecha a partir de la cual el día deja de operar.');
+      return;
+    }
+    if (efectivoDesde < hoy) {
+      setError(MENSAJE_FECHA_PASADA);
       return;
     }
     setGuardando(true);
@@ -367,7 +393,7 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
               variant="contained"
               color={vista.tipo === 'cerrar' ? 'error' : 'primary'}
               onClick={() => (vista.tipo === 'versionar' ? guardarVersionar(vista.dia) : guardarCerrar(vista.dia))}
-              disabled={guardando}
+              disabled={guardando || formularioInvalido()}
             >
               {guardando ? 'Guardando...' : vista.tipo === 'cerrar' ? 'Dejar de operar' : 'Guardar horario'}
             </Button>

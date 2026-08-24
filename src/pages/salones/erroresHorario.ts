@@ -19,6 +19,8 @@ const MENSAJE_POR_CODIGO: Record<string, string> = {
   HORARIOS_REQUIEREN_VERSIONADO: 'Los horarios se cambian desde la pantalla de horarios del salón.',
 };
 
+export const MENSAJE_FECHA_PASADA = MENSAJE_POR_CODIGO.EFECTIVO_DESDE_EN_EL_PASADO;
+
 /** true si el codigo indica que el estado del servidor puede haber cambiado desde la última
  * lectura (conviene refrescar el historial para que el operador vea el estado real). */
 export const CODIGOS_REQUIEREN_REFRESCO_HISTORIAL = new Set([

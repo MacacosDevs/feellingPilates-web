@@ -142,3 +142,141 @@ independiente (build/lint, o ejecución real contra el backend); ninguna se apoy
 inspección visual del código fuente.
 
 ## F2B.3b.2b: COMPLETADA
+
+## F2B.3b.2b.1 — Corrección post-review (robustecer refresh, validar fecha pasada, cerrar verificación manual)
+
+### Contexto
+
+Review Codex de F2B.3b.2b: **NO APROBADO**. P1-1: `despuesDeExito` hacía
+`await onAplicado(); await cargarHistorial();` dentro del mismo `try` que envolvía el `POST`; si
+cualquiera de los dos refresh fallaba después de que el `POST` ya había tenido éxito, el `catch`
+exterior mostraba "No se pudo guardar/cerrar" como si la mutación hubiera fallado, y si
+`onAplicado()` fallaba, `cargarHistorial()` nunca se llegaba a ejecutar. P1-2: no había evidencia
+manual de un cierre exitoso end-to-end (el intento previo sólo produjo `409
+CANCELACION_DE_VERSION_NO_SOPORTADA`). P2: `efectivoDesde` pasado podía escribirse manualmente
+pese a `min={hoy}`; el checkpoint tenía un conteo manual incorrecto (la tabla listaba 2 filas "NO
+EJECUTADO" — casos 6 y 11 — pero el resumen decía "1/12 NO EJECUTADO").
+
+### Cambios (alcance mínimo)
+
+`src/pages/salones/components/EditarHorarioSemanalDialog.tsx`:
+- `despuesDeExito` ya no hace `await onAplicado(); await cargarHistorial();` en secuencia
+  encadenada. Ahora usa `Promise.allSettled([onAplicado(), cargarHistorial()])`: ambos refresh se
+  intentan siempre, uno no puede abortar al otro, y esta función nunca lanza (no puede ser
+  capturada por el `catch` de la mutación). Si alguno de los dos falla, se reporta un mensaje de
+  sincronización neutral ("El cambio se guardó correctamente, pero no se pudo actualizar toda la
+  información. Actualiza la pantalla para ver el estado más reciente.") en vez de dar a entender
+  que el guardado falló; si ambos tienen éxito, se muestra el mensaje de éxito normal
+  (`mensajeSegunFecha()`). En ambos casos la vista vuelve a la lista (la mutación ya ocurrió; no
+  tiene sentido dejar el formulario abierto para reenviar).
+- `guardarVersionar`/`guardarCerrar` agregan una validación explícita
+  `if (efectivoDesde < hoy) { setError(MENSAJE_FECHA_PASADA); return; }`, además del `min={hoy}`
+  del `<input type="date">` (que sólo bloquea el date-picker, no la escritura manual).
+- Nuevo `formularioInvalido()`: además de `guardando`, el botón de submit ahora se deshabilita
+  cuando `efectivoDesde` está vacío o es anterior a hoy (y, para Versionar, cuando
+  `horaCierre <= horaApertura`).
+
+`src/pages/salones/erroresHorario.ts`: se exporta `MENSAJE_FECHA_PASADA` (alias de
+`MENSAJE_POR_CODIGO.EFECTIVO_DESDE_EN_EL_PASADO`, "La fecha debe ser hoy o posterior."), para
+reutilizar el mismo texto que el backend en la validación local.
+
+No se tocó `DialogoSalon.tsx`, `SalonHorarios.tsx` ni `src/api/salones.ts`. No se modificaron
+contratos de API ni DTOs.
+
+### Verificación end-to-end (Postgres local, backend Spring Boot `:8080` perfil `dev`, frontend
+Vite `:5173`, sesión ya autenticada como `admin@feelingpilates.com`)
+
+Salón usado: **Feeling Pilates Centro** (`dff54aa7-a7b1-431a-97ed-5810621f2fc1`). Día principal:
+**Martes** (sin programación previa, sin versión futura que bloqueara).
+
+| Paso | Acción | Resultado observado |
+|---|---|---|
+| 1 | Martes — "Abrir este día", `efectivoDesde` = hoy (2026-08-23), 08:00–20:00 | `POST .../horarios/versiones` → **201**. Snackbar "Horario actualizado.". Fila de lista actualizada a 08:00–20:00 (`GET /salones/{id}` → 200). Historial expandido muestra "08:00–20:00, 23 ago 2026 — Sin fecha de fin, Vigente" (`GET .../historial` → 200). |
+| 2 | Martes — "Dejar de operar", `efectivoDesde` = 2026-08-24 (día siguiente al `vigenteDesde`, evitando `CANCELACION_DE_VERSION_NO_SOPORTADA`) | `POST .../horarios/cierres` → **200**. Snackbar "Cambio programado para el 24 ago 2026.". Detalle sigue mostrando Martes 08:00–20:00 hoy (correcto: el cierre aplica desde mañana). Historial expandido muestra "08:00–20:00, 23 ago 2026 — 23 ago 2026, Vigente" seguido de fila sintética "Cerrado". Confirmado con `read_network_requests`: tras el `POST` 200 se dispararon `GET /salones/{id}` → 200 **y** `GET .../historial` → 200. |
+| 3 | Miércoles — "Abrir este día", `efectivoDesde` = 2026-08-30 (futuro) | `POST .../horarios/versiones` → **201**. Snackbar "Cambio programado para el 30 ago 2026.". Detalle de Miércoles sigue "Cerrado" hoy (correcto). Indicador "Cambio programado para el 30 ago 2026" visible en la lista. |
+| 4 | Lunes — "Cambiar horario", `efectivoDesde` = 2026-09-01 (coincide con versión futura ya programada desde F2B.3b.2b) | `POST .../horarios/versiones` → **409**. Alert "Ya hay un cambio de horario que empieza ese día. Revisa el historial." (mapeo `YA_EXISTE_VERSION_EN_ESA_FECHA`). NO se mostró éxito ni se cerró el formulario; refresh de recuperación de historial disparado en el `catch` (separado del flujo post-success). |
+| 5 | Martes — "Cambiar horario", escribir manualmente `20/08/2026` (pasado) en el campo fecha | Botón "Guardar horario" quedó **deshabilitado** (`formularioInvalido()`); no se disparó ningún request. |
+
+Evidencia de red capturada con `read_network_requests` (`urlPattern` `horarios`/`versiones`/
+`salones/dff54aa7...`) confirma exactamente la secuencia esperada para los pasos 1–4: cada `POST`
+exitoso fue seguido por `GET /salones/{id}` y `GET .../historial`, ambos 200, en la misma
+sincronización.
+
+Datos locales creados en esta sesión (no incluidos en Git, sólo en la BD local de desarrollo del
+usuario): salón "Feeling Pilates Centro" — Martes ahora tiene una versión vigente 08:00–20:00
+(23 ago 2026 – 23 ago 2026) seguida de cierre desde el 24 ago 2026; Miércoles tiene una versión
+programada 08:00–20:00 desde el 30 ago 2026.
+
+### Refresh / separación mutación-refresh
+
+Refresh detalle: **SIEMPRE INTENTADO** (`Promise.allSettled` incluye `onAplicado()`
+incondicionalmente).
+Refresh historial: **SIEMPRE INTENTADO** (`Promise.allSettled` incluye `cargarHistorial()`
+incondicionalmente, no depende del resultado del primero).
+Refresh independientes: **SI** (`Promise.allSettled`, no `await` encadenado).
+POST success separado de refresh: **SI** (`despuesDeExito` nunca lanza; el `catch` de
+`guardarVersionar`/`guardarCerrar` sólo puede dispararse por un fallo del `POST` en sí).
+Falso fallo de mutación: **CORREGIDO** (verificado en el paso 2: un cierre 200 real se reportó
+como éxito, nunca como "no se pudo cerrar").
+
+### Fecha pasada
+
+Bloqueada en el handler (`guardarVersionar`/`guardarCerrar`, antes de cualquier `await` a la API)
+y en el botón de submit (`formularioInvalido()`). Verificado manualmente (paso 5).
+
+### Manual — reconteo honesto (12 casos, uno por uno)
+
+| # | Caso | Estado |
+|---|---|---|
+| 1 | Editar día actual con fecha hoy | **EJECUTADO** — re-verificado esta sesión (paso 1). |
+| 2 | Programar cambio futuro | **EJECUTADO** — re-verificado esta sesión (paso 3, Versionar con fecha futura). |
+| 3 | Reapertura futura después de gap | **PARCIAL** — no se construyó el escenario exacto (cerrar → gap → reabrir en fecha posterior al gap); se probó el análogo "abrir un día actualmente cerrado" (pasos 1 y 3), sin gap intermedio explícito. |
+| 4 | Cerrar día | **EJECUTADO** — re-verificado esta sesión con éxito real (paso 2, `200`, no `409`). La vez anterior sólo se había producido `409 CANCELACION_DE_VERSION_NO_SOPORTADA`; esta vez se usó `efectivoDesde` posterior al `vigenteDesde` y el cierre se completó de verdad. |
+| 5 | Error por versión futura | **EJECUTADO** — re-verificado esta sesión (paso 4, `409 YA_EXISTE_VERSION_EN_ESA_FECHA`, mensaje mapeado, sin falso éxito, refresh de recuperación disparado). |
+| 6 | Error por programación incompatible | **NO EJECUTADO** — el entorno local no tiene turnos configurados que produzcan `PROGRAMACION_INCOMPATIBLE_CON_HORARIO`; mapeo verificado sólo por código (sin cambios en esta corrección). |
+| 7 | Historial muestra legacy + futuras | **EJECUTADO** — Lunes muestra simultáneamente la versión vigente y la programada para el 1 sep 2026 (chips "Vigente"/"Programada"), visible en pasos 1 y 4 de esta sesión. |
+| 8 | Historial muestra null bounds humanizados | **PARCIAL** — `vigenteHasta: null` → "Sin fecha de fin" re-confirmado esta sesión (paso 1, Martes recién abierto). `vigenteDesde: null` → "Desde el inicio" sigue sin dispararse (requeriría una fila legada creada fuera del flujo versionado; no se creó en esta sesión). |
+| 9 | DialogoSalon EDIT guarda teléfono con 7 días cerrados | **EJECUTADO** — evidencia de la sesión F2B.3b.2b (verificación directa contra la API), no re-ejecutada aquí porque `DialogoSalon.tsx` no tiene cambios en esta corrección (confirmado por `git diff --stat`). |
+| 10 | DialogoSalon EDIT envía horarios:null | **EJECUTADO** — mismo caso 9, mismo motivo para no re-ejecutar. |
+| 11 | DialogoSalon CREATE conserva horarios | **NO EJECUTADO** — verificación de código únicamente (rama `salon == null` sin cambios), igual que en F2B.3b.2b; no se creó un salón real de prueba. |
+| 12 | Después de success refresca detalle + historial | **EJECUTADO** — re-verificado esta sesión con evidencia de red explícita (`read_network_requests`): tras cada `POST` exitoso (201 y 200) se dispararon ambos `GET` (detalle e historial), confirmando que la sincronización post-success ocurre siempre e independientemente. |
+
+**Manual: 8/12 EJECUTADOS, 2/12 PARCIALES, 2/12 NO EJECUTADOS** (8+2+2=12; conteo derivado
+literalmente de la tabla, no inferido). Esto corrige la inconsistencia señalada por Codex: la
+tabla original de F2B.3b.2b ya tenía 2 filas "NO EJECUTADO" (casos 6 y 11), pero el resumen decía
+"1/12 NO EJECUTADO"; el resto de la clasificación no cambia salvo el caso 4 (ahora respaldado por
+un cierre real, no sólo un `409`) y el caso 12 (ahora con evidencia de red explícita).
+
+### Mutaciones conceptuales (nuevas, específicas de esta corrección)
+
+| # | Mutación | Estado |
+|---|---|---|
+| A | `onAplicado()` falla → `cargarHistorial()` no se ejecuta | **DETECTADO conceptualmente y corregido** — `Promise.allSettled` garantiza que ambas promesas se lancen antes de esperar cualquier resultado; una no puede impedir que la otra se intente. |
+| B | `POST` 201/200 seguido de `GET` fallido → UI dice "No se pudo guardar" | **DETECTADO conceptualmente y corregido** — `despuesDeExito` ya no puede lanzar, por lo que el `catch` de `guardarVersionar`/`guardarCerrar` sólo se activa por un fallo real del `POST`. Verificado además que un cierre 200 real (paso 2) se reportó como éxito. |
+| C | `efectivoDesde` pasado escrito manualmente → request se envía | **DETECTADO y corregido** — validación en el handler (antes del `await` a la API) y en `formularioInvalido()` (botón deshabilitado). Verificado manualmente (paso 5): sin request de red al escribir una fecha pasada. |
+
+### Build / Lint / Diff
+
+Build: **PASS** (`tsc -b && vite build`; 0 errores; único warning preexistente de chunk >500KB).
+Lint: **PASS** (`oxlint`; único warning: el preexistente de `Roles.tsx`, sin warnings nuevos).
+Warnings: **1** (baseline, sin cambio).
+
+`git diff --stat` (alcance real de esta corrección):
+```
+src/pages/salones/components/EditarHorarioSemanalDialog.tsx | 36 +++++++++++++++++++---
+src/pages/salones/erroresHorario.ts                         |  2 ++
+2 files changed, 33 insertions(+), 5 deletions(-)
+```
+`git diff --check`: sin problemas de espacio en blanco.
+
+package.json: **SIN CAMBIOS**. package-lock.json: **SIN CAMBIOS**. No se instaló ninguna
+dependencia.
+
+Backend (`/Feelingpilates/feelingpilates`): **SIN CAMBIOS** (`git status --short` limpio antes y
+después de esta sesión; sólo se levantó localmente para la verificación manual, no se modificó
+código ni se hizo commit).
+
+Mobile: **NO TOCADO** (no se abrió ni se modificó `/Feelingpilates/FeelingPiltaesAppMobile` en esta
+corrección).
+
+## F2B.3b.2b.1: COMPLETADA — lista para re-review
