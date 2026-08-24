@@ -1,0 +1,15 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* El dropdown de Google Places se inserta directo en <body>; sin esto queda
+   detrás del backdrop/paper de los Dialog de MUI (z-index 1300+). */
+.pac-container {
+  z-index: 1400;
+}
