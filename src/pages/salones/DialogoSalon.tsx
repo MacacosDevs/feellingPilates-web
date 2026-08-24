@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import ScheduleIcon from '@mui/icons-material/ScheduleOutlined';
 import {
   Alert,
   Box,
@@ -71,6 +73,7 @@ function extraerMensajeError(err: unknown, mensajePorDefecto: string): string {
 }
 
 export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSalonProps) {
+  const navigate = useNavigate();
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [calle, setCalle] = useState('');
@@ -243,6 +246,10 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
       return tipoActividadIds.length === 0 ? 'Selecciona al menos una actividad.' : null;
     }
     if (paso === 2) {
+      // Al editar, este paso es solo lectura (los horarios se administran desde la pantalla de
+      // horarios del salón, §27.3.1): un salón cerrado los 7 días es un estado legítimo y no debe
+      // bloquear guardar el resto de sus datos.
+      if (salon) return null;
       return horarios.every((h) => h === null) ? 'Activa al menos un día de atención.' : null;
     }
     if (paso === 3) {
@@ -304,7 +311,10 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
         latitud,
         longitud,
         tipoActividadIds,
-        horarios: horarios.filter((h): h is HorarioOperacionRequest => h !== null),
+        // En modo EDITAR nunca se reenvía el snapshot de horarios cargado al abrir el diálogo: los
+        // horarios se administran vía versionado (§27.3.2), y `horarios: null` es la vía existente
+        // en el backend para "no toques HorarioOperacion" (validarHorariosSinCambios).
+        horarios: salon ? null : horarios.filter((h): h is HorarioOperacionRequest => h !== null),
         recursos,
       };
       const resultado = salon ? await actualizarSalon(salon.id, request) : await crearSalon(request);
@@ -514,40 +524,74 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
           {pasoActivo === 2 && (
           <Stack spacing={1.5}>
             <Typography variant="subtitle2">Horario de atención</Typography>
-            {DIAS.map((dia, i) => {
-              const horario = horarios[i];
-              return (
-                <Stack key={dia} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <FormControlLabel
-                    sx={{ width: 160 }}
-                    control={<Switch checked={horario !== null} onChange={(e) => toggleDia(i, e.target.checked)} size="small" />}
-                    label={dia}
-                  />
-                  {horario ? (
-                    <>
-                      <TextField
-                        type="time"
-                        size="small"
-                        label="Abre"
-                        value={horario.horaApertura}
-                        onChange={(e) => actualizarHora(i, 'horaApertura', e.target.value)}
-                      />
-                      <TextField
-                        type="time"
-                        size="small"
-                        label="Cierra"
-                        value={horario.horaCierre}
-                        onChange={(e) => actualizarHora(i, 'horaCierre', e.target.value)}
-                      />
-                    </>
-                  ) : (
-                    <Typography variant="caption" color="text.secondary">
-                      Cerrado
-                    </Typography>
-                  )}
-                </Stack>
-              );
-            })}
+            {salon ? (
+              <>
+                <Alert severity="info" icon={<ScheduleIcon fontSize="small" />}>
+                  Los horarios se administran desde la pantalla de horarios del salón, con vigencia por
+                  fecha. Aquí solo se muestra el horario vigente hoy.
+                </Alert>
+                {DIAS.map((dia, i) => {
+                  const horario = horarios[i];
+                  return (
+                    <Stack key={dia} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                      <Typography variant="body2" sx={{ width: 160 }}>
+                        {dia}
+                      </Typography>
+                      <Typography variant="body2" color={horario ? 'text.primary' : 'text.secondary'}>
+                        {horario ? `${horario.horaApertura} – ${horario.horaCierre}` : 'Cerrado'}
+                      </Typography>
+                    </Stack>
+                  );
+                })}
+                <Button
+                  type="button"
+                  variant="outlined"
+                  startIcon={<ScheduleIcon fontSize="small" />}
+                  sx={{ alignSelf: 'flex-start' }}
+                  onClick={() => {
+                    onCerrar();
+                    navigate(`/salones/${salon.id}/horarios`);
+                  }}
+                >
+                  Ir a horarios del salón
+                </Button>
+              </>
+            ) : (
+              DIAS.map((dia, i) => {
+                const horario = horarios[i];
+                return (
+                  <Stack key={dia} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                    <FormControlLabel
+                      sx={{ width: 160 }}
+                      control={<Switch checked={horario !== null} onChange={(e) => toggleDia(i, e.target.checked)} size="small" />}
+                      label={dia}
+                    />
+                    {horario ? (
+                      <>
+                        <TextField
+                          type="time"
+                          size="small"
+                          label="Abre"
+                          value={horario.horaApertura}
+                          onChange={(e) => actualizarHora(i, 'horaApertura', e.target.value)}
+                        />
+                        <TextField
+                          type="time"
+                          size="small"
+                          label="Cierra"
+                          value={horario.horaCierre}
+                          onChange={(e) => actualizarHora(i, 'horaCierre', e.target.value)}
+                        />
+                      </>
+                    ) : (
+                      <Typography variant="caption" color="text.secondary">
+                        Cerrado
+                      </Typography>
+                    )}
+                  </Stack>
+                );
+              })
+            )}
           </Stack>
           )}
 

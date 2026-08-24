@@ -49,6 +49,7 @@ import type {
 } from '../../api/types';
 import { CalendarioHorariosInstructor } from './components/CalendarioHorariosInstructor';
 import { EditarHorarioSemanalDialog } from './components/EditarHorarioSemanalDialog';
+import { aIso } from './fechas';
 
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const TAMANO_PAGINA_PUNTUALES = 10;
@@ -59,15 +60,6 @@ function domingoDeLaSemana(fecha: Date): Date {
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() - d.getDay());
   return d;
-}
-
-/** Formatea a "aaaa-mm-dd" usando la fecha local (no UTC): toISOString() corre la fecha al día
- * siguiente en horas de la tarde/noche para husos horarios detrás de UTC. */
-function aIso(fecha: Date): string {
-  const y = fecha.getFullYear();
-  const m = String(fecha.getMonth() + 1).padStart(2, '0');
-  const d = String(fecha.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
 }
 
 function sumarDias(fecha: Date, dias: number): Date {
@@ -614,10 +606,11 @@ export function SalonHorarios() {
           salon={salon}
           open={editandoHorarioSemanal}
           onClose={() => setEditandoHorarioSemanal(false)}
-          onGuardado={(actualizado) => {
+          onAplicado={async () => {
+            const actualizado = await obtenerSalon(salon.id);
             setSalon(actualizado);
-            setFeedback('Horario habitual actualizado.');
           }}
+          onExito={setFeedback}
         />
       )}
     </Box>
