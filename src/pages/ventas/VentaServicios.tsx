@@ -281,7 +281,11 @@ export function VentaServicios() {
     [paquetes, tipoSeleccionado],
   );
 
-  const tabla = useTablaLocal(paquetesFiltrados, COMPARADORES_PAQUETES, 'nombre');
+  const tabla = useTablaLocal<PaqueteGestionResponse, ColumnaPaquete>(
+    paquetesFiltrados,
+    COMPARADORES_PAQUETES,
+    'nombre',
+  );
 
   if (!puedeVerVista || !puedeVerContenido) {
     return (
@@ -398,7 +402,7 @@ export function VentaServicios() {
             <TableCell>{formatearMoneda(p.precioCentavos)}</TableCell>
             <TableCell>{p.vigenciaDias} días</TableCell>
             <TableCell>
-              <Stack direction="row" flexWrap="wrap" gap={0.5}>
+              <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                 {p.actividades.map((a) => (
                   <Chip key={a.tipoActividadId} size="small" label={`${a.cantidadClases}x ${a.nombreActividad}`} />
                 ))}

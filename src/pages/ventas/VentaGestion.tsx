@@ -429,7 +429,7 @@ export function VentaGestion() {
                 <TableCell>{primero.clienteNombre}</TableCell>
                 <TableCell>
                   {esGrupo ? (
-                    <Stack direction="row" alignItems="center" spacing={0.25}>
+                    <Stack direction="row" spacing={0.25} sx={{ alignItems: 'center' }}>
                       <IconButton size="small" sx={{ p: 0 }} tabIndex={-1}>
                         {abierto ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
                       </IconButton>

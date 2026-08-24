@@ -180,7 +180,7 @@ export function Sidebar({ abierto }: SidebarProps) {
                 {abierto && (
                   <ListItemText
                     primary={item.etiqueta}
-                    primaryTypographyProps={{ fontSize: 14, noWrap: true }}
+                    slotProps={{ primary: { noWrap: true, sx: { fontSize: 14 } } }}
                   />
                 )}
               </ListItemButton>
@@ -221,7 +221,10 @@ export function Sidebar({ abierto }: SidebarProps) {
               </ListItemIcon>
               {abierto && (
                 <>
-                  <ListItemText primary={item.etiqueta} primaryTypographyProps={{ fontSize: 14, noWrap: true }} />
+                  <ListItemText
+                    primary={item.etiqueta}
+                    slotProps={{ primary: { noWrap: true, sx: { fontSize: 14 } } }}
+                  />
                   <Box
                     component="span"
                     role="button"
@@ -257,7 +260,7 @@ export function Sidebar({ abierto }: SidebarProps) {
                         </ListItemIcon>
                         <ListItemText
                           primary="Gestionar usuarios"
-                          primaryTypographyProps={{ fontSize: 13, noWrap: true }}
+                          slotProps={{ primary: { noWrap: true, sx: { fontSize: 13 } } }}
                         />
                       </ListItemButton>
                     )}
@@ -272,7 +275,7 @@ export function Sidebar({ abierto }: SidebarProps) {
                         <ListItemIcon sx={{ minWidth: 28, '& svg': { fontSize: 18 } }}>{hijo.icono}</ListItemIcon>
                         <ListItemText
                           primary={hijo.etiqueta}
-                          primaryTypographyProps={{ fontSize: 13, noWrap: true }}
+                          slotProps={{ primary: { noWrap: true, sx: { fontSize: 13 } } }}
                         />
                       </ListItemButton>
                     ))}

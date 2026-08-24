@@ -37,7 +37,7 @@ const COLUMNAS_SALONES: ColumnaTabla<ColumnaSalon>[] = [
   { id: 'acciones', label: 'Acciones', align: 'right' },
 ];
 
-const COMPARADORES_SALONES: Record<ColumnaSalon, (a: SalonResponse, b: SalonResponse) => number> = {
+const COMPARADORES_SALONES: Partial<Record<ColumnaSalon, (a: SalonResponse, b: SalonResponse) => number>> = {
   nombre: (a, b) => a.nombre.localeCompare(b.nombre),
   ubicacion: (a, b) => `${a.estadoNombre} ${a.municipioNombre}`.localeCompare(`${b.estadoNombre} ${b.municipioNombre}`),
   direccion: (a, b) => (a.direccion ?? '').localeCompare(b.direccion ?? ''),
@@ -85,7 +85,7 @@ export function Salones() {
     recargar();
   }
 
-  const tabla = useTablaLocal(salones, COMPARADORES_SALONES, 'nombre');
+  const tabla = useTablaLocal<SalonResponse, ColumnaSalon>(salones, COMPARADORES_SALONES, 'nombre');
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>

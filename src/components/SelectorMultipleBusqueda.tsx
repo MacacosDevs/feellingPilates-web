@@ -67,9 +67,9 @@ export function SelectorMultipleBusqueda({
           </li>
         );
       }}
-      renderTags={(seleccion, getTagProps) =>
+      renderValue={(seleccion, getItemProps) =>
         seleccion.map((opcion, index) => {
-          const { key, ...resto } = getTagProps({ index });
+          const { key, ...resto } = getItemProps({ index });
           return <Chip key={key} size="small" label={opcion.etiqueta} {...resto} />;
         })
       }

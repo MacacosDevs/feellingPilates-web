@@ -236,7 +236,7 @@ export function VentaNueva() {
         Nueva venta
       </Typography>
 
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems="flex-start">
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
         <Stack spacing={2.5} sx={{ flexGrow: 1, width: '100%' }}>
           {cargandoSedes ? null : sedes.length > 1 ? (
             <TextField select label="Sede" size="small" value={sedeId} onChange={(e) => setSedeId(e.target.value)}>

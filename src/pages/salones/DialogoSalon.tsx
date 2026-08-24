@@ -14,7 +14,6 @@ import {
   DialogTitle,
   FormControlLabel,
   IconButton,
-  ListItemText,
   MenuItem,
   Stack,
   Step,
@@ -161,7 +160,6 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
       setUbicacionConfirmada(false);
       setTipoActividadIds([]);
       setHorarios(DIAS.map(() => null));
-      setPermitePareja(false);
       setRecursos([]);
     }
     setError(null);

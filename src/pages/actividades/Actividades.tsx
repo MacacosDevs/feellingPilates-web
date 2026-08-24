@@ -139,7 +139,7 @@ export function Actividades() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(cargar, [puedeLeer]);
 
-  const tabla = useTablaLocal(actividades, COMPARADORES, 'nombre');
+  const tabla = useTablaLocal<TipoActividadResponse, Columna>(actividades, COMPARADORES, 'nombre');
 
   const columnas: ColumnaTabla<Columna>[] = [
     { id: 'nombre', label: 'Nombre', ordenable: true },
@@ -318,7 +318,7 @@ export function Actividades() {
               </TableCell>
               <TableCell>{a.duracionMinutos} min</TableCell>
               <TableCell>
-                <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                   {(recursosPorActividad[a.id] ?? []).length === 0 ? (
                     <Typography variant="body2" color="text.secondary">
                       Sin recursos requeridos
@@ -408,7 +408,7 @@ export function Actividades() {
                 fullWidth
               />
               {separarEtiquetas(dialogoNuevo.etiquetasTexto).length > 0 && (
-                <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.5 }}>
                   {separarEtiquetas(dialogoNuevo.etiquetasTexto).map((etiqueta) => (
                     <Chip key={etiqueta} size="small" label={etiqueta} />
                   ))}
