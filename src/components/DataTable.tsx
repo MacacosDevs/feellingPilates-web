@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
+import { superficieContorneada } from '../theme/estilos';
 import {
   Box,
   CircularProgress,
@@ -73,7 +74,7 @@ export function DataTable<T, Id extends string = string>({
     <TableContainer
       component={Paper}
       variant="outlined"
-      sx={{ borderRadius: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%' }}
+      sx={{ ...superficieContorneada, borderRadius: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%' }}
     >
       <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', ...(maxHeight ? { maxHeight } : {}) }}>
         <Table size={size} stickyHeader>

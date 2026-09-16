@@ -141,7 +141,7 @@ No afirmar cobertura porcentual ni mejora de performance sin medir. Para equival
 
 # 16. MILESTONE MODEL
 
-Un milestone agrupa fases técnicas preautorizadas. Solo WEB_UX_MILESTONE_01 está autorizado: bootstrap y prueba de ownership incremental de UNA feature no financiera/no scheduling: ACTIVIDADES.
+Un milestone agrupa fases técnicas preautorizadas. Autorización histórica WEB_UX_MILESTONE_01: bootstrap y prueba de ownership incremental de UNA feature no financiera/no scheduling: ACTIVIDADES.
 
 Secuencia autorizada:
 1. Reseal/materializar shell C.1+C.2 exacto.
@@ -155,7 +155,9 @@ Secuencia autorizada:
 
 Puede mover componentes/hooks/servicios/contratos propios, actualizar imports y crear tests/support. Puede usar Query/Zod ya aprobado solo si hay evidencia clara para boundary GET existente sin migración global. No redesign visual, cambio de reglas/recursos/capacidad/payloads, dependencias nuevas, Payments/F2E ni migración oportunista de otras features.
 
-Al completar: CURRENT_MILESTONE=WEB_UX_MILESTONE_01; STATUS=HUMAN_GATE_REQUIRED; HUMAN_GATE_REASON=MILESTONE_COMPLETE; NEXT_PHASE=AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_02. STOP. Usuarios, Roles, Salones, Ventas y Programación NO autorizadas automáticamente. Este Runbook no autoriza milestone02.
+Al completar milestone01: CURRENT_MILESTONE=WEB_UX_MILESTONE_01; STATUS=HUMAN_GATE_REQUIRED; HUMAN_GATE_REASON=MILESTONE_COMPLETE; NEXT_PHASE=AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_02. STOP. Usuarios, Roles, Salones, Ventas y Programación NO autorizadas automáticamente.
+
+Autorización humana vigente explícita del 2026-09-16: WEB_UX_MILESTONE_02, UX-01 DESIGN SYSTEM FOUNDATION. Autoriza una base visual MUI9 incremental: tipografía, tokens/contraste, jerarquía semántica de títulos y estados visuales/foco en theme, Login, Usuarios, Roles, Actividades y DataTable compartida, con allowlist congelada y pruebas de regresión adicionales; no repetir bootstrap ni cambiar contratos de negocio/API/payload/rutas/permisos/session/Query/Zod/Payments/F2E. Riesgo HIGH: validación completa y navegador a 375/768/1440 px, auditor independiente nuevo y gate antes del checkpoint; sin dependencias nuevas o actualizadas, rediseño de features/shell responsive, migración global o publicación remota. Al completar: CURRENT_MILESTONE=WEB_UX_MILESTONE_02; STATUS=HUMAN_GATE_REQUIRED; HUMAN_GATE_REASON=MILESTONE_COMPLETE; NEXT_PHASE=AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_03. STOP hasta autorización humana explícita de milestone03.
 
 # 17. STATE UPDATE RULE
 

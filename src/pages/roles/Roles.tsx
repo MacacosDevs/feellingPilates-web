@@ -30,6 +30,7 @@ import {
 import { isAxiosError } from 'axios';
 import { actualizarPermisosRol, actualizarRol, crearRol, listarPermisos, listarRoles } from '../../api/roles';
 import type { ApiErrorBody, PermisoResponse, RolResponse } from '../../api/types';
+import { focoVisible, superficieContorneada } from '../../theme/estilos';
 
 function extraerMensajeError(err: unknown, mensajePorDefecto: string): string {
   if (isAxiosError<ApiErrorBody>(err)) {
@@ -205,7 +206,7 @@ export function Roles() {
 
   return (
     <Box sx={{ maxWidth: 880, height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" component="h1" gutterBottom>
         Roles y permisos
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -268,8 +269,7 @@ export function Roles() {
       <Stack
         direction="row"
         sx={{
-          border: '1px solid',
-          borderColor: 'divider',
+          ...superficieContorneada,
           borderRadius: 2,
           overflow: 'hidden',
           flex: '1 1 auto',
@@ -308,6 +308,7 @@ export function Roles() {
                   borderLeft: '3px solid',
                   borderColor: seleccionada ? 'primary.main' : 'transparent',
                   '&:hover': { bgcolor: 'background.paper' },
+                  '&:focus-visible': (theme) => ({ ...focoVisible(theme), outlineOffset: '-2px' }),
                 }}
               >
                 <Icono fontSize="small" color={seleccionada ? 'primary' : 'action'} />

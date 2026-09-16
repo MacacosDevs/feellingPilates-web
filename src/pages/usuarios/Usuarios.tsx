@@ -34,6 +34,7 @@ import { DialogoCrearCliente } from './DialogoCrearCliente';
 import { DialogoCrearPersonal } from './DialogoCrearPersonal';
 import { DialogoContrasenaTemporal } from './DialogoContrasenaTemporal';
 import { DialogoEditarUsuario } from './DialogoEditarUsuario';
+import { tintaSobreFondo } from '../../theme/estilos';
 
 const ESTATUS_COLOR: Record<string, 'success' | 'warning' | 'error' | 'default'> = {
   activo: 'success',
@@ -221,7 +222,7 @@ export function Usuarios() {
         <MuiLink component={RouterLink} to="/" underline="hover" color="text.secondary">
           Inicio
         </MuiLink>
-        <Typography color="text.primary">Usuarios</Typography>
+        <Typography variant="h5" component="h1" color="text.primary">Usuarios</Typography>
       </Breadcrumbs>
 
       <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: 'wrap', rowGap: 1 }}>
@@ -242,6 +243,7 @@ export function Usuarios() {
                       px: 0.75,
                       borderRadius: 10,
                       bgcolor: seleccionado ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.06)',
+                      color: (theme) => seleccionado ? tintaSobreFondo(segmento.color, theme, 0.25) : theme.palette.text.primary,
                     }}
                   >
                     {segmento.total}
@@ -253,7 +255,7 @@ export function Usuarios() {
                 py: 2.5,
                 fontWeight: 600,
                 bgcolor: seleccionado ? segmento.color : 'transparent',
-                color: seleccionado ? '#fff' : 'text.primary',
+                color: (theme) => seleccionado ? tintaSobreFondo(segmento.color, theme) : theme.palette.text.primary,
                 border: '1px solid',
                 borderColor: seleccionado ? segmento.color : 'divider',
                 '&:hover': { bgcolor: seleccionado ? segmento.color : 'action.hover' },
@@ -337,7 +339,7 @@ export function Usuarios() {
           <TableRow hover>
             <TableCell>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Avatar sx={{ bgcolor: rolInfo(u.roles[0] ?? '').color, width: 36, height: 36, fontSize: 14 }}>
+                <Avatar sx={{ bgcolor: rolInfo(u.roles[0] ?? '').color, color: (theme) => tintaSobreFondo(rolInfo(u.roles[0] ?? '').color, theme), width: 36, height: 36, fontSize: 14 }}>
                   {iniciales(u.nombre)}
                 </Avatar>
                 <Box>
@@ -359,7 +361,7 @@ export function Usuarios() {
                     size="small"
                     sx={{
                       bgcolor: `${rolInfo(rol).color}1a`,
-                      color: rolInfo(rol).color,
+                      color: 'text.primary',
                       fontWeight: 600,
                     }}
                   />
@@ -367,7 +369,7 @@ export function Usuarios() {
               </Stack>
             </TableCell>
             <TableCell>
-              <Typography variant="body2" color={u.telefono ? 'text.primary' : 'text.disabled'}>
+              <Typography variant="body2" color={u.telefono ? 'text.primary' : 'text.secondary'}>
                 {u.telefono || 'Sin teléfono'}
               </Typography>
             </TableCell>

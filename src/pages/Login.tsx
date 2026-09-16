@@ -49,7 +49,7 @@ export function Login() {
 
   return (
     <Box sx={{ maxWidth: 420 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" component="h1" gutterBottom>
         Iniciar sesión
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

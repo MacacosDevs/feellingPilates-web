@@ -67,7 +67,7 @@ export function VistaActividades({ control }: { control: ControlActividades }) {
   if (!puedeLeer) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 700, mb: 3 }}>
           Actividades
         </Typography>
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -81,7 +81,7 @@ export function VistaActividades({ control }: { control: ControlActividades }) {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
             Actividades
           </Typography>
           <Typography color="text.secondary">
@@ -114,7 +114,7 @@ export function VistaActividades({ control }: { control: ControlActividades }) {
             onRowsPerPageChange: tabla.onRowsPerPageChange,
           }}
           renderFila={(a) => (
-            <TableRow hover sx={{ opacity: a.activo ? 1 : 0.5 }}>
+            <TableRow hover>
               <TableCell>
                 <Stack spacing={0.25}>
                   <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
