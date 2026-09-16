@@ -6,7 +6,7 @@ import { InvitacionAceptar } from './pages/InvitacionAceptar';
 import { Usuarios } from './pages/usuarios/Usuarios';
 import { Roles } from './pages/roles/Roles';
 import { Salones } from './pages/salones/Salones';
-import { Actividades } from './pages/actividades/Actividades';
+import { Actividades } from './modulos/actividades/paginas/Actividades';
 import { SalonHorarios } from './pages/salones/SalonHorarios';
 import { ReservasAgregar } from './pages/reservas/ReservasAgregar';
 import { ReservasListaEspera } from './pages/reservas/ReservasListaEspera';
