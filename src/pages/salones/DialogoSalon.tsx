@@ -34,13 +34,13 @@ import {
   listarEstados,
   listarMunicipios,
   listarTiposActividad,
-  listarTiposRecurso,
 } from '../../api/catalogos';
 import { SelectorMultipleBusqueda } from '../../components/SelectorMultipleBusqueda';
 import { AutocompletadoDireccion, type DireccionSeleccionada } from './AutocompletadoDireccion';
 import { DialogoNuevoCatalogoItem } from './DialogoNuevoCatalogoItem';
 import { MapaInteractivo } from './MapaInteractivo';
 import { tieneGoogleMapsConfigurado } from '../../lib/googleMaps';
+import { useTiposRecurso } from '../../query/useTiposRecurso';
 import type {
   ApiErrorBody,
   EstadoResponse,
@@ -49,7 +49,6 @@ import type {
   MunicipioResponse,
   SalonDetalleResponse,
   TipoActividadResponse,
-  TipoRecursoResponse,
 } from '../../api/types';
 
 interface DialogoSalonProps {
@@ -90,7 +89,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
   const [estados, setEstados] = useState<EstadoResponse[]>([]);
   const [municipios, setMunicipios] = useState<MunicipioResponse[]>([]);
   const [tiposActividadCatalogo, setTiposActividadCatalogo] = useState<TipoActividadResponse[]>([]);
-  const [tiposRecursoCatalogo, setTiposRecursoCatalogo] = useState<TipoRecursoResponse[]>([]);
+  const { data: tiposRecursoCatalogo = [], refrescar: refrescarCatalogoRecurso } = useTiposRecurso(abierto);
   const [tipoActividadIds, setTipoActividadIds] = useState<string[]>([]);
   const [horarios, setHorarios] = useState<(HorarioOperacionRequest | null)[]>(DIAS.map(() => null));
   const [recursos, setRecursos] = useState<RecursoItem[]>([]);
@@ -112,14 +111,15 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
   }
 
   function refrescarTiposRecurso() {
-    return listarTiposRecurso().then(setTiposRecursoCatalogo);
+    void refrescarCatalogoRecurso().catch(() => {
+      // Query owns the read error; a completed creation remains successful.
+    });
   }
 
   useEffect(() => {
     if (!abierto) return;
     listarEstados().then(setEstados);
     listarTiposActividad().then(setTiposActividadCatalogo);
-    listarTiposRecurso().then(setTiposRecursoCatalogo);
   }, [abierto]);
 
   useEffect(() => {
