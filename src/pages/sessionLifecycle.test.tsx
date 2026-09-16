@@ -13,7 +13,7 @@ import { RutaConRol } from '../auth/RutaConRol';
 import { apiClient, getToken } from '../api/client';
 import * as usuarios from '../api/usuarios';
 import * as authApi from '../api/auth';
-import { Header } from '../components/Header';
+import { Cabecera } from '../app/layout/Cabecera';
 import { renderWithTheme } from '../components/test-support/renderWithTheme';
 import { InvitacionAceptar } from './InvitacionAceptar';
 import { Login } from './Login';
@@ -24,7 +24,7 @@ const credentials = { correo: 'ana@example.invalid', contrasena: 'prueba-segura'
 
 function renderSession(path = '/login') {
   return renderWithTheme(<MemoryRouter initialEntries={[path]}>
-    <Header sidebarAbierto onToggleSidebar={() => undefined} />
+    <Cabecera sidebarAbierto onToggleSidebar={() => undefined} />
     <Routes>
       <Route element={<RutaPublica />}><Route path="/login" element={<Login />} /></Route>
       <Route element={<RutaProtegida />}>

@@ -26,7 +26,7 @@ import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../auth/authStore';
+import { useAuthStore } from '../../auth/authStore';
 
 const navLinkStyles = {
   borderRadius: 2,
@@ -64,7 +64,7 @@ interface Item {
   hijos?: Hijo[];
 }
 
-export function Sidebar({ abierto }: SidebarProps) {
+export function NavegacionLateral({ abierto }: SidebarProps) {
   const usuario = useAuthStore((state) => state.usuario);
   const location = useLocation();
   const navigate = useNavigate();

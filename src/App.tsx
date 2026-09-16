@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Layout } from './components/Layout';
+import { Layout } from './app/layout/Layout';
 import { Login } from './pages/Login';
 import { Perfil } from './pages/Perfil';
 import { InvitacionAceptar } from './pages/InvitacionAceptar';

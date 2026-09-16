@@ -15,7 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../auth/authStore';
+import { useAuthStore } from '../../auth/authStore';
 
 interface ComandoBusqueda {
   etiqueta: string;
@@ -28,7 +28,7 @@ interface HeaderProps {
   onToggleSidebar: () => void;
 }
 
-export function Header({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
+export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
   const usuario = useAuthStore((state) => state.usuario);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
