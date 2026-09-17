@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { KeyboardEvent, SyntheticEvent } from 'react';
+import type { KeyboardEvent, Ref, SyntheticEvent } from 'react';
 import {
   AppBar,
   Autocomplete,
@@ -26,9 +26,11 @@ interface ComandoBusqueda {
 interface HeaderProps {
   sidebarAbierto: boolean;
   onToggleSidebar: () => void;
+  triggerRef?: Ref<HTMLButtonElement>;
+  navegacionId?: string;
 }
 
-export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
+export function Cabecera({ sidebarAbierto, onToggleSidebar, triggerRef, navegacionId }: HeaderProps) {
   const usuario = useAuthStore((state) => state.usuario);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
@@ -86,10 +88,10 @@ export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
       position="sticky"
       color="inherit"
       elevation={0}
-      sx={{ borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}
+      sx={{ borderBottom: '1px solid', borderColor: 'divider', bgcolor: 'background.paper', flexShrink: 0, minWidth: 0 }}
     >
-      <Toolbar sx={{ gap: 2 }}>
-        <IconButton onClick={onToggleSidebar} edge="start" aria-label={sidebarAbierto ? 'Cerrar navegación' : 'Abrir navegación'}>
+      <Toolbar sx={{ gap: 2, minWidth: 0 }}>
+        <IconButton ref={triggerRef} onClick={onToggleSidebar} edge="start" aria-label={sidebarAbierto ? 'Cerrar navegación' : 'Abrir navegación'} aria-expanded={sidebarAbierto} aria-controls={navegacionId} sx={{ flexShrink: 0 }}>
           <MenuIcon />
         </IconButton>
 
@@ -107,7 +109,7 @@ export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
               (o) => o.etiqueta.toLowerCase().includes(texto) || o.palabrasClave.some((palabra) => palabra.includes(texto)),
             );
           }}
-          sx={{ width: { xs: 200, sm: 320 } }}
+          sx={{ width: { xs: 200, sm: 320 }, minWidth: 160, flexShrink: 1 }}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -115,6 +117,7 @@ export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
               onKeyDown={handleKeyDown}
               slotProps={{
                 ...params.slotProps,
+                htmlInput: { ...params.slotProps.htmlInput, 'aria-label': 'Buscar secciones' },
                 input: {
                   ...params.slotProps.input,
                   startAdornment: (
@@ -128,14 +131,14 @@ export function Cabecera({ sidebarAbierto, onToggleSidebar }: HeaderProps) {
           )}
         />
 
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1, minWidth: 0 }} />
 
-        <Typography variant="body2" color="text.secondary" noWrap sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Typography variant="body2" color="text.secondary" noWrap sx={{ display: { xs: 'none', sm: 'block' }, minWidth: 0, flexShrink: 1 }}>
           Bienvenido, {usuario.nombre}
         </Typography>
 
         <Tooltip title="Cerrar sesión">
-          <IconButton size="small" onClick={handleLogout} aria-label="Cerrar sesión">
+          <IconButton size="small" onClick={handleLogout} aria-label="Cerrar sesión" sx={{ flexShrink: 0 }}>
             <LogoutIcon fontSize="small" />
           </IconButton>
         </Tooltip>

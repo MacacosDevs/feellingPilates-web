@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react';
 import {
   Box,
   Collapse,
+  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
@@ -47,6 +48,11 @@ const subNavLinkStyles = {
 
 interface SidebarProps {
   abierto: boolean;
+  id?: string;
+  oculto?: boolean;
+  onDestino?: () => void;
+  overrides?: Record<string, boolean>;
+  onOverridesChange?: Dispatch<SetStateAction<Record<string, boolean>>>;
 }
 
 interface Hijo {
@@ -64,11 +70,23 @@ interface Item {
   hijos?: Hijo[];
 }
 
-export function NavegacionLateral({ abierto }: SidebarProps) {
+export function NavegacionLateral({ abierto, id, oculto = false, onDestino, overrides: overridesExternos, onOverridesChange }: SidebarProps) {
   const usuario = useAuthStore((state) => state.usuario);
   const location = useLocation();
   const navigate = useNavigate();
-  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
+  const [overridesLocales, setOverridesLocales] = useState<Record<string, boolean>>({});
+  const overrides = overridesExternos ?? overridesLocales;
+  const setOverrides = onOverridesChange ?? setOverridesLocales;
+  const primarios = useRef<Record<string, HTMLButtonElement | null>>({});
+  const focoHijo = useRef<{ clave: string; elemento: HTMLElement } | null>(null);
+
+  useLayoutEffect(() => {
+    const foco = focoHijo.current;
+    if (!oculto && foco && (!foco.elemento.isConnected || foco.elemento.closest('[inert]'))) {
+      primarios.current[foco.clave]?.focus();
+      focoHijo.current = null;
+    }
+  });
 
   if (!usuario) {
     return null;
@@ -141,18 +159,25 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
   return (
     <Box
       component="nav"
+      id={id}
+      aria-label="Navegación principal"
+      aria-hidden={oculto || undefined}
+      inert={oculto}
+      onFocusCapture={() => { focoHijo.current = null; }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) focoHijo.current = null;
+      }}
       sx={{
-        width: abierto ? 240 : 72,
+        width: '100%',
+        minWidth: 0,
+        minHeight: 0,
+        boxSizing: 'border-box',
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
         borderRight: '1px solid',
         borderColor: 'divider',
-        height: '100vh',
-        position: 'sticky',
-        top: 0,
-        transition: 'width 0.2s ease',
-        overflow: 'hidden',
+        height: '100%',
       }}
     >
       <Box sx={{ px: abierto ? 2.5 : 2, py: 2, display: 'flex', alignItems: 'center' }}>
@@ -160,7 +185,7 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
           {abierto ? 'Feeling Pilates' : 'FP'}
         </Typography>
       </Box>
-      <List sx={{ flexGrow: 1, px: 1, py: 0 }}>
+      <List sx={{ flex: '1 1 0%', minHeight: 0, overflowY: 'auto', px: 1, py: 0.5 }}>
         {items.map((item) => {
           const clave = item.to ?? item.etiqueta;
           const tieneHijos = !!item.hijos?.length;
@@ -172,6 +197,8 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
                 component={NavLink}
                 to={item.to as string}
                 end={item.end}
+                aria-label={item.etiqueta}
+                onClick={onDestino}
                 sx={{ ...navLinkStyles, justifyContent: abierto ? 'flex-start' : 'center', px: abierto ? 1.5 : 1 }}
               >
                 <ListItemIcon sx={{ minWidth: abierto ? 32 : 'auto', justifyContent: 'center' }}>
@@ -197,20 +224,29 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
           const activo = (item.to && location.pathname === item.to) || tieneHijoActivo(item);
           const abiertoGrupo = overrides[clave] ?? activo;
           const objetivo = item.to ?? item.hijos?.[0]?.to;
+          const hijosId = `${id ?? 'navegacion'}-${encodeURIComponent(clave)}-hijos`;
 
           const encabezado = (
             <ListItemButton
               key={clave}
+              component="button"
+              type="button"
+              ref={(elemento: HTMLButtonElement | null) => { primarios.current[clave] = elemento; }}
+              aria-label={item.etiqueta}
+              aria-current={location.pathname === objetivo ? 'page' : undefined}
               onClick={() => {
                 setOverrides((prev) => ({ ...prev, [clave]: true }));
                 if (objetivo && location.pathname !== objetivo) {
                   navigate(objetivo);
                 }
+                onDestino?.();
               }}
               sx={{
                 ...navLinkStyles,
                 justifyContent: abierto ? 'flex-start' : 'center',
                 px: abierto ? 1.5 : 1,
+                flex: 1,
+                minWidth: 0,
                 ...(activo
                   ? { backgroundColor: 'action.selected', color: 'text.primary', fontWeight: 600 }
                   : {}),
@@ -220,23 +256,10 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
                 {item.icono}
               </ListItemIcon>
               {abierto && (
-                <>
                   <ListItemText
                     primary={item.etiqueta}
                     slotProps={{ primary: { noWrap: true, sx: { fontSize: 14 } } }}
                   />
-                  <Box
-                    component="span"
-                    role="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOverrides((prev) => ({ ...prev, [clave]: !abiertoGrupo }));
-                    }}
-                    sx={{ display: 'flex', alignItems: 'center', p: 0.25, borderRadius: 1 }}
-                  >
-                    {abiertoGrupo ? <ExpandLessIcon sx={{ fontSize: 18 }} /> : <ExpandMoreIcon sx={{ fontSize: 18 }} />}
-                  </Box>
-                </>
               )}
             </ListItemButton>
           );
@@ -244,7 +267,19 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
           return (
             <Box key={clave}>
               {abierto ? (
-                encabezado
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  {encabezado}
+                  <IconButton
+                    size="small"
+                    aria-label={`${abiertoGrupo ? 'Ocultar' : 'Mostrar'} opciones de ${item.etiqueta}`}
+                    aria-expanded={!!abiertoGrupo}
+                    aria-controls={abiertoGrupo ? hijosId : undefined}
+                    onClick={() => setOverrides((prev) => ({ ...prev, [clave]: !abiertoGrupo }))}
+                    sx={{ flexShrink: 0, mr: 0.5 }}
+                  >
+                    {abiertoGrupo ? <ExpandLessIcon sx={{ fontSize: 18 }} /> : <ExpandMoreIcon sx={{ fontSize: 18 }} />}
+                  </IconButton>
+                </Box>
               ) : (
                 <Tooltip title={item.etiqueta} placement="right">
                   {encabezado}
@@ -252,9 +287,17 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
               )}
               {abierto && (
                 <Collapse in={abiertoGrupo} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding sx={{ pl: 1.5 }}>
+                  <List
+                    id={hijosId}
+                    component="div"
+                    disablePadding
+                    aria-hidden={!abiertoGrupo || undefined}
+                    inert={!abiertoGrupo}
+                    onFocusCapture={(event) => { focoHijo.current = { clave, elemento: event.target as HTMLElement }; }}
+                    sx={{ pl: 1.5 }}
+                  >
                     {item.to && (
-                      <ListItemButton component={NavLink} to={item.to} end sx={{ ...subNavLinkStyles, px: 1.5 }}>
+                      <ListItemButton component={NavLink} to={item.to} end onClick={onDestino} tabIndex={abiertoGrupo ? undefined : -1} sx={{ ...subNavLinkStyles, px: 1.5 }}>
                         <ListItemIcon sx={{ minWidth: 28 }}>
                           <PeopleAltOutlinedIcon sx={{ fontSize: 18 }} />
                         </ListItemIcon>
@@ -270,6 +313,8 @@ export function NavegacionLateral({ abierto }: SidebarProps) {
                         component={NavLink}
                         to={hijo.to}
                         end={hijo.end}
+                        onClick={onDestino}
+                        tabIndex={abiertoGrupo ? undefined : -1}
                         sx={{ ...subNavLinkStyles, px: 1.5 }}
                       >
                         <ListItemIcon sx={{ minWidth: 28, '& svg': { fontSize: 18 } }}>{hijo.icono}</ListItemIcon>

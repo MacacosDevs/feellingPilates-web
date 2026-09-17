@@ -265,10 +265,22 @@ for (const width of [375, 768, 1440]) {
       for (const button of await pagination.locator('button').all()) await expect(button).toBeDisabled();
       await pagination.evaluate(el => { el.scrollLeft = 0; });
       await page.getByRole('button', { name: 'Abrir navegación', exact: true }).click();
-      await page.waitForFunction(() => Math.abs(document.querySelector('nav')!.getBoundingClientRect().width - 240) < 0.1);
+      await page.waitForFunction(() => Math.abs(document.querySelector('#navegacion-principal')!.getBoundingClientRect().width - 240) < 0.1);
+      if (width === 375) await page.waitForFunction(() => Math.abs(document.querySelector('#navegacion-principal')!.getBoundingClientRect().x) < 0.1);
       await capture('shell-open');
-      await page.getByRole('button', { name: 'Cerrar navegación', exact: true }).click();
-      await page.waitForFunction(() => Math.abs(document.querySelector('nav')!.getBoundingClientRect().width - 72) < 0.1);
+      if (width === 375) {
+        await expect(page.getByRole('dialog', { name: 'Navegación principal', exact: true })).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('dialog', { name: 'Navegación principal', exact: true })).toHaveCount(0);
+        await expect(page.getByRole('navigation', { name: 'Navegación principal', exact: true })).toHaveCount(0);
+        const trigger = page.getByRole('button', { name: 'Abrir navegación', exact: true });
+        await expect(trigger).toBeFocused();
+        await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+        await page.waitForFunction(() => Math.abs(document.querySelector('main')!.getBoundingClientRect().width - 375) < 0.1 && document.documentElement.clientWidth === 375 && document.documentElement.scrollWidth === 375);
+      } else {
+        await page.getByRole('button', { name: 'Cerrar navegación', exact: true }).click();
+        await page.waitForFunction(() => Math.abs(document.querySelector('#navegacion-principal')!.getBoundingClientRect().width - 72) < 0.1);
+      }
       // The existing required empty role assignment supplies real error states.
       const personal = page.getByRole('row', { name: /Recepción Prueba/ });
       await personal.getByRole('button', { name: 'Editar usuario', exact: true }).click();
