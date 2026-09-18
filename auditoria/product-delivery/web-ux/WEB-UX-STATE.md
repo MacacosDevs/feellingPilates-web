@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_09
-CURRENT_PHASE: M09_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_10
+CURRENT_PHASE: M10_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_09_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_10_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,14 +30,14 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_91478368718c
-LAST_GATE_ID: gate_93c2dee7f33f
-LAST_ACCEPTED_CHECKPOINT: b4e5659ce1b4de93aa099050929972285404f390
-CURRENT_CANDIDATE_MANIFEST: M09 exact accepted fourteen-path ownership candidate; final byte-map/fingerprint durable in run_91478368718c after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
+LAST_RUN_ID: run_366be9321c42
+LAST_GATE_ID: gate_a7b5235cb004
+LAST_ACCEPTED_CHECKPOINT: 625e5dcd343611c71e1621dfbad620a3a1e18f9a
+CURRENT_CANDIDATE_MANIFEST: M10 exact accepted four-path presentation candidate, final144file byte-map/fingerprint durable in run_366be9321c42 after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
-CORRECTION_CYCLES_USED: 1
+CORRECTION_CYCLES_USED: 2
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
 NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; writer positively settled/released
+ACTIVE_WRITE_TASK: NONE; writer/auditor positively settled/released
 
-ACTIVE_WRITE_DISPATCH: NONE; writer ctx_3cdea7c7994f settled/released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_2c68aeb28ab3 and ctx_1ab9795e73b7 settled/released
 
-FROZEN_PHASE_PLAN: msg_6591c5227528; exact12code/test plusRootSTATE/RUNBOOK14paths; M08PlanDoc/APIs/helpers/browser/testsdata/packages protected
+FROZEN_PHASE_PLAN: msg_ee7d0b70c5c8; only dialog/newform production, RootSTATE/RUNBOOK; alltests and other files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -443,3 +443,29 @@ M09_METRICS_PRECHECKPOINT: {"measuredUTC":"2026-09-18T23:26:03.550954+00:00","wa
 M09_NEXT_RECOMMENDATION_NOT_AUTHORIZED: {"objective":"M10 presentation-only weekly dialog form extraction, requires NEW human authorization","candidatePaths":["src/modulos/programacion/componentes/EditarHorarioSemanalDialog.tsx","src/modulos/programacion/componentes/FormularioHorarioSemanal.tsx","src/pages/salones/components/EditarHorarioSemanalDialogCaracterizacion.test.tsx","src/pages/salones/SalonHorariosCaracterizacion.test.tsx"],"scope":"Only existing Abre/Cierra/Aplicar a partir de fields and versionar/cerrar captions into explicit-values/events leaf; fourth path only mechanically necessary test wiring; Root closure docs separately frozen","preserve":"All copy/labels/inputtypes/min/disabled/focus/Escape/date transforms/preflight/history/views/payloads/guardando/onExito/await order/request semantics stay current; orchestration remains in weekly dialog","knownM08Gaps":"ALL intentionally deferred; no async/listener/responsive/a11y/geometry correction bundled","F2E":"No backend decision expected; compatibility still UNVERIFIED; any contractual ambiguity HUMAN_GATE","risk":"MEDIUM React props/focus, final fresh semantic audit Sol-high","validation":"FAST weekly3/page2 characterization, affected lint/typecheck, weekly browser at768 and dialog375/1440; complete existing regression plus new meaningful tests, independent audit, exact diff and finite freeze","route":"Luna-medium mechanical recon, Sol-medium bounded React extraction, NEW Sol-high independent acceptance audit"}
 
 M09_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. No subsequent Programación work authorized. Historical incidents/budget remain recorded; all known M08 gaps deferred. Current accepted containing checkpoint is obtained mechanically from Git STATE log and durable Run final checkpoint proof; no invented own futureSHA.
+
+## M10 ENTRY / FROZEN AUTHORITY
+
+Human authorization M10 UX-09 presentation extraction from exact M09 checkpoint625e5dcd343611c71e1621dfbad620a3a1e18f9a. All143 accepted hashes match msg_a5d4c86f849e, full fingerprint ec6b60051c2fae2f58c7925f33ab607dfe5a2ac91df2c01742516452491ece36; clean tree/empty index before any write. Freeze msg_ee7d0b70c5c8 grants only existing weekly dialog/new FormularioHorarioSemanal plus RootSTATE/RUNBOOK. No existing characterization/page/browser test changes needed. Prewrite five Vitest and three synthetic weekly Chromium workflows375/768/1440 PASS. Dialog keeps dates/history/state/validation/DTO/write/allSettled/callback/dialog authority; leaf fields/legends only. Existing403 tests mandatory. F2E compatibility UNVERIFIED; all M08/M09 gaps NOT_LOCKED and unchanged.
+
+M10-VALIDATION-01: external private Playwright config initially used /tmp cwd for repository-relative webServer command; original failed receipt retained. Prospective correction msg_a40f4a06027f pins exact repository cwd, then three browser workflows PASS. Correction1/2 recorded before fix; no product write or dependency change; final NEW semantic audit still required. This does not erase historical M09 correction1 or evidence-contract findings.
+
+M10-VALIDATION-02: writer ask msg_431f6d0c230c reports missing `python` executable before FAST launch. Deterministic correction2/2 prospectively authorized: use existing python3 for identical validate.py/argv with new unique labels; no product/dependency/scope change. Raw original tool failure is in Orca worker transcript; do not manufacture an original receipt that never existed. FullGATE and NEW fresh semantic audit remain required.
+
+M10_FULL_GATE_OBSERVED: seven fresh R1 commands exit0;328Vitest+75Chromium=403PASS0FAIL0SKIP0FLAKY; all accepted cases preserved and no test files changed. Before/after private weekly Chromium375/768/1440 controls/text/geometry identical; fields/editing/validation/focus/Escape/twoPOSTs PASS. All controller25statements/helpers10/list/dialogactions bytes identical; only extracted field markup/import wiring. Candidate not yet accepted; NEW independent Sol-high audit and actualGate still mandatory.
+
+M10-PROCESS-01: original worker private result omitted required R1 named fields; root contract reminder was enqueued but original result remains incomplete. Root deterministic normalization msg_d639df62c430 provides actual launch/FAST/source facts, preserves original and marks filesRead UNREPORTED. Fresh auditor must adjudicate, no retrospective compliance claim.
+
+## M10 ACCEPTANCE / RECEIPT-ONLY CLOSURE
+
+Run run_366be9321c42; writer task_7d681f250d34/ctx_2c68aeb28ab3 actualLuna-medium, uniqueDone msg_62974582acae and release captured. Fresh independent auditor task_acd7794085ee/ctx_1ab9795e73b7 actualSol-high, structuredreport msg_cfd6418c3fcc and uniqueDone msg_428b81e92b82, released; PASS P0=0 P1=0 P2=1. Actual DecisionGate gate_a7b5235cb004 PASS, gate-onlyTask task_8cbe96164d37. Auditor prospectively approved two-document receipt closure; no production/test changes after auditedcandidate. Exactacceptedfourpaths from freeze msg_ee7d0b70c5c8: dialog, new FormularioHorarioSemanal and RootSTATE/RUNBOOK.
+
+All25controller statements, ten helpers/constants, list/lifecycle prefix and dialogactions suffix byte-identical. Leaf readonly explicit controlled values/events, Fragment markup, only Reacttypes/MUI imports; no temporal/business/request/session authority. All140protected files and alltests unchanged. FullfreshGATE sevencommands exit0;328Vitest+75Chromium=403PASS0FAIL0SKIP0FLAKY. Five prewrite affectedVitest and three before/three after private weekly Chromium375/768/1440 PASS; exactdialog/controlrectangles/types/values/min/disabled/text match. Additional runtime assertions do not inflate permanent403baseline. No backend/Payments/Maps network, no dependency/API/payload/session/permission/F2E change; knownM08/M09 gapsNOT_LOCKED unchanged and F2EcompatibilityUNVERIFIED.
+
+M10-PROCESS-01 remains P2 NONBLOCKING_UNRESOLVED_ORIGINAL_CONTRACT_DEFECT: originalwriter report omitted ten namedR1fields and filesReadUNREPORTED. Root normalization msg_d639df62c430 retains original, no retrospectivecomplianceclaim. Independent auditor recovered scope/source/actualroute/validation through blobs/AST/receipts/testidentity and justified nonblocking severity; future workers must complete fullR1contract. Historical corrected M10-VALIDATION-01/02 remain documented; correction2/2 prospectivelypersisted, productSourceCorrections0. No failure or suppression hidden.
+
+M10_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-18T23:54:49.837983+00:00","wallClockMinutes":18.347,"measurementWindow":"actual Orca Run creation to this snapshot; pre-Run recon time UNREPORTED; no humanpause occurred","workersLaunched":2,"lunaTasks":1,"solMediumTasks":0,"solHighTasks":1,"targetedValidations":8,"targetedDefinition":"unique instrumented non-GATE command receipts including failed external server startup; missing-python wrapper launch did not execute validation, known1 separately","validationLaunchFailuresBeforeCommand":1,"fullValidations":1,"correctionCycles":2,"productSourceCorrections":0,"correctionCause":["external browser webServer cwd","missing python interpreter; use installed python3"],"freshAuditFindings":3,"humanGates":0,"internalReportBytes":27042,"internalReportDefinition":"unique original final worker report JSON files; Root normalization is SUMMARY evidence, not an original worker report","summaryEvidenceBytes":495648,"rawEvidenceBytes":5121440,"byteMeasurement":"unique filesystem files under private summary/raw folders at snapshot, reports subset of summary; processor/harness code outside folders excluded and separately SHA-referenced","CavemanEnabledRoles":[],"tokens":"UNREPORTED","comparisonMinutes":{"M03":103.8,"M04":73.648,"M05":37.537,"M06":49.059,"M07":32.357,"M08":28.603,"M09":30.916},"causalSavingsClaim":false}
+
+Next bounded recommendation ONLY, NOT_AUTHORIZED: M11 calendarheader presentation to new CabecerasCalendario, existingCalendar and only indispensable CalendarCaracterizacion test wiring. Header consumes alreadycomputed labels/data and explicit date-operation callback. Keep date sort/minmax/refs/geometry/columns/ranges/overlays/mousehandlers/types/assignments/preflight inCalendar. HIGH geometry risk; preserve all wrappers/dimensions/margins/copy/tooltips/classes and actualplacements; no extraction of blocks/overlays/algorithms. Required affectedVitest/TypeScript/lint, both schedulingChromiumspecs375/768/1440/resize/thirteenexistingdragcases, full403+GATE, NEW Sol-high auditor and actualGate. Allknown375/resize/async/listener/a11ygaps deferred; F2EUNVERIFIED and any backend authority ambiguity requiresHumanGate. No nextslice authorized; await explicit human grant.
+
+One exactlocalcheckpoint follows actualGatePASS with explicitfourpathstaging, no ownfutureSHA/amend/squash/push. LAST_ACCEPTED_CHECKPOINT intentionally retains real existing625e5dcd343611c71e1621dfbad620a3a1e18f9a; containing acceptedSTATEcommit resolved by Gitlog and actualresultdurable inthisRun. Finalpostcheckpointmetrics and identity are recorded inOrca after materialization.

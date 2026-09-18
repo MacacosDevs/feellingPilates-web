@@ -11,7 +11,6 @@ import {
   DialogTitle,
   IconButton,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,6 +26,7 @@ import {
   MENSAJE_FECHA_PASADA,
   mensajeDeErrorHorario,
 } from '../../../pages/salones/erroresHorario';
+import { FormularioHorarioSemanal } from './FormularioHorarioSemanal';
 
 const MENSAJE_SINCRONIZACION_FALLIDA =
   'El cambio se guardó correctamente, pero no se pudo actualizar toda la información. Actualiza la pantalla para ver el estado más reciente.';
@@ -327,56 +327,34 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
                   puede programar a partir de la última versión.
                 </Alert>
               )}
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  type="time"
-                  size="small"
-                  label="Abre"
-                  value={horaApertura}
-                  onChange={(e) => setHoraApertura(e.target.value)}
-                  slotProps={{ inputLabel: { shrink: true } }}
-                  fullWidth
-                />
-                <TextField
-                  type="time"
-                  size="small"
-                  label="Cierra"
-                  value={horaCierre}
-                  onChange={(e) => setHoraCierre(e.target.value)}
-                  slotProps={{ inputLabel: { shrink: true } }}
-                  fullWidth
-                />
-              </Stack>
-              <TextField
-                type="date"
-                size="small"
-                label="Aplicar a partir de"
-                value={efectivoDesde}
-                onChange={(e) => setEfectivoDesde(e.target.value)}
-                slotProps={{ inputLabel: { shrink: true }, htmlInput: { min: hoy } }}
-                fullWidth
+              <FormularioHorarioSemanal
+                tipo="versionar"
+                horaApertura={horaApertura}
+                horaCierre={horaCierre}
+                efectivoDesde={efectivoDesde}
+                hoy={hoy}
+                onHoraAperturaChange={setHoraApertura}
+                onHoraCierreChange={setHoraCierre}
+                onEfectivoDesdeChange={setEfectivoDesde}
+                leyenda="El cambio se aplicará a partir de esa fecha. Consulta el historial para ver la vigencia de los horarios."
               />
-              <Typography variant="caption" color="text.secondary">
-                El cambio se aplicará a partir de esa fecha. Consulta el historial para ver la vigencia de los horarios.
-              </Typography>
             </Stack>
           )}
 
           {vista.tipo === 'cerrar' && (
             <Stack spacing={1.5}>
-              <TextField
-                type="date"
-                size="small"
-                label="Aplicar a partir de"
-                value={efectivoDesde}
-                onChange={(e) => setEfectivoDesde(e.target.value)}
-                slotProps={{ inputLabel: { shrink: true }, htmlInput: { min: hoy } }}
-                fullWidth
+              <FormularioHorarioSemanal
+                tipo="cerrar"
+                efectivoDesde={efectivoDesde}
+                hoy={hoy}
+                onEfectivoDesdeChange={setEfectivoDesde}
+                leyenda={
+                  <>
+                    El salón dejará de abrir los {DIAS[vista.dia]} a partir del {efectivoDesde ? formatearFechaLegible(efectivoDesde) : '—'}. Las fechas
+                    anteriores se conservan en el historial.
+                  </>
+                }
               />
-              <Typography variant="caption" color="text.secondary">
-                El salón dejará de abrir los {DIAS[vista.dia]} a partir del {efectivoDesde ? formatearFechaLegible(efectivoDesde) : '—'}. Las fechas
-                anteriores se conservan en el historial.
-              </Typography>
             </Stack>
           )}
         </Stack>
