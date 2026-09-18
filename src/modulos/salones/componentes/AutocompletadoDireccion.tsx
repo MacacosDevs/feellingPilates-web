@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Alert, TextField } from '@mui/material';
-import { cargarGoogleMaps, tieneGoogleMapsConfigurado } from '../../lib/googleMaps';
+import { cargarGoogleMaps, tieneGoogleMapsConfigurado } from '../../../lib/googleMaps';
 
 export interface DireccionSeleccionada {
   calle: string;

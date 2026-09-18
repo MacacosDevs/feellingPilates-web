@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DialogoSalon } from './DialogoSalon';
-import { api, choose, deferred, regressionSession, renderRoute } from '../../components/test-support/regression';
-import { server } from '../../../tests/mocks/server';
-import { activities, salon } from '../../../tests/fixtures/regression';
-import type { SalonRequest } from '../../api/types';
+import { api, choose, deferred, regressionSession, renderRoute } from '../../../components/test-support/regression';
+import { server } from '../../../../tests/mocks/server';
+import { activities, salon } from '../../../../tests/fixtures/regression';
+import type { SalonRequest } from '../../../api/types';
 regressionSession([]);
 beforeEach(() => server.use(http.get(`${api}/ubicaciones/estados`, () => HttpResponse.json([{ id: 1, nombre: 'Querétaro' }, { id: 2, nombre: 'Jalisco' }])), http.get(`${api}/ubicaciones/estados/1/municipios`, () => HttpResponse.json([{ id: 10, estadoId: 1, nombre: 'Centro' }])), http.get(`${api}/ubicaciones/estados/2/municipios`, () => HttpResponse.json([{ id: 20, estadoId: 2, nombre: 'Zapopan' }])), http.get(`${api}/tipos-actividad`, () => HttpResponse.json(activities)), http.get(`${api}/tipos-recurso`, () => HttpResponse.json([{ id: 'r1', nombre: 'Reformer', descripcion: null, activo: true }, { id: 'r2', nombre: 'Tapete', descripcion: null, activo: true }]))));
 function mount(existing: ReturnType<typeof salon> | null = null) { const close = vi.fn(), saved = vi.fn(); const element = (abierto: boolean) => <DialogoSalon abierto={abierto} salon={existing} onCerrar={close} onGuardado={saved}/>; const view = renderRoute(element(true)); return { close, saved, view, element }; }

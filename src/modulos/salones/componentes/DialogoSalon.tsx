@@ -27,20 +27,20 @@ import {
   Typography,
 } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { crearSalon, actualizarSalon } from '../../api/salones';
+import { crearSalon, actualizarSalon } from '../../../api/salones';
 import {
   crearTipoActividad,
   crearTipoRecurso,
   listarEstados,
   listarMunicipios,
   listarTiposActividad,
-} from '../../api/catalogos';
-import { SelectorMultipleBusqueda } from '../../components/SelectorMultipleBusqueda';
+} from '../../../api/catalogos';
+import { SelectorMultipleBusqueda } from '../../../components/SelectorMultipleBusqueda';
 import { AutocompletadoDireccion, type DireccionSeleccionada } from './AutocompletadoDireccion';
 import { DialogoNuevoCatalogoItem } from './DialogoNuevoCatalogoItem';
 import { MapaInteractivo } from './MapaInteractivo';
-import { tieneGoogleMapsConfigurado } from '../../lib/googleMaps';
-import { useTiposRecurso } from '../../query/useTiposRecurso';
+import { tieneGoogleMapsConfigurado } from '../../../lib/googleMaps';
+import { useTiposRecurso } from '../../../query/useTiposRecurso';
 import type {
   ApiErrorBody,
   EstadoResponse,
@@ -49,12 +49,13 @@ import type {
   MunicipioResponse,
   SalonDetalleResponse,
   TipoActividadResponse,
-} from '../../api/types';
+} from '../../../api/types';
 
 interface DialogoSalonProps {
   abierto: boolean;
   salon: SalonDetalleResponse | null;
   onCerrar: () => void;
+  onCerrado?: () => void;
   onGuardado: (salon: SalonDetalleResponse) => void;
 }
 
@@ -71,7 +72,7 @@ function extraerMensajeError(err: unknown, mensajePorDefecto: string): string {
   return mensajePorDefecto;
 }
 
-export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSalonProps) {
+export function DialogoSalon({ abierto, salon, onCerrar, onGuardado, onCerrado }: DialogoSalonProps) {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
@@ -89,7 +90,8 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
   const [estados, setEstados] = useState<EstadoResponse[]>([]);
   const [municipios, setMunicipios] = useState<MunicipioResponse[]>([]);
   const [tiposActividadCatalogo, setTiposActividadCatalogo] = useState<TipoActividadResponse[]>([]);
-  const { data: tiposRecursoCatalogo = [], refrescar: refrescarCatalogoRecurso } = useTiposRecurso(abierto);
+  const { data: catalogoRecursos, refrescar: refrescarCatalogoRecurso, isFetching: cargandoRecursos, isError: errorRecursos } = useTiposRecurso(abierto);
+  const tiposRecursoCatalogo = catalogoRecursos ?? [];
   const [tipoActividadIds, setTipoActividadIds] = useState<string[]>([]);
   const [horarios, setHorarios] = useState<(HorarioOperacionRequest | null)[]>(DIAS.map(() => null));
   const [recursos, setRecursos] = useState<RecursoItem[]>([]);
@@ -100,14 +102,86 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
   const [pasoActivo, setPasoActivo] = useState(0);
   const [ubicacionConfirmada, setUbicacionConfirmada] = useState(false);
   const contenidoRef = useRef<HTMLDivElement>(null);
+  const pasoRef = useRef<HTMLParagraphElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const pasoAnteriorRef = useRef(0);
+  const activoRef = useRef(false);
+  const lecturas = useRef({ estados: 0, actividades: 0, municipios: 0 });
+  const ciudadBuscada = useRef<string | null>(null);
+  type Catalogo = 'estados' | 'actividades' | 'municipios';
+  const [cargandoCatalogos, setCargandoCatalogos] = useState<Record<Catalogo, boolean>>({ estados: false, actividades: false, municipios: false });
+  const [erroresCatalogos, setErroresCatalogos] = useState<Partial<Record<Catalogo, string>>>({});
+  const [catalogoCreado, setCatalogoCreado] = useState<string | null>(null);
+
+  useEffect(() => {
+    activoRef.current = abierto;
+    const solicitudes = lecturas.current;
+    return () => {
+      activoRef.current = false;
+      solicitudes.estados++;
+      solicitudes.actividades++;
+      solicitudes.municipios++;
+    };
+  }, [abierto]);
+
+  useEffect(() => {
+    if (!abierto) return;
+    if (error) {
+      if (contenidoRef.current) contenidoRef.current.scrollTop = 0;
+      errorRef.current?.focus();
+    }
+  }, [abierto, error]);
+
+  useEffect(() => {
+    if (abierto && pasoActivo !== pasoAnteriorRef.current) {
+      if (contenidoRef.current) contenidoRef.current.scrollTop = 0;
+      pasoRef.current?.focus();
+    }
+    pasoAnteriorRef.current = pasoActivo;
+  }, [abierto, pasoActivo]);
+
+  async function leerCatalogo<T>(catalogo: Catalogo, leer: () => Promise<T>, aplicar: (data: T) => void) {
+    const lectura = ++lecturas.current[catalogo];
+    if (activoRef.current) {
+      setCargandoCatalogos(prev => ({ ...prev, [catalogo]: true }));
+      setErroresCatalogos(prev => ({ ...prev, [catalogo]: undefined }));
+    }
+    try {
+      const data = await leer();
+      if (activoRef.current && lectura === lecturas.current[catalogo]) aplicar(data);
+    } catch {
+      if (activoRef.current && lectura === lecturas.current[catalogo]) {
+        setErroresCatalogos(prev => ({ ...prev, [catalogo]: `No se pudo cargar el catálogo de ${catalogo}. Intenta de nuevo.` }));
+      }
+    } finally {
+      if (activoRef.current && lectura === lecturas.current[catalogo]) {
+        setCargandoCatalogos(prev => ({ ...prev, [catalogo]: false }));
+      }
+    }
+  }
+
+  function refrescarEstados() {
+    return leerCatalogo('estados', listarEstados, setEstados);
+  }
+
+  function refrescarMunicipios(id: number) {
+    return leerCatalogo('municipios', () => listarMunicipios(id), data => {
+      setMunicipios(data);
+      if (ciudadBuscada.current) {
+        const encontrado = data.find(m => m.nombre === ciudadBuscada.current);
+        if (encontrado) setMunicipioId(encontrado.id);
+        ciudadBuscada.current = null;
+      }
+    });
+  }
 
   function mostrarError(mensaje: string) {
     setError(mensaje);
-    contenidoRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (contenidoRef.current) contenidoRef.current.scrollTop = 0;
   }
 
   function refrescarTiposActividad() {
-    return listarTiposActividad().then(setTiposActividadCatalogo);
+    return leerCatalogo('actividades', listarTiposActividad, setTiposActividadCatalogo);
   }
 
   function refrescarTiposRecurso() {
@@ -118,8 +192,8 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
 
   useEffect(() => {
     if (!abierto) return;
-    listarEstados().then(setEstados);
-    listarTiposActividad().then(setTiposActividadCatalogo);
+    void refrescarEstados();
+    void refrescarTiposActividad();
   }, [abierto]);
 
   useEffect(() => {
@@ -166,16 +240,22 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
       setRecursos([]);
     }
     setError(null);
+    setCatalogoCreado(null);
+    ciudadBuscada.current = null;
     setPasoActivo(0);
   }, [abierto, salon]);
 
   useEffect(() => {
+    if (!abierto) return;
     if (estadoId === '') {
+      lecturas.current.municipios++;
       setMunicipios([]);
+      setCargandoCatalogos(prev => ({ ...prev, municipios: false }));
+      setErroresCatalogos(prev => ({ ...prev, municipios: undefined }));
       return;
     }
-    listarMunicipios(estadoId).then(setMunicipios);
-  }, [estadoId]);
+    void refrescarMunicipios(estadoId);
+  }, [abierto, estadoId]);
 
   const manejarDireccionSeleccionada = useCallback(
     (direccion: DireccionSeleccionada) => {
@@ -191,18 +271,14 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
 
       const estadoEncontrado = estados.find((e) => e.nombre === direccion.estado);
       if (estadoEncontrado) {
+        if (estadoEncontrado.id !== estadoId) setMunicipios([]);
         setEstadoId(estadoEncontrado.id);
         setMunicipioId('');
-        listarMunicipios(estadoEncontrado.id).then((municipiosData) => {
-          setMunicipios(municipiosData);
-          const municipioEncontrado = municipiosData.find((m) => m.nombre === direccion.ciudad);
-          if (municipioEncontrado) {
-            setMunicipioId(municipioEncontrado.id);
-          }
-        });
+        ciudadBuscada.current = direccion.ciudad;
+        if (estadoId === estadoEncontrado.id) void refrescarMunicipios(estadoEncontrado.id);
       }
     },
-    [estados],
+    [estados, estadoId],
   );
 
   function toggleDia(dia: number, activo: boolean) {
@@ -331,14 +407,19 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
     <Dialog
       open={abierto}
       onClose={(_, razon) => {
-        if (razon !== 'backdropClick') onCerrar();
+        if (razon !== 'backdropClick' && !guardando) onCerrar();
       }}
       fullWidth
       maxWidth="md"
-      disableEnforceFocus
+      aria-labelledby="salon-dialogo-titulo"
+      aria-describedby="salon-paso-actual"
+      slotProps={{ transition: { onExited: onCerrado }, paper: { sx: { m: { xs: 1, sm: 4 }, width: { xs: 'calc(100% - 16px)', sm: 'calc(100% - 64px)' }, maxHeight: { xs: 'calc(100dvh - 16px)', sm: 'calc(100dvh - 64px)' } } } }}
+      disableEnforceFocus={tieneGoogleMapsConfigurado()}
     >
       <Box
         component="form"
+        sx={{ display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}
+        aria-busy={guardando}
         onSubmit={handleSubmit}
         onKeyDown={(e) => {
           // Evita el envio implicito del <form> al presionar Enter en cualquier
@@ -348,10 +429,11 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
           }
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700 }}>{salon ? 'Editar salón' : 'Nuevo salón'}</DialogTitle>
-        <DialogContent sx={{ p: 0 }}>
-        <Box ref={contenidoRef} sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: 3, maxHeight: '70vh', overflowY: 'auto' }}>
-          <Stepper activeStep={pasoActivo} alternativeLabel>
+        <DialogTitle id="salon-dialogo-titulo" sx={{ fontWeight: 700, px: { xs: 2, sm: 3 }, py: 1.5 }}>{salon ? 'Editar salón' : 'Nuevo salón'}</DialogTitle>
+        <DialogContent sx={{ p: 0, display: 'flex', minHeight: 0 }}>
+        <Box ref={contenidoRef} sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: { xs: 2, sm: 3 }, minWidth: 0, width: '100%', overflowY: 'auto' }}>
+          <Box component="fieldset" disabled={guardando} sx={{ border: 0, m: 0, p: 0, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Stepper activeStep={pasoActivo} alternativeLabel sx={{ display: { xs: 'none', sm: 'flex' } }}>
             {PASOS.map((etiqueta) => (
               <Step key={etiqueta}>
                 <StepLabel>{etiqueta}</StepLabel>
@@ -359,13 +441,15 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
             ))}
           </Stepper>
 
-          {error && <Alert severity="error">{error}</Alert>}
+          <Typography id="salon-paso-actual" ref={pasoRef} tabIndex={-1} variant="subtitle2" role="status">Paso {pasoActivo + 1} de {PASOS.length}: {PASOS[pasoActivo]}</Typography>
+          {catalogoCreado && <Alert severity="success">{catalogoCreado}</Alert>}
+          {error && <Alert severity="error" ref={errorRef} tabIndex={-1}>{error}</Alert>}
 
           {pasoActivo === 0 && (
           <>
           <Stack spacing={2}>
             <Typography variant="subtitle2">Datos generales</Typography>
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField label="Nombre del salón" value={nombre} onChange={(e) => setNombre(e.target.value)} required fullWidth autoFocus />
               <TextField
                 label="Teléfono de atención"
@@ -373,7 +457,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                 onChange={(e) => setTelefono(e.target.value)}
                 required
                 fullWidth
-                sx={{ maxWidth: 220 }}
+                sx={{ maxWidth: { sm: 220 }, flexShrink: 0 }}
               />
             </Stack>
           </Stack>
@@ -385,44 +469,49 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
               <AutocompletadoDireccion onSeleccionar={manejarDireccionSeleccionada} valorInicial={direccionCompleta ?? undefined} />
             ) : (
               <Alert severity="info">
-                Configura VITE_GOOGLE_MAPS_API_KEY para buscar la dirección automáticamente. Mientras tanto, llena los
-                campos manualmente.
+                La búsqueda de dirección no está disponible. Completa los campos manualmente.
               </Alert>
             )}
 
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField label="Calle" value={calle} onChange={(e) => setCalle(e.target.value)} required fullWidth />
               <TextField
                 label="Número ext."
                 value={numeroExterior}
                 onChange={(e) => setNumeroExterior(e.target.value)}
-                sx={{ width: 140 }}
+                sx={{ width: { xs: '100%', sm: 140 }, flexShrink: 0 }}
               />
               <TextField
                 label="Número int."
                 value={numeroInterior}
                 onChange={(e) => setNumeroInterior(e.target.value)}
-                sx={{ width: 140 }}
+                sx={{ width: { xs: '100%', sm: 140 }, flexShrink: 0 }}
               />
             </Stack>
 
-            <Stack direction="row" spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField label="Colonia" value={colonia} onChange={(e) => setColonia(e.target.value)} required fullWidth />
               <TextField
                 label="Código postal"
                 value={codigoPostal}
                 onChange={(e) => setCodigoPostal(e.target.value)}
                 required
-                sx={{ width: 160 }}
+                sx={{ width: { xs: '100%', sm: 160 }, flexShrink: 0 }}
               />
             </Stack>
 
-            <Stack direction="row" spacing={2}>
+            {(['estados', 'municipios'] as const).map(catalogo => <Box key={catalogo}>
+              {cargandoCatalogos[catalogo] && <Typography role="status" variant="body2">Cargando {catalogo}…</Typography>}
+              {erroresCatalogos[catalogo] && <Alert severity="error" action={<Button color="inherit" disabled={cargandoCatalogos[catalogo]} onClick={() => { if (catalogo === 'estados') void refrescarEstados(); else if (estadoId !== '') void refrescarMunicipios(estadoId); }}>Reintentar {catalogo}</Button>}>{erroresCatalogos[catalogo]}</Alert>}
+            </Box>)}
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <TextField
                 select
                 label="Estado"
                 value={estadoId}
                 onChange={(e) => {
+                  ciudadBuscada.current = null;
+                  setMunicipios([]);
                   setEstadoId(Number(e.target.value));
                   setMunicipioId('');
                 }}
@@ -442,7 +531,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                 onChange={(e) => setMunicipioId(Number(e.target.value))}
                 required
                 fullWidth
-                disabled={municipios.length === 0}
+                disabled={cargandoCatalogos.municipios || municipios.length === 0}
               >
                 {municipios.map((m) => (
                   <MenuItem key={m.id} value={m.id}>
@@ -499,11 +588,11 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
 
           {pasoActivo === 1 && (
           <Stack spacing={1.5}>
-            <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="subtitle2">Tipos de actividad que se ofrecen</Typography>
               <Stack direction="row" spacing={0.5}>
                 <Tooltip title="Buscar nuevas actividades del catálogo">
-                  <IconButton type="button" size="small" onClick={refrescarTiposActividad}>
+                  <IconButton type="button" size="small" aria-label="Buscar nuevas actividades del catálogo" disabled={cargandoCatalogos.actividades} onClick={() => void refrescarTiposActividad()}>
                     <RefreshIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -512,6 +601,8 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                 </Button>
               </Stack>
             </Stack>
+            {cargandoCatalogos.actividades && <Typography role="status" variant="body2">Cargando actividades…</Typography>}
+            {erroresCatalogos.actividades && <Alert severity="error" action={<Button color="inherit" onClick={() => void refrescarTiposActividad()} disabled={cargandoCatalogos.actividades}>Reintentar actividades</Button>}>{erroresCatalogos.actividades}</Alert>}
             <SelectorMultipleBusqueda
               label="Actividades"
               opciones={tiposActividadCatalogo.map((tipo) => ({ id: tipo.id, etiqueta: tipo.nombre, descripcion: tipo.descripcion }))}
@@ -533,8 +624,8 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                 {DIAS.map((dia, i) => {
                   const horario = horarios[i];
                   return (
-                    <Stack key={dia} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                      <Typography variant="body2" sx={{ width: 160 }}>
+                    <Stack key={dia} direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}>
+                      <Typography variant="body2" sx={{ width: { xs: '100%', sm: 160 }, flexShrink: 0 }}>
                         {dia}
                       </Typography>
                       <Typography variant="body2" color={horario ? 'text.primary' : 'text.secondary'}>
@@ -560,9 +651,9 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
               DIAS.map((dia, i) => {
                 const horario = horarios[i];
                 return (
-                  <Stack key={dia} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                  <Stack key={dia} direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}>
                     <FormControlLabel
-                      sx={{ width: 160 }}
+                      sx={{ width: { xs: '100%', sm: 160 }, flexShrink: 0 }}
                       control={<Switch checked={horario !== null} onChange={(e) => toggleDia(i, e.target.checked)} size="small" />}
                       label={dia}
                     />
@@ -597,7 +688,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
 
           {pasoActivo === 3 && (
           <Stack spacing={2}>
-            <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Box>
                 <Typography variant="subtitle2">Equipamiento del salón</Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -606,7 +697,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
               </Box>
               <Stack direction="row" spacing={0.5}>
                 <Tooltip title="Buscar nuevas categorías del catálogo">
-                  <IconButton type="button" size="small" onClick={refrescarTiposRecurso}>
+                  <IconButton type="button" size="small" aria-label="Buscar nuevas categorías del catálogo" disabled={cargandoRecursos} onClick={refrescarTiposRecurso}>
                     <RefreshIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -616,6 +707,8 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
               </Stack>
             </Stack>
 
+            {cargandoRecursos && <Typography role="status" variant="body2">Cargando categorías de equipamiento…</Typography>}
+            {errorRecursos && <Alert severity="error" action={<Button color="inherit" disabled={cargandoRecursos} onClick={refrescarTiposRecurso}>Reintentar categorías</Button>}>No se pudo actualizar el catálogo de equipamiento. {catalogoRecursos !== undefined ? 'Se conservan las categorías cargadas.' : 'El catálogo aún no está disponible.'}</Alert>}
             {recursos.map((recurso, indice) => {
               const idsUsadosEnOtrasFilas = new Set(
                 recursos.filter((_, i) => i !== indice).map((m) => m.tipoRecursoId),
@@ -624,7 +717,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                 (tipo) => tipo.id === recurso.tipoRecursoId || !idsUsadosEnOtrasFilas.has(tipo.id),
               );
               return (
-              <Stack key={indice} direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+              <Stack key={indice} direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { xs: 'stretch', sm: 'center' } }}>
                 <TextField
                   select
                   label="Tipo de equipamiento"
@@ -645,10 +738,10 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
                   size="small"
                   value={recurso.cantidad}
                   onChange={(e) => actualizarRecurso(indice, { cantidad: Number(e.target.value) })}
-                  sx={{ width: 120 }}
+                  sx={{ width: { xs: '100%', sm: 120 }, flexShrink: 0 }}
                   slotProps={{ htmlInput: { min: 1 } }}
                 />
-                <IconButton type="button" size="small" onClick={() => quitarRecurso(indice)}>
+                <IconButton type="button" size="small" aria-label={`Quitar equipamiento ${tiposRecursoCatalogo.find(t => t.id === recurso.tipoRecursoId)?.nombre ?? indice + 1}`} sx={{ alignSelf: 'center' }} onClick={() => quitarRecurso(indice)}>
                   <DeleteOutlineIcon fontSize="small" />
                 </IconButton>
               </Stack>
@@ -667,11 +760,13 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
             </Button>
           </Stack>
           )}
+          </Box>
         </Box>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button type="button" onClick={onCerrar}>Cancelar</Button>
-          {pasoActivo > 0 && <Button type="button" onClick={irAlPasoAnterior}>Atrás</Button>}
+        {guardando && <Typography role="status" variant="body2" sx={{ px: 2 }}>Guardando salón…</Typography>}
+        <DialogActions sx={{ px: { xs: 1, sm: 3 }, py: 1, flexShrink: 0, flexWrap: 'wrap' }}>
+          <Button type="button" disabled={guardando} onClick={onCerrar}>Cancelar</Button>
+          {pasoActivo > 0 && <Button type="button" disabled={guardando} onClick={irAlPasoAnterior}>Atrás</Button>}
           {pasoActivo < PASOS.length - 1 ? (
             <Button key="siguiente" type="button" variant="contained" onClick={irAlSiguientePaso}>
               Siguiente
@@ -693,7 +788,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
       titulo="Nueva actividad"
       onCerrar={() => setDialogoNuevaActividad(false)}
       onCrear={(nombreNuevo, descripcionNueva) => crearTipoActividad({ nombre: nombreNuevo, descripcion: descripcionNueva })}
-      onCreado={refrescarTiposActividad}
+      onCreado={() => { setCatalogoCreado('Actividad creada.'); void refrescarTiposActividad(); }}
     />
 
     <DialogoNuevoCatalogoItem
@@ -701,7 +796,7 @@ export function DialogoSalon({ abierto, salon, onCerrar, onGuardado }: DialogoSa
       titulo="Nueva categoría de equipamiento"
       onCerrar={() => setDialogoNuevaRecurso(false)}
       onCrear={(nombreNuevo, descripcionNueva) => crearTipoRecurso({ nombre: nombreNuevo, descripcion: descripcionNueva })}
-      onCreado={refrescarTiposRecurso}
+      onCreado={() => { setCatalogoCreado('Categoría de equipamiento creada.'); refrescarTiposRecurso(); }}
     />
     </>
   );

@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DialogoSalon } from './DialogoSalon';
-import { api, deferred, regressionSession, renderRoute } from '../../components/test-support/regression';
-import { activities, salon } from '../../../tests/fixtures/regression';
-import { server } from '../../../tests/mocks/server';
-import { useAuthStore } from '../../auth/authStore';
-import * as catalogos from '../../api/catalogos';
+import { api, deferred, regressionSession, renderRoute } from '../../../components/test-support/regression';
+import { activities, salon } from '../../../../tests/fixtures/regression';
+import { server } from '../../../../tests/mocks/server';
+import { useAuthStore } from '../../../auth/authStore';
+import * as catalogos from '../../../api/catalogos';
 
 regressionSession([]);
 const recurso = (id: string, nombre = id) => ({ id, nombre, descripcion: null, activo: false });

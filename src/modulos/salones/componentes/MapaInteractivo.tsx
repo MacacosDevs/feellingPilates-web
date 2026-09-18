@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
-import { cargarGoogleMaps } from '../../lib/googleMaps';
+import { cargarGoogleMaps } from '../../../lib/googleMaps';
 
 interface MapaInteractivoProps {
   latitud: number;

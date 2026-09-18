@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_04
-CURRENT_PHASE: M04_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_05
+CURRENT_PHASE: M05_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_04_CLOSED; M05_NOT_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_05_CLOSED; M06_NOT_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_7051aaf42645
-LAST_GATE_ID: gate_e614e7d40d6a
-LAST_ACCEPTED_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
-CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M04; run_7051aaf42645 / subject M04 final accepted candidate manifest
-LAST_ACCEPTED_TESTS: 334
-LAST_ACCEPTED_VITEST: 282
-LAST_ACCEPTED_PLAYWRIGHT: 52
-CORRECTION_CYCLES_USED: 0
+LAST_RUN_ID: run_0c0221a008e1
+LAST_GATE_ID: gate_9a507b0635ca
+LAST_ACCEPTED_CHECKPOINT: e5d8def77b0a15295ba477ef5b2f9c9a13662736
+CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M05; run_0c0221a008e1 / subject M05 final accepted candidate manifest
+LAST_ACCEPTED_TESTS: 359
+LAST_ACCEPTED_VITEST: 297
+LAST_ACCEPTED_PLAYWRIGHT: 62
+CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_05
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_06
 HUMAN_GATE_REASON: MILESTONE_COMPLETE
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; all five repair/resume workers settled and released
+ACTIVE_WRITE_TASK: NONE; all four M05 workers settled and released
 
 ACTIVE_WRITE_DISPATCH: NONE
 
-FROZEN_PHASE_PLAN: msg_0f33140aa876; exact24 finite paths SHA6d6fcde52e47d935c80156d365090c528ec467862285bff4ce6e838c787c765a
+FROZEN_PHASE_PLAN: msg_eb1c70eccfba; M05 finite24 paths SHA256 679cc47454dc8f5341f18fde94c0fffcdf64cc338a217f76ffbc38ff9cf5c6dd
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 334
+TEST_BASELINE: 359
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -295,3 +295,44 @@ M04_OPTIMIZED_METRICS_EVIDENCE: msg_2c46fd7ed512; all three segments and Human G
 M04_HUMAN_GATE_CURRENT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_05. M05 NOT_AUTHORIZED; do not choose feature or begin implementation.
 
 M04_ENVIRONMENT_FULL_GATE: PASS fresh282Vitest+52Chromium=334 tests0failed0skipped0flaky; npmLs/lint/test:typecheck/build/diffcheck exit0. Accepted289baseline protected. NEW Sol-high acceptance audit and finalgate actually PASS as recorded in final closure section. Exact seven command results/raw paths/hashes in run7051aaf42645 environment evidence.
+
+## M05 HUMAN AUTHORIZATION AND ENTRY
+
+M05_ACCEPTED_ENTRY_HEAD: e5d8def77b0a15295ba477ef5b2f9c9a13662736
+M05_ENTRY_FULL_FINGERPRINT: e4664ca7d4a4703d270566d37a5991d27f45c1b6cf50197d73bd26779b1fbf85
+M04_CHECKPOINT: e5d8def77b0a15295ba477ef5b2f9c9a13662736
+M05_SCOPE: Salones CRUD, location/forms and resource configuration presentation/ownership only.
+M05_EXCLUSIONS: Programación editor/calendar and scheduling semantics; capacity/inventory/consumption rules; backend, auth/session/permissions, Payments/F2E, dependencies, unrelated features, remote publication and M06.
+M05_ENTRY_TEST_BASELINE: 282 Vitest + 52 Chromium = 334 accepted; 0 failures/skips.
+M05_CORRECTION_CYCLES_USED: 1
+M05_PROCESS_WRITE_ALLOWLIST: auditoria/product-delivery/web-ux/WEB-UX-STATE.md; auditoria/product-delivery/web-ux/WEB-UX-RUNBOOK.md (coordinator-owned authority/closure only).
+M05_HISTORICAL_INCIDENT_POLICY: Preserve M04-SCOPE-01, M04-AUTH-02 and M04-TECH-03; historical prewrite evidence remains UNAVAILABLE. No retrospective authorization.
+
+M05_PREWRITE_EXISTING_CHARACTERIZATION: msg_e45a45ec6f0d; 47/47 PASS before production edits, including 10 Dialogo tests,16 SalonHorarios,20 calendar,1 dates. Existing scenarios remain unchanged.
+M05_RECON_DISPOSITION: task_0cf625d36102 / ctx_68131149f0dd settled/released. Ownership boundary accepted after independent source inspection. Preliminary numerical claims were corrected to exact47; coordinator instrumented evidence governs. The report humanGateRequired=true describes hypothetical excluded requests, not a present request/blocker; current bounded CRUD has authority. No authorization is inferred from a worker report.
+
+M05_PREWRITE_LIST_CHARACTERIZATION: 4/4 PASS, typecheck/lint exit0; coordinator instrumented actualJSON at 2026-09-18T02:57:03.370412+00:00; all62 production files byte-identical before releasing HOLD. Exact test SHA f6c49c59af39479fd9aa3735e4ef20a467cd99c7f108ffc31c1a1a6b3fe3f3c1. Known UX failures not locked.
+
+M05_IMPLEMENTATION_INTERRUPTION: task_d892074031ba / ctx_d100f840ac38 outcome FAILED / INCOMPLETE; only moves/imports and characterization completed. UX/controller/browser work not claimed complete. No checkpoint/acceptance.
+M05_MODEL_ESCALATION: Luna-medium reported inability to safely finish nontrivial cross-component React controller/dialog/resource feedback; explicitly escalate remaining same finite scope to verified Sol-medium under R1. No silent fallback or scope expansion.
+M05_IMPLEMENTATION_RECOVERY_ATTEMPTS: 1 persisted before Sol-medium launch. Conservatively charges one of the same phase maximum2 correction/recovery slots; no authority/audit failure occurred and fresh independent acceptance audit still mandatory. Remaining automatic slot1; no counter reset by escalation/phase label.
+
+M05_IMPLEMENTATION_RESULT: task_6ca798974537 / ctx_ab41c8d81188 SUCCESS; final affected25 Vitest and10 Chromium PASS. Local controller extracted; resource rendering retained in protected wizard to avoid unnecessary extraction. Maps/legacy tests import-only. Full GATE/fresh audit/acceptance remain pending.
+
+M05_FULL_GATE_FRESH: 297 Vitest + 62 Chromium = 359 PASS; 0 FAIL, 0 SKIPPED, 0 flaky. npm ls/lint/test:typecheck/build/diffcheck exit0. Evidence /tmp/feelingpilates-web-ux-m05/summary/gate-validation.json. Accepted baseline remains334 until fresh audit and actual Decision Gate PASS.
+
+## M05 ACCEPTANCE / CLOSURE
+
+Run run_0c0221a008e1; gate gate_9a507b0635ca PASS (gate-only Task task_88bd2034a3b6). Fresh independent audit task_b1a1b5f680e8 / ctx_9dcf1f9c9dbc gpt-5.6-sol high PASS, P0=0 P1=0 P2=0, worker_done msg_40e5f334e171; deterministic receipt-only closure explicitly reviewed/accepted.
+
+Full GATE: 297 Vitest + 62 Chromium = 359 PASS, 0 FAIL, 0 SKIPPED, 0 flaky. Previous334 preserved; additions15 Vitest +10 Chromium. npm ls, lint, TypeScript, build and diffcheck exit0. Build warning >500kB remains; no unrelated warning correction. Evidence /tmp/feelingpilates-web-ux-m05/summary/gate-validation.json SHA256 d784f2f8e38d046444bca39236f695e5cb71f6d24d4e0df4ca16339949707f6e.
+
+Accepted scope: Salones CRUD ownership in src/modulos/salones, list controller extraction, responsive populated/loading/empty/error/recovery and save feedback, named/focusable/scrollable dialogs and existing resource configuration presentation. Browser375/768/1440 and375x400, keyboard/focus/labels/pending/failure, protected exact payloads and PERSONAL route guard. All112protected files including API/types, scheduling/calendar/SalonHorarios, auth/session/permissions/Query/Zod, theme/shell, M04 and package/lock remain byte-identical. No real backend/Payments/Maps calls; no full WCAG claim. Shared API adapters deliberately remain shared; no new folders without code or global migration.
+
+Chronology msg_e45a45ec6f0d:47 prior Salones tests; msg_7f2196a45389:4 fresh list characterization tests/HOLD approval before production moves. Allowlist msg_eb1c70eccfba finite24paths, actual22logical paths including old/new paths. Preacceptance manifest msg_79e3ac2de5a2. Final exact path/hash manifest is durably discoverable in Run run_0c0221a008e1 under subject M05 final accepted candidate manifest (locator avoids circular selfhash). Discover containing checkpoint using git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md; do not confuse preserved entry checkpoint with containing closure commit.
+
+Luna partial FAILED/INCOMPLETE msg_7cb421a9299d remains recorded; explicit Sol-medium continuation succeeded msg_bb51680a2336. Conservative same-phase recovery/correction budget1/2 remains charged without reset; final fresh audit needed no correction. Historical M04-SCOPE-01/M04-AUTH-02/M04-TECH-03 records remain unchanged, no retrospective authorization or fabricated prewrite history. No new M05 Human Gate pause before completion.
+
+Final acceptance permits exactly one explicit-path local M05 checkpoint; no amend/squash/push/publication. STATUS HUMAN_GATE_REQUIRED, reason MILESTONE_COMPLETE. M06 NOT_AUTHORIZED. Await human definition/authorization; do not select next feature automatically.
+
+M05_METRICS: {"measurementWindow":"Run creation to precheckpoint metrics snapshot, includes recorded Luna incomplete technical handoff; no human pause hidden","snapshotUTC":"2026-09-18T03:24:30.945022+00:00","wallClockMinutes":36.682,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":28,"targetedValidationDefinition":"Instrumented worker Vitest/Playwright/oxlint/typecheck command receipts incl failed debug runs plus Root47-test run and3 Root prewrite checks; excludes diff/hash guards and uninstrumented claims","fullValidations":1,"correctionCycles":1,"correctionDefinition":"Conservative same-phase recovery budget charged for Luna INCOMPLETE -> explicit Sol-medium continuation; no authority or budget reset","freshAuditFindings":0,"humanGates":1,"internalReportBytes":42272,"summaryEvidenceBytes":516549,"rawEvidenceBytes":11815025,"byteMeasurement":"unique files per evidence class at snapshot; internal reports subset of summary, not provider token/context accounting","internalReports":["/tmp/feelingpilates-web-ux-m05/summary/recon-worker.json","/tmp/feelingpilates-web-ux-m05/summary/implementation-partial.json","/tmp/feelingpilates-web-ux-m05/summary/implementation-resumed.json","/tmp/feelingpilates-web-ux-m05/summary/final-audit-worker.json"],"CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","comparison":{"M03":{"wallClockMinutes":103.8,"workersLaunched":"UNREPORTED","workersReleased":7,"routing":"UNREPORTED","correctionCycles":2,"fullValidations":"UNREPORTED","bytes":"UNREPORTED"},"M04":{"wallClockMinutes":73.648,"initialAttemptMinutes":13.645,"authorityRepairMinutes":47.595,"environmentFinalMinutes":12.408,"workersLaunched":8,"lunaTasks":3,"solMediumTasks":2,"solHighTasks":3,"corrections":"UNREPORTED","fullValidations":"UNREPORTED","bytes":"UNREPORTED"}},"comparisonLimit":"Different scopes, single milestone comparison; no causal speedup or token savings claim"}

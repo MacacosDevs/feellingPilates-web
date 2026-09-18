@@ -5,7 +5,7 @@ import { Perfil } from './pages/Perfil';
 import { InvitacionAceptar } from './pages/InvitacionAceptar';
 import { Usuarios } from './modulos/usuarios/paginas/Usuarios';
 import { Roles } from './modulos/roles/paginas/Roles';
-import { Salones } from './pages/salones/Salones';
+import { Salones } from './modulos/salones/paginas/Salones';
 import { Actividades } from './modulos/actividades/paginas/Actividades';
 import { SalonHorarios } from './pages/salones/SalonHorarios';
 import { ReservasAgregar } from './pages/reservas/ReservasAgregar';
