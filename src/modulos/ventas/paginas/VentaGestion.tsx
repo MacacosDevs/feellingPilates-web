@@ -30,12 +30,13 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import { DataTable, type ColumnaTabla } from '../../components/DataTable';
-import { listarVentasFiltrado, listarSedesVenta, reembolsarVenta } from '../../api/pagos';
-import type { ApiErrorBody, SedeVentaResponse, VentaResponse } from '../../api/types';
+import { DataTable, type ColumnaTabla } from '../../../components/DataTable';
+import { listarVentasFiltrado, listarSedesVenta, reembolsarVenta } from '../../../api/pagos';
+import type { ApiErrorBody, SedeVentaResponse, VentaResponse } from '../../../api/types';
 import { isAxiosError } from 'axios';
-import { usePermisos } from '../../auth/usePermisos';
-import { VentaBreadcrumbs } from './VentaBreadcrumbs';
+import { usePermisos } from '../../../auth/usePermisos';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
+import { VentaBreadcrumbs } from '../componentes/VentaBreadcrumbs';
 
 function formatearMoneda(centavos: number): string {
   return `${(centavos / 100).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })} MXN`;
@@ -132,7 +133,7 @@ const COLUMNAS: ColumnaTabla<Columna>[] = [
   { id: 'acciones', label: '', ordenable: false, align: 'right' },
 ];
 
-const CAMPO_SX = { minWidth: 168 };
+const CAMPO_SX = { minWidth: { xs: 0, sm: 168 }, width: { xs: '100%', sm: 'auto' } };
 
 export function VentaGestion() {
   const { tiene, mensajeSinPermiso } = usePermisos();
@@ -167,9 +168,19 @@ export function VentaGestion() {
   const [procesando, setProcesando] = useState(false);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
 
-  useEffect(() => {
-    listarSedesVenta().then(setSedes);
-  }, []);
+  const [errorHistorial, setErrorHistorial] = useState<string | null>(null);
+  const [errorSedes, setErrorSedes] = useState<string | null>(null);
+  const [cargandoSedes, setCargandoSedes] = useState(true);
+
+  function cargarSedes() {
+    setCargandoSedes(true);
+    setErrorSedes(null);
+    return listarSedesVenta().then(setSedes)
+      .catch((err) => setErrorSedes(extraerMensajeError(err, 'No se pudieron cargar las sedes.')))
+      .finally(() => setCargandoSedes(false));
+  }
+
+  useEffect(() => { cargarSedes(); }, []);
 
   const grupos = useMemo(() => agruparVentas(ventas), [ventas]);
 
@@ -200,6 +211,7 @@ export function VentaGestion() {
       return Promise.resolve();
     }
     setCargando(true);
+    setErrorHistorial(null);
     return listarVentasFiltrado({
       page,
       size: rowsPerPage,
@@ -215,6 +227,7 @@ export function VentaGestion() {
         setVentas(pagina.content);
         setTotalElementos(pagina.totalElements);
       })
+      .catch((err) => setErrorHistorial(extraerMensajeError(err, 'No se pudo actualizar el historial de ventas.')))
       .finally(() => setCargando(false));
   }, [page, rowsPerPage, sortProp, order, metodoPago, salonId, estado, desde, hasta, busqueda, puedeVerContenido]);
 
@@ -265,9 +278,9 @@ export function VentaGestion() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, minWidth: 0 }}>
       <VentaBreadcrumbs actual="Gestión de ventas" />
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+      <Typography component="h1" variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
         Gestión de ventas
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
@@ -305,7 +318,7 @@ export function VentaGestion() {
           size="small"
           value={busqueda}
           onChange={(e) => conFiltro(setBusqueda)(e.target.value)}
-          sx={{ minWidth: 220, flexGrow: 1, maxWidth: 300 }}
+          sx={{ minWidth: 0, width: { xs: '100%', sm: 'auto' }, flexGrow: 1, maxWidth: { sm: 300 } }}
           slotProps={{
             input: {
               startAdornment: (
@@ -392,8 +405,11 @@ export function VentaGestion() {
         )}
       </Stack>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
-      <DataTable
+      {cargandoSedes && <Typography role="status">Cargando sedes…</Typography>}
+      {errorSedes && <ErrorRecuperable disabled={cargandoSedes} onReintentar={cargarSedes}>{errorSedes}</ErrorRecuperable>}
+      {errorHistorial && <ErrorRecuperable disabled={cargando} onReintentar={cargarHistorial}>{errorHistorial}</ErrorRecuperable>}
+      <Box sx={{ flex: 1, minHeight: { xs: 240, md: 0 }, minWidth: 0, '& .MuiTablePagination-toolbar': { flexWrap: 'wrap', px: 1 }, '& .MuiTablePagination-spacer': { display: { xs: 'none', sm: 'block' } } }}>
+      {!errorHistorial && <DataTable
         columnas={COLUMNAS}
         filas={grupos}
         obtenerClave={(g) => g.clave}
@@ -430,7 +446,7 @@ export function VentaGestion() {
                 <TableCell>
                   {esGrupo ? (
                     <Stack direction="row" spacing={0.25} sx={{ alignItems: 'center' }}>
-                      <IconButton size="small" sx={{ p: 0 }} tabIndex={-1}>
+                      <IconButton size="small" sx={{ p: 0 }} aria-label={`${abierto ? 'Contraer' : 'Expandir'} compra ${folioCorto(g.grupoCompraId)}`} aria-expanded={abierto} onClick={(e) => { e.stopPropagation(); alternarExpandido(g.clave); }}>
                         {abierto ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
                       </IconButton>
                       <Typography variant="body2">{g.items.length} artículos</Typography>
@@ -506,7 +522,7 @@ export function VentaGestion() {
             </>
           );
         }}
-      />
+      />}
       </Box>
 
       <Menu anchorEl={menu?.anchorEl} open={!!menu} onClose={() => setMenu(null)}>
@@ -523,6 +539,7 @@ export function VentaGestion() {
       </Menu>
 
       <Dialog
+        aria-labelledby="reembolsar-venta-titulo"
         open={!!accion}
         onClose={() => {
           if (procesando) return;
@@ -532,7 +549,7 @@ export function VentaGestion() {
         maxWidth="xs"
         fullWidth
       >
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <DialogTitle id="reembolsar-venta-titulo" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CurrencyExchangeIcon color="error" />
           Marcar como reembolsada
         </DialogTitle>

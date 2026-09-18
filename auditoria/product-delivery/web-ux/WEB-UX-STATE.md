@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_06
-CURRENT_PHASE: M06_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_07
+CURRENT_PHASE: M07_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_06_CLOSED; M07_NOT_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_07_CLOSED; M08_NOT_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_0253cec75ef4
-LAST_GATE_ID: gate_12fa454c6662
-LAST_ACCEPTED_CHECKPOINT: e2967315218da6e42632f698367c5476fc97b4f7
-CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M06; run_0253cec75ef4 / subject M06 final accepted candidate manifest
-LAST_ACCEPTED_TESTS: 368
-LAST_ACCEPTED_VITEST: 303
-LAST_ACCEPTED_PLAYWRIGHT: 65
+LAST_RUN_ID: run_c7c0181e51c0
+LAST_GATE_ID: gate_a15e8ef7e61d
+LAST_ACCEPTED_CHECKPOINT: 480b09cc9d4afe0b0c5c13e89b70a38a3c939dc2
+CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M07; run_c7c0181e51c0 / subject M07 final accepted candidate manifest; exact postclosure reseal; commit discoverable via git log STATE
+LAST_ACCEPTED_TESTS: 386
+LAST_ACCEPTED_VITEST: 318
+LAST_ACCEPTED_PLAYWRIGHT: 68
 CORRECTION_CYCLES_USED: 2
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_07
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_08
 HUMAN_GATE_REASON: MILESTONE_COMPLETE
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; all M06 workers settled and released
+ACTIVE_WRITE_TASK: NONE; all M07 workers settled and released
 
 ACTIVE_WRITE_DISPATCH: NONE
 
-FROZEN_PHASE_PLAN: msg_d037df2446fd; finite15paths SHA256 d5564d3a6e08e9d0fda021574d094baae7593d146269f036e11c67b8a4295a18
+FROZEN_PHASE_PLAN: msg_ad3771b2f94a; exact21paths; prewrite55PASS verified and durable msg_b3ce9a0e0f02; HOLD explicitly lifted by msg_720ff6181350 before production edits; correction budget2/2 spent
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 368
+TEST_BASELINE: 386
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -371,3 +371,31 @@ M06_METRICS_EVIDENCE: msg_051f0e31e372; measurement snapshot excludes final chec
 M06_OPTIMIZED_METRICS: {"measurementWindow":"Run creation to this precheckpoint snapshot; includes technical correction and retained failed FAST attempts","snapshotUTC":"2026-09-18T04:17:14.858166+00:00","wallClockMinutes":47.231,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":23,"targetedValidationDefinition":"Recorded command invocations including failed attempts; Root prewrite checks plus actual retained corrective receipt files. Initial implementer uninstrumented validation claims excluded, their total UNREPORTED. Mechanical hash/graph collectors not counted as test validation invocations.","fullValidations":1,"correctionCycles":2,"freshAuditFindings":0,"initialRootReviewFindings":2,"humanGates":1,"internalReportBytes":65209,"summaryEvidenceBytes":1634198,"rawEvidenceBytes":11449311,"byteMeasurement":"Unique retained files per evidence class at snapshot, metrics.json itself excluded; internal reports subset of SUMMARY. Not provider context or token accounting.","CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","comparison":{"M03":{"wallClockMinutes":103.8,"workersLaunched":"UNREPORTED","workersReleased":7,"routing":"UNREPORTED","fullValidations":"UNREPORTED","bytes":"UNREPORTED","correctionCycles":2},"M04":{"wallClockMinutes":73.648,"initialAttemptMinutes":13.645,"authorityRepairMinutes":47.595,"environmentFinalMinutes":12.408,"workersLaunched":8,"lunaTasks":3,"solMediumTasks":2,"solHighTasks":3,"fullValidations":"UNREPORTED","bytes":"UNREPORTED","humanGateInterruptions":"preserved in versioned M04 history"},"M05":{"wallClockMinutes":37.537,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"otherComparableMetrics":"UNREPORTED in current human comparison input"}},"comparisonLimit":"Different scopes and one observation per milestone; no causal speedup, runtime-performance improvement or token-saving claim. Unknown metrics remain UNREPORTED."}
 M06_CHECKPOINT_POLICY: Actual audit+gate+full validation PASS authorize explicit staging of exact accepted15logical paths only. Local checkpoint containing this STATE discovered via git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md; no invented future ownSHA. LAST_ACCEPTED_CHECKPOINT remains real accepted parent at writing. Final accepted full/delta manifest located at run_0253cec75ef4 / subject M06 final accepted candidate manifest. No amend/squash/push/remote publication.
 M06_HUMAN_GATE_CURRENT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_07; M07 NOT_AUTHORIZED, do not choose feature or begin next milestone.
+
+## HUMAN AUTHORIZATION — WEB_UX_MILESTONE_07
+
+Entry HEAD480b09cc9d4afe0b0c5c13e89b70a38a3c939dc2. UX-06 Ventas ownership and non-financial UX stabilization. Preserve ALL financial calculations/prices/quantities/payment/refund/right/settlement/idempotency/Stripe/status/API/payload/permissions/session semantics and Payments/F2E authority. Characterization BEFORE risky refactors; finite allowlist; no dependencies/backend/unrelated migration/publication. Mandatory R1 routing/evidence/FAST-GATE, max2corrections per phase. Synthetic browser375/768/1440; full prior303Vitest+65Chromium mandatory. NEW final Sol-high financial-adjacent audit P0/P1zero and actual GatePASS before exact local checkpoint. Financial ambiguity/conflicting Payments authority means immediate HUMAN_GATE. Complete → HUMAN_GATE_REQUIRED/MILESTONE_COMPLETE/AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_08. M08 NOT_AUTHORIZED. Closed M06 correction count2 remains historical; M07 new human milestone starts0/2.
+
+M07-PROC-01: primer worker_done de recon rechazado por handle mal copiado (msg_f54146ae43f8); no se aceptó settlement inválido. Worker corrigió usando preamble exacto; único worker_done válido msg_1c2033fe0819, release antes de ACK. Sin escritura de producto, incidente histórico preservado.
+
+M07_CHARACTERIZATION: msg_b3ce9a0e0f02; existing47+new8=55PASS0FAIL0SKIP on untouched production; all131entryfiles except Root docs exact. Prewrite test SHA256 d7afa3468d8fc366b3893954a199c55ef124a0b4b981454615c65740d5b246aa. Root production HOLD lift occurs only after durable proof. Initial FASTtest assumptions corrected; original47 unchanged, failedlog retained, no phase/audit/GateFAIL and correctioncycles0/2.
+
+M07-TECH-02: recovery nuevo de búsqueda falla FAST (lecturas1esperadas2); corrección de presentación scoped a consulta fallida autorizada por Root msg_95d23387ec62, dentro de allowlist y presupuesto disponible0/2. Ciclo usado1/2, auditor NUEVO Sol-high obligatorio.
+M07-PROC-02: el script de persistencia prospectiva del contador falló al verificar ausencia de clearOnBlur: writer había aplicado la corrección autorizada entre lecturas. Contador registrado DESPUÉS, no afirmar cumplimiento temporal prospectivo; evidencia fallida/historia preservada. Autorización específica/allowlist/presupuesto disponible precedieron el fix; fresh auditor debe adjudicar la incidencia, no autoaceptación ni autorización retrospectiva. Presupuesto restante1; prohibido reset.
+
+M07_CORRECTION_02: ciclo2/2 persistido ANTES de autorizar siguiente corrección; clearOnBlur scoped insuficiente falsificado por FAST. Refocus explícito Cliente antes de retry y anuncio de error actual dentro de modal, preservando callbacks/timers/finanzas. Estado/allowlist y sourceSHA en correction-02.json. Budget restante0; si persiste fallo técnico de producción/aceptación tras validación y fresh audit, HUMAN_GATE/CORRECTION_BUDGET_EXHAUSTED; no reset.
+
+M07_AUTHORITY_REVIEW: task_68d2b3efa985 / ctx_f54bbc6daef6 / msg_9da0b2c61216; Sol-high independent current prospective authority PASS, P0=0/P1=0/P2=3. Report SHA256 c3c3d783829ac11da3b3810c484bf678c00246338faacd2a22e3329613c5702c. M07-PROC-01 and M07-PROC-02 remain historical incidents, not retrospective authorization/compliance. M07-DOC-01 current stale projection clarified; no product acceptance or further production correction authority granted. NEW final financial acceptance audit plus full GATE and actual DecisionGate remain mandatory; unresolved productionP1 after spent2/2 requires HUMAN_GATE.
+
+M07_FULL_GATE_PREACCEPTANCE: 318Vitest +68Chromium =386PASS, 0FAIL/0SKIPPED/0FLAKY; original303+65 cases preserved, coverage summary with exact inventory; full GATE completed2026-09-18T04:53:23.183468Z. npm ls/lint/typecheck/build/diffcheck exit0. Not acceptance until NEW independent Sol-high audit and actual DecisionGate. RAW/SUMMARY /tmp/feelingpilates-web-ux-m07, durably referenced in current Run.
+
+## M07 accepted closure
+
+M07_ACCEPTANCE: {"audit":"PASS","auditTaskId":"task_68cd7e229d1e","auditDispatchId":"ctx_b4a5d7a9565c","auditReportSHA256":"9cf6fa8bafe8c6e0f26e37f9ccdfa66c727712bf9c7a85b9faaf367fa9fbe1bc","auditCounts":{"P0":0,"P1":0,"P2":3},"gate":"PASS","gateTaskId":"task_24c987837a11","gateId":"gate_a15e8ef7e61d","closureProjectionApproved":true,"fullGate":"386PASS_0FAIL_0SKIP_0FLAKY","budget":"2/2spent_no_more_production_corrections","checkpoint":"NOT_YET_EXECUTED","push":"NOT_AUTHORIZED"}
+M07_VALIDATION: 318 Vitest + 68 Chromium = 386 PASS; 0 FAIL/0 SKIPPED/0 FLAKY. Original303+65 tests preserved; new8characterization+7feedback+3browser workflows. npm ls/lint/typecheck/build/diffcheck exit0. Synthetic guarded transport only; zero unexpected URLs and pageerrors; no real backend/Stripe/Payments/Maps writes.
+M07_SCOPE: exact21logicalpaths; 7ownership moves, pure ComprobanteVenta extraction, page-owned truthful read feedback and responsive/form/accessibility adjustments; onlyApp3imports outside feature. SharedAPI/types/auth/session/Query/Zod/theme/shell/packages and123protectedentryfiles byte-identical. Financial calculations/payloads/methods/statuses/refunds/rights/settlement/idempotency/permissions unchanged. No financial authority invented.
+M07_HISTORY: M07-PROC-01 rejected wrong-handle completion and M07-PROC-02 late numericalcycle1counter persist remain historical noncompliance; no retrospective authorization/compliance. Cycle2 prospectively recorded; totalphase2/2spent. M07-DOC-01 stale current projection clarified. Fresh currentauthority and NEW final product/process audits accepted with evidence; prior incidents not erased.
+M07_REMAINING_LIMITATIONS: inherited Mixtos small-count badge contrast model3.633 and outlined info/payment chip contrast3.860 remain documented; no complete WCAG compliance claim; no global controller/state rewrite; financial boundaries remain page-owned; large productionchunk and color-environment warnings remain inherited. Lint fresh exit0 with no emitted warning; historical Roles warning remains historical.
+M07_EVIDENCE_REFS: [{"locator":"/tmp/feelingpilates-web-ux-m07/summary/full-gate.json","sha256":"7ce21374d430cb256a67858bb6efee68044eeff3c8a949622fa1ee81bcdea8c0"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/coverage.json","sha256":"ff3b7ea9c2cd804fecc0880ebb360fcb40ac5a8da4c69fc2a08ed06161807caf"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/final-audit.json","sha256":"9cf6fa8bafe8c6e0f26e37f9ccdfa66c727712bf9c7a85b9faaf367fa9fbe1bc"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/metrics-final-precheckpoint.json","sha256":"8162ba612bc8f012a62018371cf0a7acdee9e2c077a58746aab9d94c99f44170"}]; durably referenced in Orca run_c7c0181e51c0, exact final candidate manifest subject after this receipt-only closure.
+M07_METRICS: {"measurementWindow":"Run creation2026-09-18T04:27:35Z to final precheckpoint receipt snapshot; final postcheckpoint wallclock separately in Orca","snapshotUTC":"2026-09-18T04:59:53.640334+00:00","wallClockMinutes":32.311,"workersLaunched":4,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":2,"targetedValidations":20,"fullValidations":1,"correctionCycles":2,"freshAuditFindings":{"authority":{"P0":0,"P1":0,"P2":3},"final":{"P0":0,"P1":0,"P2":3}},"humanGates":1,"internalReportBytes":80574,"summaryEvidenceBytes":790309,"rawEvidenceBytes":8453723,"CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","countMethod":"Unique reports subset SUMMARY; unique files per class at snapshot; instrumented npm run FAST including failures; uninstrumented recon reported test run excluded; all failed/raw evidence preserved; failed historical counter script/timing UNREPORTED. No causal timing/token-savings claim."}
+M07_NEXT: HUMAN_GATE_REQUIRED/MILESTONE_COMPLETE; await explicit humanauthorization for WEB_UX_MILESTONE_08. No feature selected or M08/Programación work authorized. Localcheckpoint only, no push/publication. LAST_ACCEPTED_CHECKPOINT above is real prioracceptedcommit; discover this closure checkpoint through git log of STATE, never self-reference futureSHA.

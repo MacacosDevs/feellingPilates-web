@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Autocomplete,
@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  IconButton,
   Link as MuiLink,
   MenuItem,
   Snackbar,
@@ -20,16 +19,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloseIcon from '@mui/icons-material/Close';
 import { Link as RouterLink } from 'react-router-dom';
 import { isAxiosError } from 'axios';
-import { listarUsuarios } from '../../api/usuariosAdmin';
-import { listarPaquetesPublicos, listarSedesVenta, registrarVentaCarrito } from '../../api/pagos';
-import { DialogoCrearCliente } from '../../modulos/usuarios/componentes/DialogoCrearCliente';
-import { usePermisos } from '../../auth/usePermisos';
-import { VentaBreadcrumbs } from './VentaBreadcrumbs';
-import type { ApiErrorBody, PaqueteResponse, SedeVentaResponse, UsuarioResponse, VentaResponse } from '../../api/types';
+import { listarUsuarios } from '../../../api/usuariosAdmin';
+import { listarPaquetesPublicos, listarSedesVenta, registrarVentaCarrito } from '../../../api/pagos';
+import { DialogoCrearCliente } from '../../usuarios/componentes/DialogoCrearCliente';
+import { usePermisos } from '../../../auth/usePermisos';
+import { ComprobanteVenta, type VentaConfirmada } from '../componentes/ComprobanteVenta';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
+import { VentaBreadcrumbs } from '../componentes/VentaBreadcrumbs';
+import type { ApiErrorBody, PaqueteResponse, SedeVentaResponse, UsuarioResponse, VentaResponse } from '../../../api/types';
 
 function formatearMoneda(centavos: number): string {
   return `${(centavos / 100).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })} MXN`;
@@ -63,15 +62,7 @@ const METODO_PAGO_LABEL: Record<string, string> = {
   transferencia: 'Transferencia',
 };
 
-interface VentaConfirmada {
-  clienteNombre: string;
-  folio: string;
-  sedeNombre: string;
-  fechaIso: string;
-  metodoPago: string;
-  totalCentavos: number;
-  lineas: { nombre: string; cantidad: number; montoCentavos: number }[];
-}
+
 
 /** Junta las filas de Compra (una por unidad) devueltas por el backend en una linea por paquete. */
 function agruparLineasVenta(items: VentaResponse[]): VentaConfirmada['lineas'] {
@@ -114,16 +105,36 @@ export function VentaNueva() {
   const [error, setError] = useState<string | null>(null);
   const [ventaConfirmada, setVentaConfirmada] = useState<VentaConfirmada | null>(null);
 
-  useEffect(() => {
-    listarPaquetesPublicos()
+  const [errorPaquetes, setErrorPaquetes] = useState<string | null>(null);
+  const [errorSedes, setErrorSedes] = useState<string | null>(null);
+  const [errorBusqueda, setErrorBusqueda] = useState<string | null>(null);
+  const [reintentoBusqueda, setReintentoBusqueda] = useState(0);
+  const clienteInputRef = useRef<HTMLInputElement>(null);
+
+  function cargarPaquetes() {
+    setCargandoPaquetes(true);
+    setErrorPaquetes(null);
+    return listarPaquetesPublicos()
       .then(setPaquetes)
+      .catch((err) => setErrorPaquetes(extraerMensajeError(err, 'No se pudieron cargar los paquetes y clases.')))
       .finally(() => setCargandoPaquetes(false));
-    listarSedesVenta()
+  }
+
+  function cargarSedes() {
+    setCargandoSedes(true);
+    setErrorSedes(null);
+    return listarSedesVenta()
       .then((res) => {
         setSedes(res);
         if (res.length === 1) setSedeId(res[0].id);
       })
+      .catch((err) => setErrorSedes(extraerMensajeError(err, 'No se pudieron cargar las sedes.')))
       .finally(() => setCargandoSedes(false));
+  }
+
+  useEffect(() => {
+    cargarPaquetes();
+    cargarSedes();
   }, []);
 
   useEffect(() => {
@@ -133,10 +144,14 @@ export function VentaNueva() {
     }
     let cancelado = false;
     setBuscando(true);
+    setErrorBusqueda(null);
     const timeout = setTimeout(() => {
       listarUsuarios({ rol: 'CLIENTE', busqueda, size: 10 })
         .then((pagina) => {
           if (!cancelado) setOpciones(pagina.content);
+        })
+        .catch((err) => {
+          if (!cancelado) setErrorBusqueda(extraerMensajeError(err, 'No se pudieron buscar los clientes.'));
         })
         .finally(() => {
           if (!cancelado) setBuscando(false);
@@ -146,7 +161,7 @@ export function VentaNueva() {
       cancelado = true;
       clearTimeout(timeout);
     };
-  }, [busqueda]);
+  }, [busqueda, reintentoBusqueda]);
 
   const carrito = useMemo(
     () =>
@@ -219,9 +234,9 @@ export function VentaNueva() {
 
   if (!puedeVerVista) {
     return (
-      <Box sx={{ maxWidth: 980 }}>
+      <Box sx={{ maxWidth: 980, minWidth: 0 }}>
         <VentaBreadcrumbs actual="Nueva venta" />
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
           Nueva venta
         </Typography>
         <Alert severity="warning">{mensajeSinPermiso('venta.registrar.vista')}</Alert>
@@ -230,15 +245,17 @@ export function VentaNueva() {
   }
 
   return (
-    <Box sx={{ maxWidth: 980 }}>
+    <Box sx={{ maxWidth: 980, minWidth: 0 }}>
       <VentaBreadcrumbs actual="Nueva venta" />
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+      <Typography component="h1" variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
         Nueva venta
       </Typography>
 
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
-        <Stack spacing={2.5} sx={{ flexGrow: 1, width: '100%' }}>
-          {cargandoSedes ? null : sedes.length > 1 ? (
+        <Stack spacing={2.5} sx={{ flexGrow: 1, width: '100%', minWidth: 0 }}>
+          {cargandoSedes ? <Typography role="status">Cargando sedes…</Typography> : errorSedes ? (
+            <ErrorRecuperable onReintentar={cargarSedes}>{errorSedes}</ErrorRecuperable>
+          ) : sedes.length > 1 ? (
             <TextField select label="Sede" size="small" value={sedeId} onChange={(e) => setSedeId(e.target.value)}>
               {sedes.map((s) => (
                 <MenuItem key={s.id} value={s.id}>
@@ -254,9 +271,9 @@ export function VentaNueva() {
             <Alert severity="warning">No tienes ninguna sede asignada; no puedes registrar ventas.</Alert>
           )}
 
-          <Stack direction="row" spacing={1}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
             <Autocomplete
-              sx={{ flexGrow: 1 }}
+              sx={{ flexGrow: 1, minWidth: 0 }}
               size="small"
               options={opciones}
               value={cliente}
@@ -266,11 +283,13 @@ export function VentaNueva() {
               getOptionLabel={(u) => `${u.nombre} · ${u.correo}`}
               isOptionEqualToValue={(a, b) => a.id === b.id}
               loading={buscando}
-              noOptionsText={busqueda.trim().length < 2 ? 'Escribe al menos 2 letras' : 'Sin resultados'}
+              clearOnBlur={!errorBusqueda}
+              noOptionsText={errorBusqueda ? 'La búsqueda no está disponible' : busqueda.trim().length < 2 ? 'Escribe al menos 2 letras' : 'Sin resultados'}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Cliente"
+                  inputRef={clienteInputRef}
                   placeholder="Nombre o correo"
                   slotProps={{
                     ...params.slotProps,
@@ -292,12 +311,16 @@ export function VentaNueva() {
             </Button>
           </Stack>
 
+          {errorBusqueda && <ErrorRecuperable disabled={buscando} onReintentar={() => { clienteInputRef.current?.focus(); setReintentoBusqueda((v) => v + 1); }}>{errorBusqueda}</ErrorRecuperable>}
+
           <Box>
             <Typography variant="body2" sx={{ mb: 0.5 }}>
               Paquetes y clases
             </Typography>
             {cargandoPaquetes ? (
-              <CircularProgress size={20} />
+              <CircularProgress size={20} aria-label="Cargando paquetes y clases" />
+            ) : errorPaquetes ? (
+              <ErrorRecuperable onReintentar={cargarPaquetes}>{errorPaquetes}</ErrorRecuperable>
             ) : paquetes.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
                 Aún no hay nada dado de alta.{' '}
@@ -322,8 +345,8 @@ export function VentaNueva() {
                       '&:hover': { bgcolor: 'action.hover' },
                     }}
                   >
-                    <Checkbox checked={seleccionados.has(p.id)} size="small" sx={{ p: 0.5, mr: 1 }} />
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Checkbox checked={seleccionados.has(p.id)} onChange={() => alternarEnCarrito(p.id)} onClick={(e) => e.stopPropagation()} slotProps={{ input: { 'aria-label': `Seleccionar ${p.nombre}` } }} size="small" sx={{ p: 0.5, mr: 1 }} />
+                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                       <Typography variant="body2">
                         {p.nombre}
                         {p.actividades.length > 0 && (
@@ -393,7 +416,7 @@ export function VentaNueva() {
                     size="small"
                     value={cantidad}
                     onChange={(e) => elegirCantidad(paquete.id, sanearCantidad(e.target.value))}
-                    slotProps={{ htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', style: { textAlign: 'center' } } }}
+                    slotProps={{ htmlInput: { 'aria-label': `Cantidad de ${paquete.nombre}`, inputMode: 'numeric', pattern: '[0-9]*', style: { textAlign: 'center' } } }}
                     sx={{ width: 60 }}
                   />
                   <Typography variant="body2" sx={{ fontWeight: 600, minWidth: 76, textAlign: 'right' }}>
@@ -453,15 +476,16 @@ export function VentaNueva() {
         }}
       />
 
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)} sx={{ display: confirmando ? 'none' : undefined }}>
         <Alert severity="error" onClose={() => setError(null)}>
-          {error}
+          {!confirmando && error}
         </Alert>
       </Snackbar>
 
-      <Dialog open={confirmando} onClose={() => !cobrando && setConfirmando(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>Confirmar venta</DialogTitle>
+      <Dialog aria-labelledby="confirmar-venta-titulo" open={confirmando} onClose={() => !cobrando && setConfirmando(false)} maxWidth="xs" fullWidth>
+        <DialogTitle id="confirmar-venta-titulo">Confirmar venta</DialogTitle>
         <DialogContent dividers>
+          {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>{error}</Alert>}
           <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1.5 }}>
             <Box>
               <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.4 }}>
@@ -538,102 +562,7 @@ export function VentaNueva() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={!!ventaConfirmada} onClose={() => setVentaConfirmada(null)} maxWidth="xs" fullWidth>
-        {ventaConfirmada && (
-          <>
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <CheckCircleIcon color="success" />
-              Venta registrada
-              <IconButton
-                onClick={() => setVentaConfirmada(null)}
-                sx={{ ml: 'auto' }}
-                size="small"
-                aria-label="Cerrar"
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent dividers>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1.25 }}>
-                <Box>
-                  <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.4 }}>
-                    Cliente
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {ventaConfirmada.clienteNombre}
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.4 }}>
-                    Folio
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: 'monospace' }}>
-                    {ventaConfirmada.folio}
-                  </Typography>
-                </Box>
-              </Stack>
-
-              <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1.5 }}>
-                <Box>
-                  <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.4 }}>
-                    Sucursal
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {ventaConfirmada.sedeNombre}
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="overline" color="text.secondary" sx={{ lineHeight: 1.4 }}>
-                    Fecha de venta
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {formatearFechaVenta(ventaConfirmada.fechaIso)}
-                  </Typography>
-                </Box>
-              </Stack>
-
-              <Divider sx={{ mb: 1.5, borderStyle: 'dashed' }} />
-
-              <Stack spacing={1} sx={{ mb: 1.5 }}>
-                {ventaConfirmada.lineas.map((linea) => (
-                  <Stack key={linea.nombre} direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="body2">
-                      {linea.nombre}
-                      {linea.cantidad > 1 && (
-                        <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
-                          ×{linea.cantidad}
-                        </Typography>
-                      )}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {formatearMoneda(linea.montoCentavos)}
-                    </Typography>
-                  </Stack>
-                ))}
-              </Stack>
-
-              <Divider sx={{ mb: 1.5, borderStyle: 'dashed' }} />
-
-              <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1.5 }}>
-                <Typography sx={{ fontWeight: 700 }}>Total</Typography>
-                <Typography sx={{ fontWeight: 700 }}>{formatearMoneda(ventaConfirmada.totalCentavos)}</Typography>
-              </Stack>
-
-              <Chip
-                size="small"
-                variant="outlined"
-                color={ventaConfirmada.metodoPago === 'efectivo' ? 'success' : 'info'}
-                label={METODO_PAGO_LABEL[ventaConfirmada.metodoPago] ?? ventaConfirmada.metodoPago}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setVentaConfirmada(null)} variant="contained" fullWidth>
-                Listo
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
+      <ComprobanteVenta ventaConfirmada={ventaConfirmada} onCerrar={() => setVentaConfirmada(null)} />
     </Box>
   );
 }

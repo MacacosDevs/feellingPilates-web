@@ -27,19 +27,22 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { isAxiosError } from 'axios';
-import { DataTable, type ColumnaTabla } from '../../components/DataTable';
-import { useTablaLocal } from '../../hooks/useTablaLocal';
-import { usePermisos } from '../../auth/usePermisos';
-import { listarTiposActividad } from '../../api/catalogos';
-import { VentaBreadcrumbs } from './VentaBreadcrumbs';
+import { DataTable, type ColumnaTabla } from '../../../components/DataTable';
+import { useTablaLocal } from '../../../hooks/useTablaLocal';
+import { usePermisos } from '../../../auth/usePermisos';
+import { listarTiposActividad } from '../../../api/catalogos';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
+import { tintaSobreFondo } from '../../../theme/estilos';
+import { BotonEnvio } from '../../../compartido/componentes/BotonEnvio';
+import { VentaBreadcrumbs } from '../componentes/VentaBreadcrumbs';
 import {
   actualizarPaquete,
   crearPaquete,
   deshabilitarPaquete,
   habilitarPaquete,
   listarPaquetesGestion,
-} from '../../api/pagos';
-import type { ApiErrorBody, PaqueteGestionResponse, TipoActividadResponse } from '../../api/types';
+} from '../../../api/pagos';
+import type { ApiErrorBody, PaqueteGestionResponse, TipoActividadResponse } from '../../../api/types';
 
 function formatearMoneda(centavos: number): string {
   return (centavos / 100).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
@@ -168,13 +171,18 @@ export function VentaServicios() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [tipoSeleccionado, setTipoSeleccionado] = useState<TipoServicio | null>(null);
 
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
+  const [errorEstado, setErrorEstado] = useState<string | null>(null);
+
   const cargar = () => {
     setCargando(true);
+    setErrorCarga(null);
     Promise.all([listarPaquetesGestion(), listarTiposActividad()])
       .then(([p, a]) => {
         setPaquetes(p);
         setActividades(a);
       })
+      .catch((err) => setErrorCarga(extraerMensajeError(err, 'No se pudieron cargar los servicios.')))
       .finally(() => setCargando(false));
   };
 
@@ -259,7 +267,7 @@ export function VentaServicios() {
     accion.then(() => {
       setFeedback(p.activo ? 'Paquete deshabilitado' : 'Paquete habilitado');
       cargar();
-    });
+    }).catch((err) => setErrorEstado(extraerMensajeError(err, 'No se pudo cambiar el estado del paquete')));
   };
 
   const segmentos = useMemo(() => {
@@ -289,9 +297,9 @@ export function VentaServicios() {
 
   if (!puedeVerVista || !puedeVerContenido) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, minWidth: 0 }}>
         <VentaBreadcrumbs actual="Servicios" />
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
           Servicios
         </Typography>
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -304,11 +312,11 @@ export function VentaServicios() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, minWidth: 0 }}>
       <VentaBreadcrumbs actual="Servicios" />
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, mb: 3 }}>
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 700 }}>
             Servicios
           </Typography>
           <Typography color="text.secondary">
@@ -334,6 +342,7 @@ export function VentaServicios() {
             <Chip
               key={segmento.etiqueta}
               onClick={() => setTipoSeleccionado(segmento.tipo)}
+              aria-pressed={seleccionado}
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                   <span>{segmento.etiqueta}</span>
@@ -356,7 +365,7 @@ export function VentaServicios() {
                 py: 2.5,
                 fontWeight: 600,
                 bgcolor: seleccionado ? segmento.color : 'transparent',
-                color: seleccionado ? '#fff' : 'text.primary',
+                color: (theme) => seleccionado ? tintaSobreFondo(segmento.color, theme) : theme.palette.text.primary,
                 border: '1px solid',
                 borderColor: seleccionado ? segmento.color : 'divider',
                 '&:hover': { bgcolor: seleccionado ? segmento.color : 'action.hover' },
@@ -366,8 +375,10 @@ export function VentaServicios() {
         })}
       </Stack>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
-      <DataTable
+      {errorCarga && <ErrorRecuperable disabled={cargando} onReintentar={cargar}>{errorCarga}</ErrorRecuperable>}
+      {errorEstado && <Alert severity="error" onClose={() => setErrorEstado(null)}>{errorEstado}</Alert>}
+      <Box sx={{ flex: 1, minHeight: { xs: 240, md: 0 }, minWidth: 0, '& .MuiTablePagination-toolbar': { flexWrap: 'wrap', px: 1 }, '& .MuiTablePagination-spacer': { display: { xs: 'none', sm: 'block' } } }}>
+      {!errorCarga && <DataTable
         columnas={[
           ...COLUMNAS_PAQUETES_INICIO,
           ...(puedeVerEstado ? [COLUMNA_ESTADO] : []),
@@ -396,7 +407,7 @@ export function VentaServicios() {
               <Chip
                 size="small"
                 label={TIPO_INFO[tipoDe(p)].etiqueta.replace(/s$/, '')}
-                sx={{ bgcolor: TIPO_INFO[tipoDe(p)].color, color: '#fff' }}
+                sx={{ bgcolor: TIPO_INFO[tipoDe(p)].color, color: (theme) => tintaSobreFondo(TIPO_INFO[tipoDe(p)].color, theme) }}
               />
             </TableCell>
             <TableCell>{formatearMoneda(p.precioCentavos)}</TableCell>
@@ -434,14 +445,14 @@ export function VentaServicios() {
             )}
           </TableRow>
         )}
-      />
+      />}
       </Box>
 
-      <Dialog open={!!dialogo} onClose={() => setDialogo(null)} maxWidth="sm" fullWidth>
-        <DialogTitle>
+      <Dialog aria-labelledby="servicio-venta-titulo" open={!!dialogo} onClose={() => setDialogo(null)} maxWidth="sm" fullWidth>
+        <DialogTitle id="servicio-venta-titulo">
           {dialogo?.id ? 'Editar paquete' : dialogo?.modo === 'clase' ? 'Nueva clase suelta' : 'Nuevo paquete'}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pt: 3 }}>
           {dialogo && (
             <Stack spacing={2} sx={{ pt: 1 }}>
               {errorDialogo && <Alert severity="error">{errorDialogo}</Alert>}
@@ -459,7 +470,7 @@ export function VentaServicios() {
                 multiline
                 minRows={2}
               />
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField
                   label="Precio (MXN)"
                   type="number"
@@ -475,7 +486,7 @@ export function VentaServicios() {
                   fullWidth
                 />
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField
                   label="Texto unitario (opcional)"
                   placeholder="ej. $180 c/u"
@@ -491,7 +502,7 @@ export function VentaServicios() {
                   fullWidth
                 />
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -535,7 +546,7 @@ export function VentaServicios() {
                   </Typography>
                   <Stack spacing={1}>
                     {dialogo.actividades.map((fila, index) => (
-                      <Stack key={index} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                      <Stack key={index} direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { xs: 'stretch', sm: 'center' }, minWidth: 0 }}>
                         <TextField
                           select
                           label="Actividad"
@@ -558,6 +569,7 @@ export function VentaServicios() {
                         />
                         <IconButton
                           size="small"
+                          aria-label={`Eliminar actividad ${index + 1}`}
                           onClick={() => quitarFila(index)}
                           disabled={dialogo.actividades.length === 1}
                         >
@@ -576,9 +588,7 @@ export function VentaServicios() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogo(null)}>Cancelar</Button>
-          <Button variant="contained" onClick={guardar} disabled={guardando}>
-            {guardando ? 'Guardando…' : 'Guardar'}
-          </Button>
+          <BotonEnvio type="button" onClick={guardar} enviando={guardando} textoEnviando="Guardando…">Guardar</BotonEnvio>
         </DialogActions>
       </Dialog>
 

@@ -2,12 +2,12 @@ import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as usuariosAdmin from '../../api/usuariosAdmin';
+import * as usuariosAdmin from '../../../api/usuariosAdmin';
 import { VentaNueva } from './VentaNueva';
-import { api, choose, deferred, regressionSession, renderRoute } from '../../components/test-support/regression';
-import { server } from '../../../tests/mocks/server';
-import { pageOf, publicService, sale, user } from '../../../tests/fixtures/regression';
-import { useAuthStore } from '../../auth/authStore';
+import { api, choose, deferred, regressionSession, renderRoute } from '../../../components/test-support/regression';
+import { server } from '../../../../tests/mocks/server';
+import { pageOf, publicService, sale, user } from '../../../../tests/fixtures/regression';
+import { useAuthStore } from '../../../auth/authStore';
 const permissions = ['venta.registrar.vista', 'venta.registrar.crear'];
 regressionSession(permissions);
 let searches: Record<string, string>[];
