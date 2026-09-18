@@ -26,7 +26,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { listarUsuarios } from '../../api/usuariosAdmin';
 import { listarPaquetesPublicos, listarSedesVenta, registrarVentaCarrito } from '../../api/pagos';
-import { DialogoCrearCliente } from '../usuarios/DialogoCrearCliente';
+import { DialogoCrearCliente } from '../../modulos/usuarios/componentes/DialogoCrearCliente';
 import { usePermisos } from '../../auth/usePermisos';
 import { VentaBreadcrumbs } from './VentaBreadcrumbs';
 import type { ApiErrorBody, PaqueteResponse, SedeVentaResponse, UsuarioResponse, VentaResponse } from '../../api/types';

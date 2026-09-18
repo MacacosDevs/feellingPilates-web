@@ -1,5 +1,5 @@
-import { apiClient } from './client';
-import type { ActualizarRolRequest, CrearRolRequest, PermisoResponse, RolResponse } from './types';
+import { apiClient } from '../../../api/client';
+import type { ActualizarRolRequest, CrearRolRequest, PermisoResponse, RolResponse } from '../../../api/types';
 
 export function listarRoles() {
   return apiClient.get<RolResponse[]>('/admin/roles').then((res) => res.data);

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, test, vi } from 'vitest';
-import { renderWithTheme } from '../../components/test-support/renderWithTheme';
+import { renderWithTheme } from '../../../components/test-support/renderWithTheme';
 import { DialogoContrasenaTemporal } from './DialogoContrasenaTemporal';
 
 test('copies a synthetic temporary password and lets the user close the dialog', async () => {

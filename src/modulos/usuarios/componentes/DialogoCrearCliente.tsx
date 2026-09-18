@@ -2,8 +2,8 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { crearCliente } from '../../api/usuariosAdmin';
-import type { ApiErrorBody, UsuarioResponse } from '../../api/types';
+import { crearCliente } from '../../../api/usuariosAdmin';
+import type { ApiErrorBody, UsuarioResponse } from '../../../api/types';
 
 interface DialogoCrearClienteProps {
   abierto: boolean;
@@ -49,7 +49,7 @@ export function DialogoCrearCliente({ abierto, onCerrar, onCreado }: DialogoCrea
     <Dialog open={abierto} onClose={limpiarYCerrar} fullWidth maxWidth="xs">
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle sx={{ fontWeight: 700 }}>Nuevo cliente</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, '&&': { pt: 2 } }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="Nombre"

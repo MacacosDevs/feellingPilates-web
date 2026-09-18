@@ -28,9 +28,9 @@ import {
   Typography,
 } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { actualizarPermisosRol, actualizarRol, crearRol, listarPermisos, listarRoles } from '../../api/roles';
-import type { ApiErrorBody, PermisoResponse, RolResponse } from '../../api/types';
-import { focoVisible, superficieContorneada } from '../../theme/estilos';
+import { actualizarPermisosRol, actualizarRol, crearRol, listarPermisos, listarRoles } from '../servicios/roles';
+import type { ApiErrorBody, PermisoResponse, RolResponse } from '../../../api/types';
+import { focoVisible, superficieContorneada } from '../../../theme/estilos';
 
 function extraerMensajeError(err: unknown, mensajePorDefecto: string): string {
   if (isAxiosError<ApiErrorBody>(err)) {
@@ -74,6 +74,7 @@ const SUBGRUPOS_PAGOS: { prefijo: string; etiqueta: string }[] = [
   { prefijo: 'venta.gestion.', etiqueta: 'Gestión de ventas' },
   { prefijo: 'venta.servicios.', etiqueta: 'Servicios' },
 ];
+const PERMISOS_VACIOS: PermisoResponse[] = [];
 
 function subgrupoDe(codigo: string): string | null {
   return SUBGRUPOS_PAGOS.find((s) => codigo.startsWith(s.prefijo))?.etiqueta ?? null;
@@ -86,21 +87,28 @@ export function Roles() {
   const [rolActivoId, setRolActivoId] = useState<string | null>(null);
   const [categoriaActiva, setCategoriaActiva] = useState<string | null>(null);
   const [cargando, setCargando] = useState(true);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [dialogoRol, setDialogoRol] = useState<DialogRol | null>(null);
   const [guardandoRol, setGuardandoRol] = useState(false);
   const [errorDialogoRol, setErrorDialogoRol] = useState<string | null>(null);
 
-  useEffect(() => {
-    Promise.all([listarRoles(), listarPermisos()]).then(([rolesData, permisosData]) => {
-      setRoles(rolesData);
-      setPermisos(permisosData);
-      setSeleccion(Object.fromEntries(rolesData.map((r) => [r.id, new Set(r.permisos)])));
-      setRolActivoId(rolesData[0]?.id ?? null);
-      setCargando(false);
-    });
-  }, []);
+  const cargarDatos = () => {
+    setCargando(true);
+    setErrorCarga(null);
+    void Promise.all([listarRoles(), listarPermisos()])
+      .then(([rolesData, permisosData]) => {
+        setRoles(rolesData);
+        setPermisos(permisosData);
+        setSeleccion(Object.fromEntries(rolesData.map((r) => [r.id, new Set(r.permisos)])));
+        setRolActivoId((actual) => actual && rolesData.some((r) => r.id === actual) ? actual : rolesData[0]?.id ?? null);
+      })
+      .catch(() => setErrorCarga('No se pudieron cargar los roles y permisos.'))
+      .finally(() => setCargando(false));
+  };
+
+  useEffect(() => { cargarDatos(); }, []);
 
   const categorias = useMemo(() => {
     const grupos = new Map<string, PermisoResponse[]>();
@@ -119,8 +127,11 @@ export function Roles() {
   }, [categorias, categoriaActiva]);
 
   const rolActivo = roles.find((r) => r.id === rolActivoId) ?? null;
-  const permisosCategoria = categorias.find(([categoria]) => categoria === categoriaActiva)?.[1] ?? [];
-  const seleccionRol = rolActivo ? seleccion[rolActivo.id] ?? new Set<string>() : new Set<string>();
+  const permisosCategoria = categorias.find(([categoria]) => categoria === categoriaActiva)?.[1] ?? PERMISOS_VACIOS;
+  const seleccionRol = useMemo(
+    () => rolActivo ? seleccion[rolActivo.id] ?? new Set<string>() : new Set<string>(),
+    [rolActivo, seleccion],
+  );
 
   const gruposPermisosCategoria = useMemo(() => {
     const porSubgrupo = new Map<string | null, PermisoResponse[]>();
@@ -196,7 +207,9 @@ export function Roles() {
     }
   }
 
-  if (cargando || !rolActivo) {
+  const cerrarDialogoRol = () => setDialogoRol(null);
+
+  if (cargando) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
         <CircularProgress />
@@ -205,13 +218,26 @@ export function Roles() {
   }
 
   return (
-    <Box sx={{ maxWidth: 880, height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+    <Box sx={{ maxWidth: 880, height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0, minWidth: 0 }}>
       <Typography variant="h5" component="h1" gutterBottom>
         Roles y permisos
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Elige un rol, luego una categoría, y activa o desactiva lo que puede hacer.
       </Typography>
+      {errorCarga && <Alert severity="error" sx={{ mb: 2 }} action={<Button color="inherit" size="small" onClick={cargarDatos}>Reintentar</Button>}>{errorCarga}</Alert>}
+
+      {!rolActivo && !errorCarga && (
+        <Box sx={{ ...superficieContorneada, p: 4, textAlign: 'center' }}>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>Aún no hay roles configurados.</Typography>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => {
+            setErrorDialogoRol(null);
+            setDialogoRol({ modo: 'crear', rolId: null, nombre: '', descripcion: '' });
+          }}>Crear primer rol</Button>
+        </Box>
+      )}
+
+      {rolActivo && <>
 
       <Stack direction="row" sx={{ alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider', mb: 3, flexShrink: 0 }}>
         <Tabs
@@ -274,12 +300,17 @@ export function Roles() {
           overflow: 'hidden',
           flex: '1 1 auto',
           minHeight: 380,
+          flexDirection: { xs: 'column', sm: 'row' },
         }}
       >
         <Stack
           sx={{
-            width: 220,
-            borderRight: '1px solid',
+            width: { xs: '100%', sm: 220 },
+            flexShrink: 0,
+            minWidth: 0,
+            maxHeight: { xs: 150, sm: 'none' },
+            borderRight: { xs: 'none', sm: '1px solid' },
+            borderBottom: { xs: '1px solid', sm: 'none' },
             borderColor: 'divider',
             bgcolor: 'action.hover',
             py: 1,
@@ -295,6 +326,7 @@ export function Roles() {
               <Box
                 key={categoria}
                 component="button"
+                aria-pressed={seleccionada}
                 onClick={() => setCategoriaActiva(categoria)}
                 sx={{
                   all: 'unset',
@@ -323,7 +355,7 @@ export function Roles() {
           })}
         </Stack>
 
-        <Box sx={{ flexGrow: 1, overflowY: 'auto', minHeight: 0 }}>
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
           {gruposPermisosCategoria.map(([subgrupo, permisosDelGrupo], indiceGrupo) => (
             <Box key={subgrupo ?? '__general__'}>
               {subgrupo && (
@@ -353,26 +385,29 @@ export function Roles() {
                   }}
                 >
                   <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between', maxWidth: 560 }}>
-                    <Box>
+                    <Box sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
                       <Typography variant="body2">{permiso.descripcion || permiso.codigo}</Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
                         {permiso.codigo}
                       </Typography>
                     </Box>
                     <Switch
+                      sx={{ flexShrink: 0 }}
+                      slotProps={{ input: { 'aria-label': `Permiso ${permiso.descripcion || permiso.codigo}` } }}
                       checked={seleccionRol.has(permiso.codigo)}
                       disabled={!rolActivo.editable}
                       onChange={() => toggle(permiso.codigo)}
                     />
                   </Stack>
-                </Box>
+                  </Box>
               ))}
             </Box>
           ))}
         </Box>
       </Stack>
+      </>}
 
-      {rolActivo.editable && (
+      {rolActivo?.editable && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3, flexShrink: 0 }}>
           <Button variant="contained" disabled={!huboCambios || guardando} onClick={guardar}>
             {guardando ? 'Guardando...' : 'Guardar cambios'}
@@ -388,9 +423,9 @@ export function Roles() {
         ) : undefined}
       </Snackbar>
 
-      <Dialog open={dialogoRol !== null} onClose={() => setDialogoRol(null)} fullWidth maxWidth="xs">
-        <DialogTitle>{dialogoRol?.modo === 'crear' ? 'Nuevo rol' : 'Editar rol'}</DialogTitle>
-        <DialogContent>
+      <Dialog aria-labelledby="dialogo-rol-titulo" open={dialogoRol !== null} onClose={cerrarDialogoRol} fullWidth maxWidth="xs">
+        <DialogTitle id="dialogo-rol-titulo">{dialogoRol?.modo === 'crear' ? 'Nuevo rol' : 'Editar rol'}</DialogTitle>
+        <DialogContent sx={{ '& .MuiTextField-root:first-of-type': { mt: 1 } }}>
           <Stack spacing={2} sx={{ pt: 1 }}>
             {errorDialogoRol && <Alert severity="error">{errorDialogoRol}</Alert>}
             <TextField
@@ -411,7 +446,7 @@ export function Roles() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogoRol(null)}>Cancelar</Button>
+          <Button onClick={cerrarDialogoRol}>Cancelar</Button>
           <Button
             variant="contained"
             disabled={!dialogoRol?.nombre.trim() || guardandoRol}

@@ -13,10 +13,10 @@ import {
   TextField,
 } from '@mui/material';
 import { isAxiosError } from 'axios';
-import { crearPersonal } from '../../api/usuariosAdmin';
-import { listarSalones } from '../../api/salones';
-import { SelectorMultipleBusqueda } from '../../components/SelectorMultipleBusqueda';
-import type { ApiErrorBody, RolPersonal, SalonResponse } from '../../api/types';
+import { crearPersonal } from '../../../api/usuariosAdmin';
+import { listarSalones } from '../../../api/salones';
+import { SelectorMultipleBusqueda } from '../../../components/SelectorMultipleBusqueda';
+import type { ApiErrorBody, RolPersonal, SalonResponse } from '../../../api/types';
 
 interface DialogoCrearPersonalProps {
   abierto: boolean;
@@ -102,7 +102,7 @@ export function DialogoCrearPersonal({ abierto, onCerrar, onCreado }: DialogoCre
     <Dialog open={abierto} onClose={limpiarYCerrar} fullWidth maxWidth="xs">
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle sx={{ fontWeight: 700 }}>Nuevo personal</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, '&&': { pt: 2 } }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="Nombre"

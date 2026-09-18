@@ -17,11 +17,11 @@ import {
   actualizarSedesUsuario,
   actualizarUsuario,
   listarEspecialidadesUsuario,
-} from '../../api/usuariosAdmin';
-import { listarSalones } from '../../api/salones';
-import { listarTiposActividad } from '../../api/catalogos';
-import { SelectorMultipleBusqueda } from '../../components/SelectorMultipleBusqueda';
-import type { ApiErrorBody, SalonResponse, TipoActividadResponse, UsuarioResponse } from '../../api/types';
+} from '../../../api/usuariosAdmin';
+import { listarSalones } from '../../../api/salones';
+import { listarTiposActividad } from '../../../api/catalogos';
+import { SelectorMultipleBusqueda } from '../../../components/SelectorMultipleBusqueda';
+import type { ApiErrorBody, SalonResponse, TipoActividadResponse, UsuarioResponse } from '../../../api/types';
 
 interface DialogoEditarUsuarioProps {
   usuario: UsuarioResponse | null;
@@ -121,7 +121,7 @@ export function DialogoEditarUsuario({ usuario, onCerrar, onActualizado }: Dialo
     <Dialog open={usuario !== null} onClose={onCerrar} fullWidth maxWidth="xs">
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle sx={{ fontWeight: 700 }}>Editar usuario</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, '&&': { pt: 2 } }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             label="Nombre"

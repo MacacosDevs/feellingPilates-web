@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   Avatar,
+  Alert,
   Box,
   Breadcrumbs,
   Button,
@@ -26,15 +27,15 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import SearchIcon from '@mui/icons-material/Search';
-import { DataTable, type ColumnaTabla } from '../../components/DataTable';
-import { useAuthStore } from '../../auth/authStore';
-import { conteoUsuariosPorRol, listarUsuarios, reactivarUsuario, suspenderUsuario } from '../../api/usuariosAdmin';
-import type { Pagina, RolConteoResponse, UsuarioResponse } from '../../api/types';
-import { DialogoCrearCliente } from './DialogoCrearCliente';
-import { DialogoCrearPersonal } from './DialogoCrearPersonal';
-import { DialogoContrasenaTemporal } from './DialogoContrasenaTemporal';
-import { DialogoEditarUsuario } from './DialogoEditarUsuario';
-import { tintaSobreFondo } from '../../theme/estilos';
+import { DataTable, type ColumnaTabla } from '../../../components/DataTable';
+import { useAuthStore } from '../../../auth/authStore';
+import { conteoUsuariosPorRol, listarUsuarios, reactivarUsuario, suspenderUsuario } from '../../../api/usuariosAdmin';
+import type { Pagina, RolConteoResponse, UsuarioResponse } from '../../../api/types';
+import { DialogoCrearCliente } from '../componentes/DialogoCrearCliente';
+import { DialogoCrearPersonal } from '../componentes/DialogoCrearPersonal';
+import { DialogoContrasenaTemporal } from '../componentes/DialogoContrasenaTemporal';
+import { DialogoEditarUsuario } from '../componentes/DialogoEditarUsuario';
+import { tintaSobreFondo } from '../../../theme/estilos';
 
 const ESTATUS_COLOR: Record<string, 'success' | 'warning' | 'error' | 'default'> = {
   activo: 'success',
@@ -97,6 +98,9 @@ export function Usuarios() {
   const [numeroPagina, setNumeroPagina] = useState(0);
   const [tamanoPagina, setTamanoPagina] = useState(10);
   const [cargando, setCargando] = useState(true);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
+  const [errorConteos, setErrorConteos] = useState(false);
+  const solicitudCarga = useRef(0);
   const [dialogoCliente, setDialogoCliente] = useState(false);
   const [dialogoPersonal, setDialogoPersonal] = useState(false);
   const [accionando, setAccionando] = useState<string | null>(null);
@@ -109,7 +113,7 @@ export function Usuarios() {
   const [rolSeleccionado, setRolSeleccionado] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState('');
   const [busquedaDebounced, setBusquedaDebounced] = useState('');
-  const [conteos, setConteos] = useState<RolConteoResponse[]>([]);
+  const [conteos, setConteos] = useState<RolConteoResponse[] | null>(null);
   const [orderBy, setOrderBy] = useState<ColumnaUsuario>('usuario');
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -122,7 +126,9 @@ export function Usuarios() {
 
   const cargar = useCallback(
     async (page: number, rol: string | null, texto: string, sort: string, direccion: 'asc' | 'desc', size: number) => {
+      const solicitud = ++solicitudCarga.current;
       setCargando(true);
+      setErrorCarga(null);
       try {
         const resultado = await listarUsuarios({
           page,
@@ -131,9 +137,13 @@ export function Usuarios() {
           busqueda: texto || undefined,
           sort: `${sort},${direccion}`,
         });
-        setPagina(resultado);
+        if (solicitud === solicitudCarga.current) setPagina(resultado);
+        return true;
+      } catch {
+        if (solicitud === solicitudCarga.current) setErrorCarga('No se pudieron cargar los usuarios.');
+        return false;
       } finally {
-        setCargando(false);
+        if (solicitud === solicitudCarga.current) setCargando(false);
       }
     },
     [],
@@ -142,8 +152,9 @@ export function Usuarios() {
   const cargarConteos = useCallback(async () => {
     try {
       setConteos(await conteoUsuariosPorRol());
+      setErrorConteos(false);
     } catch {
-      // el resumen de roles es informativo; si falla no bloquea la tabla
+      setErrorConteos(true);
     }
   }, []);
 
@@ -159,7 +170,10 @@ export function Usuarios() {
     setNumeroPagina(0);
   }, [rolSeleccionado, busquedaDebounced]);
 
-  const totalUsuarios = useMemo(() => conteos.reduce((acc, c) => acc + Number(c.total), 0), [conteos]);
+  const totalUsuarios = useMemo(
+    () => conteos?.reduce((acc, c) => acc + Number(c.total), 0) ?? null,
+    [conteos],
+  );
 
   const columnasUsuarios: ColumnaTabla[] = useMemo(() => {
     const base: ColumnaTabla[] = [
@@ -192,8 +206,11 @@ export function Usuarios() {
       } else {
         await reactivarUsuario(u.id);
       }
-      await cargar(numeroPagina, rolSeleccionado, busquedaDebounced, sortProp, order, tamanoPagina);
-      cargarConteos();
+      const recargada = await cargar(numeroPagina, rolSeleccionado, busquedaDebounced, sortProp, order, tamanoPagina);
+      await cargarConteos();
+      setMensaje(recargada ? 'Estatus actualizado' : 'Estatus actualizado. No se pudo actualizar la lista; reintenta la carga.');
+    } catch {
+      setMensaje('No se pudo actualizar el estatus.');
     } finally {
       setAccionando(null);
     }
@@ -203,9 +220,9 @@ export function Usuarios() {
     setRolSeleccionado((actual) => (actual === rol ? null : rol));
   }
 
-  const segmentos: Array<{ rol: string | null; etiqueta: string; color: string; total: number }> = [
+  const segmentos: Array<{ rol: string | null; etiqueta: string; color: string; total: number | null }> = [
     { rol: null, etiqueta: 'Todos', color: '#334155', total: totalUsuarios },
-    ...conteos
+    ...(conteos ?? [])
       .slice()
       .sort((a, b) => Number(b.total) - Number(a.total))
       .map((c) => ({
@@ -216,8 +233,10 @@ export function Usuarios() {
       })),
   ];
 
+  const cargarPaginaActual = () => cargar(numeroPagina, rolSeleccionado, busquedaDebounced, sortProp, order, tamanoPagina);
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, minWidth: 0 }}>
       <Breadcrumbs sx={{ mb: 2 }}>
         <MuiLink component={RouterLink} to="/" underline="hover" color="text.secondary">
           Inicio
@@ -246,7 +265,7 @@ export function Usuarios() {
                       color: (theme) => seleccionado ? tintaSobreFondo(segmento.color, theme, 0.25) : theme.palette.text.primary,
                     }}
                   >
-                    {segmento.total}
+                    {segmento.total ?? '—'}
                   </Box>
                 </Box>
               }
@@ -264,11 +283,13 @@ export function Usuarios() {
           );
         })}
       </Stack>
+      {errorConteos && <Alert severity="warning" sx={{ mb: 2 }}>El resumen por rol no está disponible.</Alert>}
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2, flexWrap: 'wrap' }}>
         <TextField
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
+          label="Buscar por nombre o correo"
           placeholder="Buscar por nombre o correo"
           size="small"
           sx={{ width: { xs: '100%', sm: 340 } }}
@@ -314,7 +335,19 @@ export function Usuarios() {
         </Box>
       </Box>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
+      <Box sx={{
+        flex: '1 0 300px', minHeight: 300, minWidth: 0,
+        '& .MuiTable-root': { minWidth: 760 },
+        '& .MuiTablePagination-toolbar': { flexWrap: 'wrap', justifyContent: 'flex-end', gap: 1, py: 1, pl: 1 },
+        '& .MuiTablePagination-spacer': { display: { xs: 'none', sm: 'block' } },
+        '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { my: 0 },
+        '& .MuiTablePagination-actions': { ml: 0 },
+      }}>
+      {errorCarga && !cargando ? (
+        <Alert severity="error" action={<Button color="inherit" size="small" onClick={() => void cargarPaginaActual()}>Reintentar</Button>}>
+          {errorCarga}
+        </Alert>
+      ) : (
       <DataTable
         columnas={columnasUsuarios}
         filas={pagina?.content ?? []}
@@ -393,10 +426,11 @@ export function Usuarios() {
                     </Tooltip>
                   )}
                   {puedeActivar && u.estatus !== 'eliminado' && (
-                    <Tooltip title={u.estatus === 'activo' ? 'Suspender acceso' : 'Reactivar acceso'}>
+                    <Tooltip describeChild title={u.estatus === 'activo' ? 'Suspender acceso' : 'Reactivar acceso'}>
                       <span>
                         <IconButton
                           size="small"
+                          aria-label={u.estatus === 'activo' ? 'Suspender acceso' : 'Reactivar acceso'}
                           color={u.estatus === 'activo' ? 'error' : 'success'}
                           disabled={accionando === u.id}
                           onClick={() => handleCambiarEstatus(u)}
@@ -416,6 +450,7 @@ export function Usuarios() {
           </TableRow>
         )}
       />
+      )}
       </Box>
 
       <DialogoCrearCliente
