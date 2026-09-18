@@ -31,6 +31,7 @@ import { isAxiosError } from 'axios';
 import { actualizarPermisosRol, actualizarRol, crearRol, listarPermisos, listarRoles } from '../servicios/roles';
 import type { ApiErrorBody, PermisoResponse, RolResponse } from '../../../api/types';
 import { focoVisible, superficieContorneada } from '../../../theme/estilos';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
 
 function extraerMensajeError(err: unknown, mensajePorDefecto: string): string {
   if (isAxiosError<ApiErrorBody>(err)) {
@@ -225,7 +226,7 @@ export function Roles() {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Elige un rol, luego una categoría, y activa o desactiva lo que puede hacer.
       </Typography>
-      {errorCarga && <Alert severity="error" sx={{ mb: 2 }} action={<Button color="inherit" size="small" onClick={cargarDatos}>Reintentar</Button>}>{errorCarga}</Alert>}
+      {errorCarga && <ErrorRecuperable sx={{ mb: 2 }} onReintentar={cargarDatos}>{errorCarga}</ErrorRecuperable>}
 
       {!rolActivo && !errorCarga && (
         <Box sx={{ ...superficieContorneada, p: 4, textAlign: 'center' }}>

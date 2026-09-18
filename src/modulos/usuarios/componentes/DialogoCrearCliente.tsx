@@ -4,6 +4,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import { isAxiosError } from 'axios';
 import { crearCliente } from '../../../api/usuariosAdmin';
 import type { ApiErrorBody, UsuarioResponse } from '../../../api/types';
+import { BotonEnvio } from '../../../compartido/componentes/BotonEnvio';
 
 interface DialogoCrearClienteProps {
   abierto: boolean;
@@ -77,9 +78,7 @@ export function DialogoCrearCliente({ abierto, onCerrar, onCreado }: DialogoCrea
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={limpiarYCerrar}>Cancelar</Button>
-          <Button type="submit" variant="contained" disabled={cargando}>
-            {cargando ? 'Creando...' : 'Crear cliente'}
-          </Button>
+          <BotonEnvio type="submit" enviando={cargando} textoEnviando="Creando...">Crear cliente</BotonEnvio>
         </DialogActions>
       </Box>
     </Dialog>

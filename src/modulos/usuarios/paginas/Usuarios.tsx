@@ -36,6 +36,7 @@ import { DialogoCrearPersonal } from '../componentes/DialogoCrearPersonal';
 import { DialogoContrasenaTemporal } from '../componentes/DialogoContrasenaTemporal';
 import { DialogoEditarUsuario } from '../componentes/DialogoEditarUsuario';
 import { tintaSobreFondo } from '../../../theme/estilos';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
 
 const ESTATUS_COLOR: Record<string, 'success' | 'warning' | 'error' | 'default'> = {
   activo: 'success',
@@ -344,9 +345,9 @@ export function Usuarios() {
         '& .MuiTablePagination-actions': { ml: 0 },
       }}>
       {errorCarga && !cargando ? (
-        <Alert severity="error" action={<Button color="inherit" size="small" onClick={() => void cargarPaginaActual()}>Reintentar</Button>}>
+        <ErrorRecuperable onReintentar={() => void cargarPaginaActual()}>
           {errorCarga}
-        </Alert>
+        </ErrorRecuperable>
       ) : (
       <DataTable
         columnas={columnasUsuarios}

@@ -17,6 +17,7 @@ import { crearPersonal } from '../../../api/usuariosAdmin';
 import { listarSalones } from '../../../api/salones';
 import { SelectorMultipleBusqueda } from '../../../components/SelectorMultipleBusqueda';
 import type { ApiErrorBody, RolPersonal, SalonResponse } from '../../../api/types';
+import { BotonEnvio } from '../../../compartido/componentes/BotonEnvio';
 
 interface DialogoCrearPersonalProps {
   abierto: boolean;
@@ -156,9 +157,7 @@ export function DialogoCrearPersonal({ abierto, onCerrar, onCreado }: DialogoCre
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={limpiarYCerrar}>Cancelar</Button>
-          <Button type="submit" variant="contained" disabled={cargando}>
-            {cargando ? 'Creando...' : 'Crear usuario'}
-          </Button>
+          <BotonEnvio type="submit" enviando={cargando} textoEnviando="Creando...">Crear usuario</BotonEnvio>
         </DialogActions>
       </Box>
     </Dialog>

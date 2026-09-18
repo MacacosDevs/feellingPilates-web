@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_05
-CURRENT_PHASE: M05_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_06
+CURRENT_PHASE: M06_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_05_CLOSED; M06_NOT_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_06_CLOSED; M07_NOT_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_0c0221a008e1
-LAST_GATE_ID: gate_9a507b0635ca
-LAST_ACCEPTED_CHECKPOINT: e5d8def77b0a15295ba477ef5b2f9c9a13662736
-CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M05; run_0c0221a008e1 / subject M05 final accepted candidate manifest
-LAST_ACCEPTED_TESTS: 359
-LAST_ACCEPTED_VITEST: 297
-LAST_ACCEPTED_PLAYWRIGHT: 62
-CORRECTION_CYCLES_USED: 1
+LAST_RUN_ID: run_0253cec75ef4
+LAST_GATE_ID: gate_12fa454c6662
+LAST_ACCEPTED_CHECKPOINT: e2967315218da6e42632f698367c5476fc97b4f7
+CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M06; run_0253cec75ef4 / subject M06 final accepted candidate manifest
+LAST_ACCEPTED_TESTS: 368
+LAST_ACCEPTED_VITEST: 303
+LAST_ACCEPTED_PLAYWRIGHT: 65
+CORRECTION_CYCLES_USED: 2
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_06
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_07
 HUMAN_GATE_REASON: MILESTONE_COMPLETE
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; all four M05 workers settled and released
+ACTIVE_WRITE_TASK: NONE; all M06 workers settled and released
 
 ACTIVE_WRITE_DISPATCH: NONE
 
-FROZEN_PHASE_PLAN: msg_eb1c70eccfba; M05 finite24 paths SHA256 679cc47454dc8f5341f18fde94c0fffcdf64cc338a217f76ffbc38ff9cf5c6dd
+FROZEN_PHASE_PLAN: msg_d037df2446fd; finite15paths SHA256 d5564d3a6e08e9d0fda021574d094baae7593d146269f036e11c67b8a4295a18
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 359
+TEST_BASELINE: 368
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -336,3 +336,38 @@ Luna partial FAILED/INCOMPLETE msg_7cb421a9299d remains recorded; explicit Sol-m
 Final acceptance permits exactly one explicit-path local M05 checkpoint; no amend/squash/push/publication. STATUS HUMAN_GATE_REQUIRED, reason MILESTONE_COMPLETE. M06 NOT_AUTHORIZED. Await human definition/authorization; do not select next feature automatically.
 
 M05_METRICS: {"measurementWindow":"Run creation to precheckpoint metrics snapshot, includes recorded Luna incomplete technical handoff; no human pause hidden","snapshotUTC":"2026-09-18T03:24:30.945022+00:00","wallClockMinutes":36.682,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":28,"targetedValidationDefinition":"Instrumented worker Vitest/Playwright/oxlint/typecheck command receipts incl failed debug runs plus Root47-test run and3 Root prewrite checks; excludes diff/hash guards and uninstrumented claims","fullValidations":1,"correctionCycles":1,"correctionDefinition":"Conservative same-phase recovery budget charged for Luna INCOMPLETE -> explicit Sol-medium continuation; no authority or budget reset","freshAuditFindings":0,"humanGates":1,"internalReportBytes":42272,"summaryEvidenceBytes":516549,"rawEvidenceBytes":11815025,"byteMeasurement":"unique files per evidence class at snapshot; internal reports subset of summary, not provider token/context accounting","internalReports":["/tmp/feelingpilates-web-ux-m05/summary/recon-worker.json","/tmp/feelingpilates-web-ux-m05/summary/implementation-partial.json","/tmp/feelingpilates-web-ux-m05/summary/implementation-resumed.json","/tmp/feelingpilates-web-ux-m05/summary/final-audit-worker.json"],"CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","comparison":{"M03":{"wallClockMinutes":103.8,"workersLaunched":"UNREPORTED","workersReleased":7,"routing":"UNREPORTED","correctionCycles":2,"fullValidations":"UNREPORTED","bytes":"UNREPORTED"},"M04":{"wallClockMinutes":73.648,"initialAttemptMinutes":13.645,"authorityRepairMinutes":47.595,"environmentFinalMinutes":12.408,"workersLaunched":8,"lunaTasks":3,"solMediumTasks":2,"solHighTasks":3,"corrections":"UNREPORTED","fullValidations":"UNREPORTED","bytes":"UNREPORTED"}},"comparisonLimit":"Different scopes, single milestone comparison; no causal speedup or token savings claim"}
+
+## M06 HUMAN AUTHORITY / ENTRY
+
+Human authorization WEB_UX_MILESTONE_06 UX-05 Shared Async Feedback & Form UX Foundation received from accepted HEAD e2967315218da6e42632f698367c5476fc97b4f7. Entry branch exact, tree/index clean; current accepted359tests (297Vitest62Chromium), policyR1 ACTIVE and unchanged. Run run_0253cec75ef4. Evidence /tmp/feelingpilates-web-ux-m06/summary/entry.json. No new functional phase beyond M06; M07 NOT_AUTHORIZED. Scope evidence-led minimal presentation-only shared UX with bounded modernized consumers, no API/session/permission/business/capacity/scheduling authority or dependencies. Exact finite allowlist and competent characterization required before product writes. Prior milestone budgets/history preserved; new M06 phase budget0/2.
+
+M06_EQUIVALENCE_FREEZE: msg_d037df2446fd. ErrorRecuperable owns error Alert/manual retry presentation only, adopted3pageerrors; BotonEnvio owns pending contained button presentation only, adopted3Usuarios+2Actividadesbuttons, explicit native submit/button preserved. Existing DataTable loading/empty, domain/resource/validation/confirmation/dialog lifecycle and write-success/refresh-failure state remain owned by features; no shared hooks/FSM/API/session imports. Current original127 files,118protected; all prior tests protected. Inventoried calendar path correction and routine HOLD flag adjudicated without HumanGate.
+
+M06_PREWRITE_CHARACTERIZATION: 64 current modernized tests +1 fresh realCliente nativeEnter =65PASS0fail/skip, all baselineproduction source byte-identical. Root3freshchecks exit0, acceptedUTC 2026-09-18T03:36:09.267772+00:00, native characterizationSHA a8dc7804fd49e02142382b64ed0fef0426a439865d458b55d0ed4ff5a1001ef2. Existingtests and acceptednewcharacterizationimmutable. Root approval msg_ec5ddf5b1ebd lifts productionHOLD only after those checks; no retrospective claim. Evidence /tmp/feelingpilates-web-ux-m06/summary/characterization-accepted.json.
+
+M06_INITIAL_WRITE_REVIEW: Initial worker_done msg_0bda95f1cc0f succeeded AS_REPORTED, preserved report; productcandidate NOT_ACCEPTED. Root deterministic contract/evidence review FAIL M06-TECH-01/M06-EVID-02 (P1): unusedseverity/genericnativeButtonProps and missingexactcommand/evidence receipts; correctionwithinfrozen15paths, no ambiguousauthority/businessdecision. Persisted same-phasecycle1/2 BEFOREfreshcorrector; no budgetreset. Initial abbreviated/uncaptured checks remain claims, not fabricatedhistoricalraw evidence. Fresh correctiveFAST+RootfullGATE+NEWindependentsemantic audit mandatory.
+
+M06_CORRECTION01: task_2d6d2c8cdaeb/ctx_82eb9dcb8de2 actual gpt-5.6-luna medium, no silentfallback; narrow2newAPIs/references/newtests and reproducible crosswidthbrowser in originalfinitefreeze only. Sourceoutsideallowlist and alloriginaltests protected; nativeEntercharacterizationSHAimmutable. Persistedbudget1/2.
+
+M06_CORRECTION01_INCOMPLETE: Actual Orca worker-stop fenced ctx_82eb9dcb8de2 and closed its agent process after repeated browser harness failures and unconsumed concrete Root guidance. No worker_done fabricated; initial narrowed production APIs retained but product/evidence correction not accepted. Captured failed FAST receipts/raw logs preserved, including malformed macOS .3NZ timestamps and argument-forwarding failures; no historical fractions or missing evidence invented. Root residual review FAIL within same finite scope: direct native submit/disabled contract assertions incomplete, browser lacks deterministic pending/nativeEnter proof and finally network assertions, broad503 console suppression, and malformed receipt clocks. These are deterministic test/evidence issues, no scope/business/API decision. Sol-medium escalation justified by cross-surface synthetic React/browser coordination. Persisted same-phase correction02 budget2/2 BEFORE new writer. If final correction/audit remains unresolved, HUMAN_GATE/CORRECTION_BUDGET_EXHAUSTED; no budget reset or opportunistic expansion.
+
+M06_CORRECTION02: task_6a3204935d0b/ctx_8cce0e20c7a4 requested/effective codex:gpt-5.6-sol:medium verified at execution. Derived suballowlist ONLY BotonEnvio.test.tsx and feedback-compartido.spec.ts inside originalfinite15paths;129currentfiles byteprotected including EVERY production source, originaltests, ErrorRecuperable directtest and acceptednativecharacterization. Existing incomplete receipts remain retained; fresh Python-captured FAST tests followed by Root fullGATE and NEW Sol-high audit mandatory. No remaining automatic correctioncycle after unresolved final review.
+
+M06_CORRECTION02_FAST: Unique worker_done msg_4a8b46a612c5 succeeded, reportSHA e987799e096adc44520fa2f0f4948565c8159e3c619a987db97aea929fde779e independently verified. Fresh48Vitest+3Chromium PASS0fail/skip/flaky, typecheck/relevantlint PASS;8 exact Python-captured receipts preserve2 failed FAST attempts and their minimal root-cause corrections. Root independently verified129currentprotected hashes and all receipt/logSHAs/validUTC. Writer released before whole Done-delivery ACK. Final fullGATE/NEWaudit/DecisionGate NOT_YET_REACHED; budget remains2/2, no fabricated historical evidence or process reset.
+
+M06_FULL_GATE_PROVISIONAL: Fresh Root seven-command sequence exit0: npm ls --all, lint, test:typecheck, Vitest303PASS, Chromium65PASS, build and git diff --check;368total0fail0skip0flaky. Exact inventory separates original297+62=359 from new6+3=9; originaltest/config/package/sourceprotected hashes intact. Candidate133files had zero byte drift during GATE. Build inheritedchunk>500kB warning remains, no performance claim. NEW independent abstraction/product/process audit and actual DecisionGate still pending; LAST_ACCEPTED_TESTS remains359 until acceptance. Root exact argv/startUTC/duration/exit/rawSHA evidence retained in Run, no missing historical clock data manufactured.
+
+## M06 ACCEPTED COMPLETION — CURRENT AUTHORITY
+
+M06_FINAL_ACCEPTANCE: PASS; minimal shared presentation-only primitives, bounded3error+5pendingbutton adoption independently accepted. No shared async FSM/framework/hooks/API/session/domain authority. All intentionally differing loading/empty/validation/wizard/confirmation/write-success-vs-refresh-failure semantics remain feature-owned.
+M06_FINAL_RUN: run_0253cec75ef4
+M06_FINAL_AUDIT: task_803121c72437 / ctx_0547c12e78ee / codex:gpt-5.6-sol:high; PASS; P0=0; P1=0; P2=0
+M06_FINAL_GATE: task_63bc839e0954 / gate_12fa454c6662; PASS
+M06_FULL_GATE: npm ls --all, lint, test:typecheck, full Vitest303, Chromium65, build, git diff --check allPASS;368total0failed0skipped0flaky. Original297Vitest+62Chromium=359 preserved byte-identical and executed; new6Vitest+3Chromium. All118originalprotected and129post-narrowing protected candidate files retained. No dependency/API/permissions/session/QueryZod/theme/shell/Ventas/Programación/Payments/F2E changes.
+M06_BROWSER: Usuarios/Salones/Actividades375/768/1440, real keyboard manual retry/focus and exact GET counts, native client Enter and manual activity button, exact synthetic POSTs with deferred receipts, busy/disabled/no duplicates/no premature success, recovered information; finally strict network/console/pageerror inventories with exact expected503URL/status correlation. Synthetic only, no real backend/Payments/Maps. Representative accessibility validation, not complete WCAG compliance.
+M06_HISTORY: Initial worker succeeded AS_REPORTED but Root product/evidence review FAIL M06-TECH-01/M06-EVID-02 preserved. Luna correction01 actually fenced incomplete, no worker_done or missing history invented. Sol-medium test-only correction02 independently verified; retained failed FAST attempts and malformed initial clock/argument receipts unchanged, final fresh exact evidence establishes acceptance. Same-phase budget2/2 prospectively persisted, no reset or hidden interruption.
+M06_ACCEPTANCE_EVIDENCE: msg_7d7f2e580a93; RAW/SUMMARY locators and exact SHA256 references durably recorded in Run.
+M06_METRICS_EVIDENCE: msg_051f0e31e372; measurement snapshot excludes final checkpoint verification window; post-checkpoint timing retained in Orca.
+M06_OPTIMIZED_METRICS: {"measurementWindow":"Run creation to this precheckpoint snapshot; includes technical correction and retained failed FAST attempts","snapshotUTC":"2026-09-18T04:17:14.858166+00:00","wallClockMinutes":47.231,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":23,"targetedValidationDefinition":"Recorded command invocations including failed attempts; Root prewrite checks plus actual retained corrective receipt files. Initial implementer uninstrumented validation claims excluded, their total UNREPORTED. Mechanical hash/graph collectors not counted as test validation invocations.","fullValidations":1,"correctionCycles":2,"freshAuditFindings":0,"initialRootReviewFindings":2,"humanGates":1,"internalReportBytes":65209,"summaryEvidenceBytes":1634198,"rawEvidenceBytes":11449311,"byteMeasurement":"Unique retained files per evidence class at snapshot, metrics.json itself excluded; internal reports subset of SUMMARY. Not provider context or token accounting.","CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","comparison":{"M03":{"wallClockMinutes":103.8,"workersLaunched":"UNREPORTED","workersReleased":7,"routing":"UNREPORTED","fullValidations":"UNREPORTED","bytes":"UNREPORTED","correctionCycles":2},"M04":{"wallClockMinutes":73.648,"initialAttemptMinutes":13.645,"authorityRepairMinutes":47.595,"environmentFinalMinutes":12.408,"workersLaunched":8,"lunaTasks":3,"solMediumTasks":2,"solHighTasks":3,"fullValidations":"UNREPORTED","bytes":"UNREPORTED","humanGateInterruptions":"preserved in versioned M04 history"},"M05":{"wallClockMinutes":37.537,"workersLaunched":4,"lunaTasks":2,"solMediumTasks":1,"solHighTasks":1,"otherComparableMetrics":"UNREPORTED in current human comparison input"}},"comparisonLimit":"Different scopes and one observation per milestone; no causal speedup, runtime-performance improvement or token-saving claim. Unknown metrics remain UNREPORTED."}
+M06_CHECKPOINT_POLICY: Actual audit+gate+full validation PASS authorize explicit staging of exact accepted15logical paths only. Local checkpoint containing this STATE discovered via git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md; no invented future ownSHA. LAST_ACCEPTED_CHECKPOINT remains real accepted parent at writing. Final accepted full/delta manifest located at run_0253cec75ef4 / subject M06 final accepted candidate manifest. No amend/squash/push/remote publication.
+M06_HUMAN_GATE_CURRENT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_07; M07 NOT_AUTHORIZED, do not choose feature or begin next milestone.

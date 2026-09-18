@@ -27,6 +27,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import { DataTable } from '../../../components/DataTable';
 import type { ControlActividades } from '../hooks/useControlActividades';
+import { BotonEnvio } from '../../../compartido/componentes/BotonEnvio';
 
 export function VistaActividades({ control }: { control: ControlActividades }) {
   const {
@@ -240,9 +241,9 @@ export function VistaActividades({ control }: { control: ControlActividades }) {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setDialogoNuevo(null)}>Cancelar</Button>
-          <Button variant="contained" onClick={guardarNuevaActividad} disabled={guardandoNuevo}>
-            {guardandoNuevo ? 'Guardando…' : dialogoNuevo?.id ? 'Guardar' : 'Crear'}
-          </Button>
+          <BotonEnvio type="button" onClick={guardarNuevaActividad} enviando={guardandoNuevo} textoEnviando="Guardando…">
+            {dialogoNuevo?.id ? 'Guardar' : 'Crear'}
+          </BotonEnvio>
         </DialogActions>
       </Dialog>
 
@@ -307,9 +308,7 @@ export function VistaActividades({ control }: { control: ControlActividades }) {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setActividadRecursos(null)}>Cancelar</Button>
-          <Button variant="contained" onClick={guardarRecursos} disabled={guardandoRecursos}>
-            {guardandoRecursos ? 'Guardando…' : 'Guardar'}
-          </Button>
+          <BotonEnvio type="button" onClick={guardarRecursos} enviando={guardandoRecursos} textoEnviando="Guardando…">Guardar</BotonEnvio>
         </DialogActions>
       </Dialog>
 

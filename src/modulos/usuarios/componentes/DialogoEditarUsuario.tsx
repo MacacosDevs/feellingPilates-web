@@ -22,6 +22,7 @@ import { listarSalones } from '../../../api/salones';
 import { listarTiposActividad } from '../../../api/catalogos';
 import { SelectorMultipleBusqueda } from '../../../components/SelectorMultipleBusqueda';
 import type { ApiErrorBody, SalonResponse, TipoActividadResponse, UsuarioResponse } from '../../../api/types';
+import { BotonEnvio } from '../../../compartido/componentes/BotonEnvio';
 
 interface DialogoEditarUsuarioProps {
   usuario: UsuarioResponse | null;
@@ -167,9 +168,7 @@ export function DialogoEditarUsuario({ usuario, onCerrar, onActualizado }: Dialo
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={onCerrar}>Cancelar</Button>
-          <Button type="submit" variant="contained" disabled={cargando}>
-            {cargando ? 'Guardando...' : 'Guardar cambios'}
-          </Button>
+          <BotonEnvio type="submit" enviando={cargando} textoEnviando="Guardando...">Guardar cambios</BotonEnvio>
         </DialogActions>
       </Box>
     </Dialog>

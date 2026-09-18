@@ -26,6 +26,7 @@ import { useTablaLocal } from '../../../hooks/useTablaLocal';
 import { useGestionSalones } from '../hooks/useGestionSalones';
 import type { SalonResponse } from '../../../api/types';
 import { DialogoSalon } from '../componentes/DialogoSalon';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
 
 function formatearFecha(iso: string): string {
   return new Date(iso).toLocaleDateString('es-MX', { dateStyle: 'medium' });
@@ -73,7 +74,7 @@ export function Salones() {
         </Button>
       </Stack>
 
-      {errorLista && <Alert severity="error" sx={{ mb: 2 }} action={<Button color="inherit" onClick={() => void recargar()} disabled={cargando}>Reintentar</Button>}>{errorLista}{cargado && ' Se conserva la última lista cargada.'}</Alert>}
+      {errorLista && <ErrorRecuperable sx={{ mb: 2 }} size="medium" onReintentar={() => void recargar()} disabled={cargando}>{errorLista}{cargado && ' Se conserva la última lista cargada.'}</ErrorRecuperable>}
       {errorDetalle && <Alert severity="error" sx={{ mb: 2 }}>{errorDetalle}</Alert>}
       {cargando && <Typography role="status" sx={{ mb: 2 }}>{cargado ? 'Actualizando salones…' : 'Cargando salones…'}</Typography>}
       {editandoId && <Typography role="status" sx={{ mb: 2 }}>Cargando salón para editar…</Typography>}
