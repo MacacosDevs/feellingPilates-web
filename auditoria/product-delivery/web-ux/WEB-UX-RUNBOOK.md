@@ -6,6 +6,8 @@ Autoridad versionada exclusiva de FeelingPilates — Web UX Product Delivery. Pr
 
 La autorización humana vigente prevalece sobre este documento; este documento no puede otorgarse nuevas facultades ni revivir un mecanismo anterior de Autopilot.
 
+La mecánica normativa de ejecución optimizada está en [WEB-UX-EXECUTION-POLICY.md](WEB-UX-EXECUTION-POLICY.md), versión R1, SHA256 `4d01806495ae4cce3494715d1278741f33f82ae857946980af0115f4d669237c`. Se activa como default obligatorio solo tras fresh process audit PASS (P0=0/P1=0) y optimization gate PASS registrados en STATE; solo autorización humana explícita puede anularlo. El Runbook, sus Human Gates y límites de autoridad prevalecen ante cualquier ambigüedad.
+
 # 2. REPOSITORY AUTHORITY
 
 Repositorio único: /Users/jesusaldaircruzortiz/Desktop/Feelingpilates/web-ux.
