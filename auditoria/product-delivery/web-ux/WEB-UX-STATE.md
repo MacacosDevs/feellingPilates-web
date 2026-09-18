@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_07
-CURRENT_PHASE: M07_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_08
+CURRENT_PHASE: M08_ACCEPTED_CLOSED
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_07_CLOSED; M08_NOT_AUTHORIZED
+FUNCTIONAL_MILESTONE: NONE_AUTHORIZED; WEB_UX_MILESTONE_08 CLOSED; future Programación implementation NOT_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_c7c0181e51c0
-LAST_GATE_ID: gate_a15e8ef7e61d
-LAST_ACCEPTED_CHECKPOINT: 480b09cc9d4afe0b0c5c13e89b70a38a3c939dc2
-CURRENT_CANDIDATE_MANIFEST: ACCEPTED_M07; run_c7c0181e51c0 / subject M07 final accepted candidate manifest; exact postclosure reseal; commit discoverable via git log STATE
-LAST_ACCEPTED_TESTS: 386
-LAST_ACCEPTED_VITEST: 318
-LAST_ACCEPTED_PLAYWRIGHT: 68
-CORRECTION_CYCLES_USED: 2
+LAST_RUN_ID: run_c5b013fbf707
+LAST_GATE_ID: gate_fbc6ad2c26fc
+LAST_ACCEPTED_CHECKPOINT: b0399edc001f733bd61e616560d87591955913c1
+CURRENT_CANDIDATE_MANIFEST: M08 accepted preaudit msg_69905bfc6707; reviewed receipt-only closure then final exact manifest in Orca Run run_c5b013fbf707 subject M08 final accepted candidate manifest; containingcheckpoint discoverable via git log of STATE
+LAST_ACCEPTED_TESTS: 403
+LAST_ACCEPTED_VITEST: 328
+LAST_ACCEPTED_PLAYWRIGHT: 75
+CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_MILESTONE_08
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_PROGRAMACION_IMPLEMENTATION_SLICE
 HUMAN_GATE_REASON: MILESTONE_COMPLETE
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; all M07 workers settled and released
+ACTIVE_WRITE_TASK: NONE; all three M08 workers settled and released
 
-ACTIVE_WRITE_DISPATCH: NONE
+ACTIVE_WRITE_DISPATCH: NONE; all M08 resources released
 
-FROZEN_PHASE_PLAN: msg_ad3771b2f94a; exact21paths; prewrite55PASS verified and durable msg_b3ce9a0e0f02; HOLD explicitly lifted by msg_720ff6181350 before production edits; correction budget2/2 spent
+FROZEN_PHASE_PLAN: msg_44a38238f350; exact8test/processpaths; ALL production andexistingtest/toolingfiles byteprotected; no productionwriter authority
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 386
+TEST_BASELINE: 403
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -399,3 +399,21 @@ M07_REMAINING_LIMITATIONS: inherited Mixtos small-count badge contrast model3.63
 M07_EVIDENCE_REFS: [{"locator":"/tmp/feelingpilates-web-ux-m07/summary/full-gate.json","sha256":"7ce21374d430cb256a67858bb6efee68044eeff3c8a949622fa1ee81bcdea8c0"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/coverage.json","sha256":"ff3b7ea9c2cd804fecc0880ebb360fcb40ac5a8da4c69fc2a08ed06161807caf"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/final-audit.json","sha256":"9cf6fa8bafe8c6e0f26e37f9ccdfa66c727712bf9c7a85b9faaf367fa9fbe1bc"},{"locator":"/tmp/feelingpilates-web-ux-m07/summary/metrics-final-precheckpoint.json","sha256":"8162ba612bc8f012a62018371cf0a7acdee9e2c077a58746aab9d94c99f44170"}]; durably referenced in Orca run_c7c0181e51c0, exact final candidate manifest subject after this receipt-only closure.
 M07_METRICS: {"measurementWindow":"Run creation2026-09-18T04:27:35Z to final precheckpoint receipt snapshot; final postcheckpoint wallclock separately in Orca","snapshotUTC":"2026-09-18T04:59:53.640334+00:00","wallClockMinutes":32.311,"workersLaunched":4,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":2,"targetedValidations":20,"fullValidations":1,"correctionCycles":2,"freshAuditFindings":{"authority":{"P0":0,"P1":0,"P2":3},"final":{"P0":0,"P1":0,"P2":3}},"humanGates":1,"internalReportBytes":80574,"summaryEvidenceBytes":790309,"rawEvidenceBytes":8453723,"CavemanEnabledRoles":[],"tokenCounts":"UNREPORTED","countMethod":"Unique reports subset SUMMARY; unique files per class at snapshot; instrumented npm run FAST including failures; uninstrumented recon reported test run excluded; all failed/raw evidence preserved; failed historical counter script/timing UNREPORTED. No causal timing/token-savings claim."}
 M07_NEXT: HUMAN_GATE_REQUIRED/MILESTONE_COMPLETE; await explicit humanauthorization for WEB_UX_MILESTONE_08. No feature selected or M08/Programación work authorized. Localcheckpoint only, no push/publication. LAST_ACCEPTED_CHECKPOINT above is real prioracceptedcommit; discover this closure checkpoint through git log of STATE, never self-reference futureSHA.
+
+M08_HUMAN_AUTHORIZATION: UX-07 Programación recon/characterization/safety net/refactor boundary design from b0399edc001f733bd61e616560d87591955913c1. Baseline318Vitest+68Chromium386PASS. NO production implementation/rename/move/behavior/API/session/permissions/F2E/Payments/dependency changes. Testability production change needs HUMAN_GATE/SCOPE_EXPANSION_REQUIRED. Tests current Web observation only, not backend rules. MAX2perphase, budget starts0 for this new authorized milestone; M07 historicalspent2 and incidents remain unchanged above. Browser375/768/1440 synthetic; fullGATE thenNEW Sol-high independent audit, actualGate, exact localtest/processcheckpoint only. Future slices proposed but NEVER authorized; close HUMAN_GATE/MILESTONE_COMPLETE/AWAIT_HUMAN_AUTHORIZATION_FOR_PROGRAMACION_IMPLEMENTATION_SLICE.
+
+M08_RECON_DISPOSITION: task_5bddb2b0e106/ctx_b796224d7219/msg_4a3a6786ce82 read-only settlement accepted for sourcefacts, released beforeACK. M08-RECON-REPORT-01 original advisory unsupported requestforhumanbeforeTESTwriter rejected against explicitcurrenthumanM08testauthorization; no genuine authorityambiguity demonstrated. Originalreport preserved not rewritten; futurePRODUCTIONimplementation remainsNOTAUTHORIZED. Followup reachedalreadysettleddispatch and wasrejected dispatch_inactive; no relaunch/retry. Root correctedmechanicalcounts24calendar-mainstates+1assignment-child/file2224lines; page16states5effects618lines; weeklydialog9states1effect405lines. FinalNEWindependentSol-high audits currentscope and evidence, no claimadvisoryreportaloneacceptedfutureauthority.
+
+M08_CORRECTION_01: {"phase":"M08_SAFETY_NET","cycle":1,"max":2,"persistedUTC":"2026-09-18T05:16:30.110378+00:00","question":"msg_8bfc234fa7e4","finding":"M08-TEST-01 provisional newtest ByRoleOptions unsupportedexact and incorrect resource-status reason strings. Not productiondefect or backenddecision. Existingcode remainsimmutable.","sourceBeforeSHA256":{"src/pages/salones/SalonHorariosCaracterizacion.test.tsx":"1774251a4964d3ea03ceecc79b7602d6a7ce57776161b9144ad254a175a9317b","tests/e2e/programacion.spec.ts":"52d51ad5ec6c1cbc288b6d2152c7083230a88b8b4b4d823ba372410705c3e96d"},"authorizedSubAllowlist":["src/pages/salones/SalonHorariosCaracterizacion.test.tsx","tests/e2e/programacion.spec.ts"],"allowedCorrection":"Replace only newRTL exact:true name with /^Cerrar$/; exact known409Conflict/503ServiceUnavailable consoletext mapping, preserving exact URL/status failureledger and zero unknown/pageerrors. No suppression/broadenedregex/no assertionremoved/productionchange.","freshReaudit":"NEW final independentSol-high required AFTER correction andfullGate; budget1/2 nowspent, no reset","evidenceRefs":[{"locator":"/tmp/feelingpilates-web-ux-m08/raw/writer-typecheck01.log","sha256":"6845c22f5cd9f795e364bf6809d9a1efb53e52708aa26bfc25e09478b10a806f"},{"locator":"/tmp/feelingpilates-web-ux-m08/raw/writer-browser01.log","sha256":"1ae2a6bf7ac53d7eeee65c6bb5b9c8786e2f15d52516644a1bb4baef49bb54cd"}]}
+
+M08_WRITER_SETTLEMENT: task_eb3765c4b87a/ctx_7d7397a351ee/msg_55cd9cf1ad61 succeeded TEST/DOC only six new files; report SHA256 bc07372cc6034f656c81c71e405ae88def1b5a5f122e148db8342f13e62d7127; released BEFORE whole-delivery ACK. New10Vitest/new7Chromium FAST actual green, all135protected exact. FullGATE and NEW independent Sol-high audit/Gate acceptance not yet reached. Inherited375px clipping/19px blocks documented, NOT_LOCKED; no production correction or complete accessibility claim. Correction1/2 stays spent. Root release CLI initially rejected unsupported --from locally before mutation; actual corrected exact --dispatch release completed beforeACK. FullGATE started after unique writerDone, during release flag correction, with writer settled and no subsequent test/plan writes; receipts preserve actual chronology.
+
+M08_FULL_GATE_OBSERVED: fresh complete seven-command GATE completed2026-09-18T05:26:57.606182Z PASS; npm ls/lint/typecheck/build/diff-check exit0; 328Vitest+75Chromium=403PASS,0FAIL,0SKIP,0FLAKY. All318Vitest+68Chromium acceptedentry cases remaingreen; 10+7newcases. NEW independent Sol-high audit and actualDecisionGate pending; tests baseline is not accepted by this receipt alone. All135protected entryfiles and package/policyhashes exact, no ignorednode_modules selfloop; staticproductiongraph65files includes no test/mock package/source. Known375px fullweekclipping/19pxblocks NOT_LOCKED; currentF2E comparisonUNVERIFIED, no backend semantics chosen.
+
+## M08 ACCEPTED COMPLETION — CURRENT AUTHORITY
+
+M08_ACCEPTANCE: {"acceptedUTC":"2026-09-18T05:33:46.643709+00:00","run":"run_c5b013fbf707","gate":"gate_fbc6ad2c26fc","gateTask":"task_52f89cda6025","writer":"task_eb3765c4b87a/ctx_7d7397a351ee/msg_55cd9cf1ad61","freshAudit":"task_010db431fdb2/ctx_3d3b5dd464fb","auditDone":"msg_0ca0f7c2c3f6","auditResult":"PASS","P0":0,"P1":0,"P2":3,"nonblockingFindingIDs":["M08-AUDIT-P2-01","M08-AUDIT-P2-02","M08-AUDIT-P2-03"],"nonblockingDisposition":"Inherited375pxclipping remainsNOT_LOCKED; postresizeblockgeometry notcertified beforefutureM11; originalreconincompletefield/advisoryqualitylimitations preserved. No extra currentwrites requested; sufficientforunchangedbodyM09ownershiponly.","auditReportSHA256":"d9a4d6936b105f90c4508d3b37e85331ea46cf191becdacf40006d946c9aedae","closurePlanAccepted":true,"tests":{"Vitest":328,"Chromium":75,"total":403,"old318Vitest68ChromiumAllPreserved":true,"newVitest":10,"newChromium":7,"failed":0,"skipped":0,"flaky":0},"scope":"eight exact test/process paths, five new tests plus three docs; all135 entry files exceptRootSTATE/RUNBOOK byte-identical; production and alloldtests/tooling/packages protected","knownNotLocked":["375px19pxblocks/fullweekclipping","readerror-as-empty","stale route/week/filter response risk","uncaught initial weekly history rejection","mouse listeners during unmount","unnamed week controls/keyboard-touch drag","local contrast UNVERIFIED"],"F2E":"currentbackendauthoritycomparisonUNVERIFIED fromallowedWeb evidence, no compatibility claim or businessdecision","futureImplementation":"NOT_AUTHORIZED; PlanDoc M09 ownership-only3components+12candidate code/testpaths is recommended next human scope; M10/M11 separate concessions; async/listener/accessibility/responsive corrections outside those slices","remote":"NOT_AUTHORIZED; no push/publication","lastAcceptedCheckpointSemantics":"real existing entry product checkpoint retained; discover accepted containing M08 checkpoint with git log of STATE; no invented own futureSHA"}
+
+M08_METRICS_PRECHECKPOINT: {"measuredUTC":"2026-09-18T05:33:46.609040+00:00","wallClockMinutes":28.443,"window":"actual M08 Run creation to this snapshot; excludes earlier human idle history","workersLaunched":3,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":19,"targetedValidationDefinition":"unique instrumented FAST command receipts including affected tests/lint/typecheck/diff-check; failures retained","fullValidations":1,"correctionCycles":1,"freshAuditFindings":3,"humanGates":0,"internalReportBytes":87795,"internalReportDefinition":"unique worker report JSON files, not duplicate CLI envelopes or raw logs","summaryEvidenceBytes":810437,"rawEvidenceBytes":5171807,"evidenceByteWindow":"current filesystem snapshot, includes receipts/manifests/prompts, excludes final metric record itself","CavemanEnabledRoles":[],"tokenUsage":"UNREPORTED","comparison":{"M03":103.8,"M04":73.648,"M05":37.537,"M06":49.059,"M07":32.357},"causalSavingsClaim":false}
+
+M08_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_PROGRAMACION_IMPLEMENTATION_SLICE. No future Programación implementation, production testability change, backend/F2E rule or milestone is authorized. Refactor proposal is documentation only. Historical incidents/correction RAW remain preserved. Post-checkpoint identity/time/bytes are durable Orca evidence in this Run, never self-referenced as a future SHA here.
