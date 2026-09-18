@@ -7,7 +7,7 @@ import { Usuarios } from './modulos/usuarios/paginas/Usuarios';
 import { Roles } from './modulos/roles/paginas/Roles';
 import { Salones } from './modulos/salones/paginas/Salones';
 import { Actividades } from './modulos/actividades/paginas/Actividades';
-import { SalonHorarios } from './pages/salones/SalonHorarios';
+import { SalonHorarios } from './modulos/programacion/paginas/SalonHorarios';
 import { ReservasAgregar } from './pages/reservas/ReservasAgregar';
 import { ReservasListaEspera } from './pages/reservas/ReservasListaEspera';
 import { ReservasCancelaciones } from './pages/reservas/ReservasCancelaciones';

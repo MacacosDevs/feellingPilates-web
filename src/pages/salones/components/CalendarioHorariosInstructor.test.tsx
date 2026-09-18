@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
-import { CalendarioHorariosInstructor } from './CalendarioHorariosInstructor';
+import { CalendarioHorariosInstructor } from '../../../modulos/programacion/componentes/CalendarioHorariosInstructor';
 import { renderWithTheme } from '../../../components/test-support/renderWithTheme';
 import { choose, deferred } from '../../../components/test-support/regression';
 import { activities, salon, turno } from '../../../../tests/fixtures/regression';

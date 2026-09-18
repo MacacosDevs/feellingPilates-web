@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
-import { CalendarioHorariosInstructor } from './CalendarioHorariosInstructor';
+import { CalendarioHorariosInstructor } from '../../../modulos/programacion/componentes/CalendarioHorariosInstructor';
 import { renderWithTheme } from '../../../components/test-support/renderWithTheme';
 import { salon, turno } from '../../../../tests/fixtures/regression';
 type Props = ComponentProps<typeof CalendarioHorariosInstructor>;

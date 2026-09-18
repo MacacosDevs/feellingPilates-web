@@ -20,13 +20,13 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ScheduleIcon from '@mui/icons-material/ScheduleOutlined';
 import { cerrarHorarioSalon, obtenerHistorialHorarios, versionarHorarioSalon } from '../../../api/salones';
 import type { HorarioOperacionVersionResponse, SalonDetalleResponse } from '../../../api/types';
-import { aIso, hoyIso } from '../fechas';
+import { aIso, hoyIso } from '../../../pages/salones/fechas';
 import {
   CODIGOS_REQUIEREN_REFRESCO_HISTORIAL,
   codigoDeError,
   MENSAJE_FECHA_PASADA,
   mensajeDeErrorHorario,
-} from '../erroresHorario';
+} from '../../../pages/salones/erroresHorario';
 
 const MENSAJE_SINCRONIZACION_FALLIDA =
   'El cambio se guardó correctamente, pero no se pudo actualizar toda la información. Actualiza la pantalla para ver el estado más reciente.';

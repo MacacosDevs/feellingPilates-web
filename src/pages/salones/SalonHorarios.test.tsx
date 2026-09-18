@@ -4,9 +4,9 @@ import { http, HttpResponse } from 'msw';
 import { Routes, Route } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
-import type { CalendarioHorariosInstructor } from './components/CalendarioHorariosInstructor';
+import type { CalendarioHorariosInstructor } from '../../modulos/programacion/componentes/CalendarioHorariosInstructor';
 import { apiClient } from '../../api/client';
-import { SalonHorarios } from './SalonHorarios';
+import { SalonHorarios } from '../../modulos/programacion/paginas/SalonHorarios';
 import { api, choose, deferred, regressionSession, renderRoute } from '../../components/test-support/regression';
 import { server } from '../../../tests/mocks/server';
 import { assignment, pageOf, salon, turno, user } from '../../../tests/fixtures/regression';
@@ -15,7 +15,7 @@ type CalendarProps = ComponentProps<typeof CalendarioHorariosInstructor>;
 const harness = vi.hoisted(() => ({ current: null as CalendarProps | null }));
 // This child only exposes parent callback transport/state ownership. Real child
 // interactions live in its colocated suite and production Chromium geometry spec.
-vi.mock('./components/CalendarioHorariosInstructor', () => ({ CalendarioHorariosInstructor: (p: CalendarProps) => {
+vi.mock('../../modulos/programacion/componentes/CalendarioHorariosInstructor', () => ({ CalendarioHorariosInstructor: (p: CalendarProps) => {
         harness.current = p;
         return <section aria-label="Calendario de prueba"><p>{p.instructoresSalon.map(i => i.nombre).join(', ')}</p><p>{[...p.turnosRecurrentes, ...p.turnosPuntuales].map(t => `${t.id} ${t.horaInicio}`).join(', ')}</p><p>{p.excepciones.map(e => `${e.id} ${e.fecha}`).join(', ')}</p></section>;
     } }));

@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_08
-CURRENT_PHASE: M08_ACCEPTED_CLOSED
+CURRENT_MILESTONE: WEB_UX_MILESTONE_09
+CURRENT_PHASE: M09_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: NONE_AUTHORIZED; WEB_UX_MILESTONE_08 CLOSED; future Programación implementation NOT_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_09_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_c5b013fbf707
-LAST_GATE_ID: gate_fbc6ad2c26fc
-LAST_ACCEPTED_CHECKPOINT: b0399edc001f733bd61e616560d87591955913c1
-CURRENT_CANDIDATE_MANIFEST: M08 accepted preaudit msg_69905bfc6707; reviewed receipt-only closure then final exact manifest in Orca Run run_c5b013fbf707 subject M08 final accepted candidate manifest; containingcheckpoint discoverable via git log of STATE
+LAST_RUN_ID: run_91478368718c
+LAST_GATE_ID: gate_93c2dee7f33f
+LAST_ACCEPTED_CHECKPOINT: b4e5659ce1b4de93aa099050929972285404f390
+CURRENT_CANDIDATE_MANIFEST: M09 exact accepted fourteen-path ownership candidate; final byte-map/fingerprint durable in run_91478368718c after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
 CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_PROGRAMACION_IMPLEMENTATION_SLICE
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
 HUMAN_GATE_REASON: MILESTONE_COMPLETE
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; all three M08 workers settled and released
+ACTIVE_WRITE_TASK: NONE; writer positively settled/released
 
-ACTIVE_WRITE_DISPATCH: NONE; all M08 resources released
+ACTIVE_WRITE_DISPATCH: NONE; writer ctx_3cdea7c7994f settled/released
 
-FROZEN_PHASE_PLAN: msg_44a38238f350; exact8test/processpaths; ALL production andexistingtest/toolingfiles byteprotected; no productionwriter authority
+FROZEN_PHASE_PLAN: msg_6591c5227528; exact12code/test plusRootSTATE/RUNBOOK14paths; M08PlanDoc/APIs/helpers/browser/testsdata/packages protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -417,3 +417,29 @@ M08_ACCEPTANCE: {"acceptedUTC":"2026-09-18T05:33:46.643709+00:00","run":"run_c5b
 M08_METRICS_PRECHECKPOINT: {"measuredUTC":"2026-09-18T05:33:46.609040+00:00","wallClockMinutes":28.443,"window":"actual M08 Run creation to this snapshot; excludes earlier human idle history","workersLaunched":3,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":19,"targetedValidationDefinition":"unique instrumented FAST command receipts including affected tests/lint/typecheck/diff-check; failures retained","fullValidations":1,"correctionCycles":1,"freshAuditFindings":3,"humanGates":0,"internalReportBytes":87795,"internalReportDefinition":"unique worker report JSON files, not duplicate CLI envelopes or raw logs","summaryEvidenceBytes":810437,"rawEvidenceBytes":5171807,"evidenceByteWindow":"current filesystem snapshot, includes receipts/manifests/prompts, excludes final metric record itself","CavemanEnabledRoles":[],"tokenUsage":"UNREPORTED","comparison":{"M03":103.8,"M04":73.648,"M05":37.537,"M06":49.059,"M07":32.357},"causalSavingsClaim":false}
 
 M08_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_PROGRAMACION_IMPLEMENTATION_SLICE. No future Programación implementation, production testability change, backend/F2E rule or milestone is authorized. Refactor proposal is documentation only. Historical incidents/correction RAW remain preserved. Post-checkpoint identity/time/bytes are durable Orca evidence in this Run, never self-referenced as a future SHA here.
+
+## HUMAN AUTHORIZATION — WEB_UX_MILESTONE_09
+
+M09_AUTHORITY: {"run":"run_91478368718c","entryHEAD":"b4e5659ce1b4de93aa099050929972285404f390","sourcePlanSHA256":"034bb77ba056fdebf0de511d3263c617e6bef8e2f0963717faf8e4f95569fcb5","sourceM08Manifest":"msg_8bcce555b41a","M08Gate":"gate_fbc6ad2c26fc","freeze":"msg_6591c5227528","exactPaths":["auditoria/product-delivery/web-ux/WEB-UX-RUNBOOK.md","auditoria/product-delivery/web-ux/WEB-UX-STATE.md","src/App.tsx","src/modulos/programacion/componentes/CalendarioHorariosInstructor.tsx","src/modulos/programacion/componentes/EditarHorarioSemanalDialog.tsx","src/modulos/programacion/paginas/SalonHorarios.tsx","src/pages/salones/SalonHorarios.test.tsx","src/pages/salones/SalonHorarios.tsx","src/pages/salones/SalonHorariosCaracterizacion.test.tsx","src/pages/salones/components/CalendarioHorariosInstructor.test.tsx","src/pages/salones/components/CalendarioHorariosInstructor.tsx","src/pages/salones/components/CalendarioHorariosInstructorCaracterizacion.test.tsx","src/pages/salones/components/EditarHorarioSemanalDialog.tsx","src/pages/salones/components/EditarHorarioSemanalDialogCaracterizacion.test.tsx"],"moves":{"src/pages/salones/SalonHorarios.tsx":"src/modulos/programacion/paginas/SalonHorarios.tsx","src/pages/salones/components/CalendarioHorariosInstructor.tsx":"src/modulos/programacion/componentes/CalendarioHorariosInstructor.tsx","src/pages/salones/components/EditarHorarioSemanalDialog.tsx":"src/modulos/programacion/componentes/EditarHorarioSemanalDialog.tsx"},"preWriteCharacterization":{"Vitest":47,"Chromium":20,"result":"PASS","all143EntryHashesExact":true},"scope":"Names/exports and allnon-modulepathbytes preserved. No productionrefactor/UX/a11y/responsive/state/effect/request/session/auth/permission/API/Query/dependency/F2E/business changes. M08known gaps retainedNOT_LOCKED, backendcompatibilityUNVERIFIED. Root onlyStateRunbook; oneLunamediumwriter for12code/test paths. No gitmv/staging untilfinalGatePASS. NEW independentSolhighaudit/fullGATE403prior mandatory.","budget":"New explicit human M09 milestone phase starts0/2; M08historical1/2 and incidents remainunchanged, no reset withinM09phase.","completion":"HUMAN_GATE_REQUIRED/MILESTONE_COMPLETE/AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE; no later slice automatically authorized"}
+
+M09_STARTUP_RECOVERY: ctx_08c0e305ed18 failed beforeTaskinput on Codex update prompt. Ordinary current-process Skip selected; no tooling/package update. Exact terminal term_01609de1-6cbc-4bf3-8859-3f036dd9af86 independently showed gpt-5.6-luna medium/correctrepository, then sameTask explicitretry ctx_3cdea7c7994f accepted/turnobserved. No duplicate writerTask, no product correction cycle consumed. Original startup failure retained in raw/summary evidence.
+
+M09_PARENT_DIRECTORY_CLARIFICATION: msg_75e531b1e803/msg_16990238b9f5 required destination parent directories missing; reply confirms mkdir of only paginas/componentes inherent to three already-authorized destination files, no new file allowlist or speculative/remainingempty scaffolding. Writer alone creates parents. No scope expansion/Human Gate/implementation correction; 0/2 unchanged.
+
+M09_CORRECTION_01: M09-WIRING-01 stage1-typecheck exit2 missing planned Page target because its two test imports were updated before Page relocation. Deterministic import-only correction inside frozen two Page tests/remaining target wiring; persist conservative cycle1/2 before coordinator correction guidance, NEW final independent audit mandatory. All failed attempts must remain recorded with unique labels; no skip/assertion/body/security/API change. No budget reset between ownership units.
+
+M09_WRITER_SETTLEMENT: task_4c614c468e13/ctx_3cdea7c7994f/msg_735f9cff943f succeeded; reportSHA256 9223160e15fb481e6fd6cb8bc42ceb047d257cf5aef0de9ef5c9978b351abc4b; released BEFORE FIFOACK. Three moves plus App/five test module-path wiring only; Root independently verified all132 protected/14paths/head/index and equivalence. Calendar wholefileBYTE_IDENTICAL; Page/Weekly import-only, graph370edges identical. Final directed47Vitest+20Chromium PASS. Unit-order type/test failures retained in receipts/transcript, correction1/2 spent.
+
+M09_EVIDENCE_INCIDENT: First pre-parent-mkdir mv failed, then its shell still ran stage1-typecheck. A second stage1-typecheck reused the label, overwriting the first combined log/receipt. Historical first combined log currently UNAVAILABLE; original tool-call/mv error/session12292/start chronology preserved in raw/writer-validation-history.json, not fabricated. Root read-only output recovery for original session12292 returned Unknown process id. Later failed stage1 and stage2 logs/receipts and final passing checks remain exact; NEW final auditor must adjudicate the evidence limitation. No claim lost original RAW recovered.
+
+M09_FULL_GATE_OBSERVED: fresh seven-command GATE completed 2026-09-18T23:19:37.391872+00:00; dependency integrity/lint/typecheck/build/diff-check exit0, 328Vitest+75Chromium=403PASS,0FAIL,0SKIP,0FLAKY, all old cases preserved. Postmove47Vitest+20Chromium PASS. Exact non-module-path bytes/equivalent370edgegraph, all132protected. Candidate NOT yet accepted; NEW Sol-high independent audit then actualGate still mandatory. Historical lost first intermediate log explicitly UNAVAILABLE, no suppression/fabrication.
+
+## M09 ACCEPTED COMPLETION — CURRENT AUTHORITY
+
+M09_ACCEPTANCE: {"acceptedUTC":"2026-09-18T23:26:42.505771+00:00","run":"run_91478368718c","gate":"gate_93c2dee7f33f","gateTask":"task_ce1bb589749d","writer":"task_4c614c468e13/ctx_3cdea7c7994f/msg_735f9cff943f","freshAudit":"task_55bc83ee8b84/ctx_7e1b2ce34a96","auditDone":"msg_b0d5abefa154","auditDurableManifest":"msg_ceb0d475229f","auditReportSHA256":"a44b627423cce761f2f381f32b9daefdb4a3c7eedc51e6544503efcd556f244d","auditResult":"PASS","severity":{"P0":0,"P1":0,"P2":4},"tests":{"Vitest":328,"Chromium":75,"total":403,"new":0,"failed":0,"skipped":0,"flaky":0,"directedVitest":47,"directedChromium":20,"M08CaseInventoryIdentical":true},"scope":"exact12code/test plusRootSTATE/RUNBOOK14logicalpaths;3ownershipmoves, App/fiveexistingtest module-string wiring; all132protected exact","equivalence":"Calendar BODY_BYTE_IDENTICAL; Page/Weekly BODY_SEMANTICALLY_IDENTICAL_WITH_IMPORT_ONLY_DELTA; all18 changed specifiers resolve to same modules under moves; all other source/test bytes exact; graph370edges equivalent/no new cycle","correctionCycles":1,"maxCorrectionCycles":2,"nonblockingFindingIDs":["M09-AUDIT-P2-01","M09-AUDIT-P2-02","M09-AUDIT-P2-03","M09-AUDIT-P2-04"],"P2Disposition":"Original overwritten first compiler combined log UNAVAILABLE and original recovery RAW UNREPORTED, no false recovery/retrospective success; later failures retained and exact current acceptance independently proven. Inherited375px clipping/narrow19pxblocks, unmeasuredpostresizegeometry, reconlimitations, stale-response/error-as-empty/listener/a11y gaps NOT_LOCKED, no opportunistic correction.","F2E":"currentbackendcomparisonUNVERIFIED; no semantic decision/API contract change","dependencies":"package.json/package-lock.json and all API/auth/session/permissions/Query/theme/shell sources byteprotected; no update/install","checkpointPolicy":"actual Gate/audit PASS; Root receipt-only closure prospectively audited; explicit exact accepted staging then ONE local ownership checkpoint, no amend/squash/push; actual SHA recorded in durable Orca postcheckpointproof; lastAcceptedCheckpoint retains real existing entry until containing STATE commit discovered","futureImplementation":"NOT_AUTHORIZED; await NEW human decision"}
+
+M09_METRICS_PRECHECKPOINT: {"measuredUTC":"2026-09-18T23:26:03.550954+00:00","wallClockMinutes":27.576,"measurementWindow":"actual Run creation to this snapshot, startup blocked attempt/retry included","workersLaunched":2,"workerDefinition":"distinct writer/auditor Tasks with actual accepted task input; same writerTask retry not double-counted","dispatchLaunchAttempts":3,"startupBlockedAttempts":1,"lunaTasks":1,"solMediumTasks":0,"solHighTasks":1,"targetedValidations":11,"targetedDefinition":"unique currently retained instrumented non-GATE receipt commands, including failures; plus overwritten first same-label typecheck attempt is known separately, original receipt/log unavailable and not silently reconstructed","overwrittenInitialFASTAttemptsKnown":1,"fullValidations":1,"correctionCycles":1,"freshAuditFindings":4,"humanGates":1,"internalReportBytes":11880,"internalReportDefinition":"unique worker report JSON files, no duplicate CLI envelopes","summaryEvidenceBytes":484820,"rawEvidenceBytes":4806137,"byteWindow":"current filesystem snapshot, private raw/summary retained; report files subset of summary; includes prior metric copies if present","CavemanEnabledRoles":[],"tokens":"UNREPORTED","comparisonMinutes":{"M03":103.8,"M04":73.648,"M05":37.537,"M06":49.059,"M07":32.357,"M08":28.603},"causalSavingsClaim":false}
+
+M09_NEXT_RECOMMENDATION_NOT_AUTHORIZED: {"objective":"M10 presentation-only weekly dialog form extraction, requires NEW human authorization","candidatePaths":["src/modulos/programacion/componentes/EditarHorarioSemanalDialog.tsx","src/modulos/programacion/componentes/FormularioHorarioSemanal.tsx","src/pages/salones/components/EditarHorarioSemanalDialogCaracterizacion.test.tsx","src/pages/salones/SalonHorariosCaracterizacion.test.tsx"],"scope":"Only existing Abre/Cierra/Aplicar a partir de fields and versionar/cerrar captions into explicit-values/events leaf; fourth path only mechanically necessary test wiring; Root closure docs separately frozen","preserve":"All copy/labels/inputtypes/min/disabled/focus/Escape/date transforms/preflight/history/views/payloads/guardando/onExito/await order/request semantics stay current; orchestration remains in weekly dialog","knownM08Gaps":"ALL intentionally deferred; no async/listener/responsive/a11y/geometry correction bundled","F2E":"No backend decision expected; compatibility still UNVERIFIED; any contractual ambiguity HUMAN_GATE","risk":"MEDIUM React props/focus, final fresh semantic audit Sol-high","validation":"FAST weekly3/page2 characterization, affected lint/typecheck, weekly browser at768 and dialog375/1440; complete existing regression plus new meaningful tests, independent audit, exact diff and finite freeze","route":"Luna-medium mechanical recon, Sol-medium bounded React extraction, NEW Sol-high independent acceptance audit"}
+
+M09_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. No subsequent Programación work authorized. Historical incidents/budget remain recorded; all known M08 gaps deferred. Current accepted containing checkpoint is obtained mechanically from Git STATE log and durable Run final checkpoint proof; no invented own futureSHA.

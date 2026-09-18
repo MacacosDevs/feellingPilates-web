@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { Routes, Route } from 'react-router-dom';
 import { http, HttpResponse } from 'msw';
-import { SalonHorarios } from './SalonHorarios';
+import { SalonHorarios } from '../../modulos/programacion/paginas/SalonHorarios';
 import { api, deferred, regressionSession, renderRoute } from '../../components/test-support/regression';
 import { server } from '../../../tests/mocks/server';
 import { pageOf, salon, user } from '../../../tests/fixtures/regression';

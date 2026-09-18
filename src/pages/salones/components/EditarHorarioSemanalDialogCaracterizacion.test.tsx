@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
-import { EditarHorarioSemanalDialog } from './EditarHorarioSemanalDialog';
+import { EditarHorarioSemanalDialog } from '../../../modulos/programacion/componentes/EditarHorarioSemanalDialog';
 import { renderWithTheme } from '../../../components/test-support/renderWithTheme';
 import { api, deferred } from '../../../components/test-support/regression';
 import { salon } from '../../../../tests/fixtures/regression';

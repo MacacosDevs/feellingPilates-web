@@ -32,10 +32,10 @@ import {
   eliminarTurno,
   listarTurnosPorSalon,
   listarTurnosPuntuales,
-} from '../../api/calendario';
-import { listarEspecialidadesUsuario, listarUsuarios } from '../../api/usuariosAdmin';
-import { eliminarExcepcionSalon, guardarExcepcionSalon, listarExcepcionesSalon, obtenerSalon } from '../../api/salones';
-import { usePermisos } from '../../auth/usePermisos';
+} from '../../../api/calendario';
+import { listarEspecialidadesUsuario, listarUsuarios } from '../../../api/usuariosAdmin';
+import { eliminarExcepcionSalon, guardarExcepcionSalon, listarExcepcionesSalon, obtenerSalon } from '../../../api/salones';
+import { usePermisos } from '../../../auth/usePermisos';
 import type {
   ApiErrorBody,
   AsignacionInstructorRequest,
@@ -46,10 +46,10 @@ import type {
   TipoTurno,
   TurnoInstructorResponse,
   UsuarioResponse,
-} from '../../api/types';
-import { CalendarioHorariosInstructor } from './components/CalendarioHorariosInstructor';
-import { EditarHorarioSemanalDialog } from './components/EditarHorarioSemanalDialog';
-import { aIso } from './fechas';
+} from '../../../api/types';
+import { CalendarioHorariosInstructor } from '../componentes/CalendarioHorariosInstructor';
+import { EditarHorarioSemanalDialog } from '../componentes/EditarHorarioSemanalDialog';
+import { aIso } from '../../../pages/salones/fechas';
 
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const TAMANO_PAGINA_PUNTUALES = 10;
