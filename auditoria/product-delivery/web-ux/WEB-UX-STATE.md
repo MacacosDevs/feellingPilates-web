@@ -766,3 +766,24 @@ FINAL_HARDENING_ACCEPTANCE: fresh final Sol-high auditor `task_ac3ece5c957b` / `
 FINAL_HARDENING_DECISION_GATE: gate-only `task_84dd9f7956da`; actual Gate `gate_4499e8a43915` resolved PASS. Full accepted validation is `350 Vitest + 78 Chromium = 428 PASS`, zero failures/skips/required flaky, plus npm integrity, lint, TypeScript, build and diff-check. Scope is exact, candidate manifest `06535c03b5645a54b8bb4331e8cd44b58303b9414c0856223ad627f223c2ab4b`, audit P0/P1 zero and repository integrity PASS. One explicit 17-path local final-hardening checkpoint follows; no push. After it, automatically continue to a distinct final closure re-audit.
 
 FINAL_HARDENING_METRICS_PRECHECKPOINT: run creation through hardening Gate measured approximately 101.583 minutes; 7 workers launched (Luna-medium 1, Sol-medium 3, Sol-high 3); 2 correction cycles consumed; 3 accepted complete R1 gates plus 1 preserved interrupted full-Vitest attempt; two iterative P1 audit findings under stable id `UX18-A11Y-ROLE-01`, final P0/P1/P2 all zero; current evidence tree 215083 bytes; tokens UNREPORTED. No causal performance claim.
+
+## WEB UX TECHNICAL CLOSURE READY
+
+FINAL_HARDENING_CHECKPOINT: exact local checkpoint `10bda0101dd3b38d0ddeaa3bec1edaad1a708970`, 17 paths (15 accepted product/test paths plus STATE/RUNBOOK), created after `gate_4499e8a43915` PASS. Post-checkpoint worktree and index were clean; no push, merge, tag or publication occurred.
+
+FINAL_CLOSURE_GATE_VALIDATION: fresh clean-checkpoint R1 GATE PASS: npm integrity, lint, TypeScript, `350/350` Vitest, `78/78` Chromium, build and diff-check; `428 PASS / 0 FAIL / 0 SKIP / 0 required flaky`. The complete synthetic/intercepted Chromium matrix covers auth/session, shell/navigation, Actividades, Usuarios, Roles, Salones, Ventas and Programación at representative 375/768/1440 widths, including Programación keyboard/focus/names, recurrent/punctual blocks, narrow presentation, geometry, drag/resize, M16 listener lifecycle, M17 stale read/error/retry and Ventas contrast. No real backend, Payments, Stripe or Maps calls.
+
+FINAL_CLOSURE_AUDIT: distinct fresh Sol-high `task_d65f2f2eb670` / `ctx_19629c485f66`, completed/released, PASS with P0=0, P1=0, P2=7 and no `BLOCKING_FOR_WEB_UX_CLOSURE` residual. Former P1s `CLOSURE-A11Y-01`, `CLOSURE-RESP-01` and `CLOSURE-CONTRAST-01` are `ALREADY_CLOSED`. Residual classifications: broader WCAG certification limitation `INFORMATIONAL`; Calendar size/orchestration and 996.96kB production chunk warning `NONBLOCKING_HARDENING`; F2E compatibility and Payments authority `DEFERRED_CROSS_LANE`; historical process metadata and optional/color tooling notes `INFORMATIONAL`; the prior Salones timeout and M18 convergence concern `ALREADY_CLOSED`.
+
+TECHNICAL_CLOSURE_DECISION_GATE: gate-only `task_a7d5b2a5dbc3`; Gate `gate_0419d5a79438` resolved PASS. It establishes only `WEB_UX_TECHNICAL_CLOSURE_READY`. It does not establish remote publication, PR, merge, deployment, cutover, F2E compatibility or Payments integration acceptance.
+
+FINAL_METRICS: final hardening measured approximately 101.583 minutes through its Gate; closure re-audit/checkpoint validation measured approximately 14.783 minutes through the technical-closure Gate; combined run approximately 116.367 minutes. Workers launched 8: Luna-medium 1, Sol-medium 3, Sol-high 4. Accepted complete validations 4, plus one preserved interrupted full-Vitest attempt; correction cycles 2; iterative hardening audit findings 2 under one stable P1 id, final closure P0=0/P1=0/P2=7; evidence bytes: internal JSON reports 94156, top-level summary evidence 111725, raw validation logs 152986, total evidence tree 274704; tokens UNREPORTED. No causal timing or token-savings claim.
+
+STATUS: `HUMAN_GATE_REQUIRED`.
+HUMAN_GATE_REASON: `TECHNICAL_CLOSURE_READY`.
+NEXT_PHASE: `AWAIT_HUMAN_AUTHORIZATION_FOR_WEB_UX_CONTROLLED_PUBLICATION_PREFLIGHT`.
+REMOTE_PUBLICATION: `NOT_AUTHORIZED`.
+F2E_COMPATIBILITY: `DEFERRED_CROSS_LANE / UNVERIFIED`.
+PAYMENTS_AUTHORITY: `DEFERRED_CROSS_LANE / UNCHANGED`.
+
+One explicit process-only checkpoint may now contain exactly STATE/RUNBOOK to materialize this audited closure receipt. No product change, push, merge, PR, tag, deployment or cutover is authorized.
