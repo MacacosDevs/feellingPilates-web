@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_17
-CURRENT_PHASE: M17_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_CLOSURE_PREFLIGHT
+CURRENT_PHASE: CLOSURE_PREFLIGHT_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_17_PASS_CLOSED
+FUNCTIONAL_MILESTONE: NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,27 +30,27 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_a419b2147630
-LAST_GATE_ID: gate_dcb9867e754e
-LAST_ACCEPTED_CHECKPOINT: e76b750ae025666c82ad337efc76603994ad27d6
-CURRENT_CANDIDATE_MANIFEST: M17 accepted exact eight-path candidate; pre-closure audited fingerprint 641f065f9cd666c71d00a99880759e41b8ba9f6ed593a8a408fe9b4da89625da and manifest SHA256 87d4896dba987bd90e295ec86f10d9bbd94399b4f33352320fbff0bcef8b9a77; final receipt-only STATE/RUNBOOK bytes and checkpoint identity are discoverable from Git without recursive self-identity
+LAST_RUN_ID: run_72fdd13d5b2b
+LAST_GATE_ID: gate_d1fdc4bc97dd
+LAST_ACCEPTED_CHECKPOINT: ba542d4e557a48ffe94b003d730b6742a4382774
+CURRENT_CANDIDATE_MANIFEST: M18 entry has 150 tracked paths with canonical fingerprint d52547d258b6a29cdab96e642920b27e79749d691405a844a72457b3ecf1a7d7 and manifest SHA256 e0a762070bdddcf126e98cf3634386d1aa6fe1ebbf2035dd21df92eec34a7d1b; no productive M18 candidate exists before reproducible geometry evidence and finite allowlist freeze
 LAST_ACCEPTED_TESTS: 420
 LAST_ACCEPTED_VITEST: 343
 LAST_ACCEPTED_PLAYWRIGHT: 77
-CORRECTION_CYCLES_USED: 1
+CORRECTION_CYCLES_USED: 0
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
-HUMAN_GATE_REASON: MILESTONE_COMPLETE
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_ONE_FINAL_HARDENING_MILESTONE
+HUMAN_GATE_REASON: FINAL_HARDENING_REQUIRED
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; M17 writers and auditors complete/released
+ACTIVE_WRITE_TASK: NONE; M18 read-only recon complete/released; no writer created
 
-ACTIVE_WRITE_DISPATCH: NONE; all M17 worker resources released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_c265d2a0fa77 complete/released
 
-FROZEN_PHASE_PLAN: M17 exact eight paths: Root STATE/RUNBOOK; SalonHorarios and EditarHorarioSemanalDialog; SalonHorarios main/characterization tests, weekly-dialog characterization, and Programación Chromium spec. APIs/client/shared primitive/Calendar and every other entry path protected.
+FROZEN_PHASE_PLAN: NO PRODUCT ALLOWLIST FROZEN; Closure Preflight recommends but does not authorize one future bounded hardening milestone
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 412
+TEST_BASELINE: 420
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -650,3 +650,85 @@ M17_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-19T05:36:25Z","wallClockMinut
 M17_NEXT_RECOMMENDATION_NOT_AUTHORIZED: address only viewport-resize geometry remeasurement in `CalendarioHorariosInstructor`, with exact candidate paths derived by future recon and expected scope limited to Calendar plus indispensable existing geometry/Chromium characterization and Root closure docs. Risk HIGH because grid/block placement, drag and resize coordinates depend on measurements. Protect exact 56px axis, headers, x/y/width/height, overlap/adjacency, pointer targets, drag/resize results, callbacks, mutation counts/payloads and M16 cleanup at stable 375/768/1440 states; add deterministic transition evidence for 1440→768 and 768→375 showing current visual geometry is remeasured without changing temporal/F2E semantics. Require full420+ GATE, new Sol-high audit and actual gate. Responsive clipping, broader accessibility and backend F2E compatibility remain deferred/unverified. This recommendation is not authority.
 
 M17_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact eight-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.
+
+## M18 HUMAN AUTHORIZATION / VIEWPORT GEOMETRY REMEASUREMENT
+
+Human authorization UX-17 starts from exact accepted checkpoint `ba542d4e557a48ffe94b003d730b6742a4382774`, clean working tree and empty index. Run `run_f9edc87b7daf`; entry manifest contains150 tracked paths, canonical fingerprint `d52547d258b6a29cdab96e642920b27e79749d691405a844a72457b3ecf1a7d7`, manifest SHA256 `e0a762070bdddcf126e98cf3634386d1aa6fe1ebbf2035dd21df92eec34a7d1b`. Accepted baseline is343 Vitest +77 Chromium =420 PASS.
+
+M18 authorizes only correction of reproducible stale viewport/layout measurements so geometry reached by resize converges exactly to a fresh render at the same destination. Fresh Luna-medium recon must mechanically map measurement ownership and reproduce at least1440→768 before any productive write; if not reproducible, STOP `KNOWN_GAP_NOT_REPRODUCIBLE`. Preserve the M14 pure formulas and 56px/64px authorities unless evidence locates the defect there; preserve all requests/mutations, business/F2E semantics, M16 listeners and M17 read-state behavior. No clipping/layout redesign, new breakpoint, dependency, accessibility expansion or later-milestone authority. Sol-medium implementation and complete420+ GATE, a new Sol-high audit with P0=P1=0, actual Decision Gate and explicit local checkpoint are mandatory. Correction budget starts0/2; no push.
+
+## M18 STOP / KNOWN GAP NOT REPRODUCIBLE
+
+Read-only recon `task_0864e6819952` / `ctx_c265d2a0fa77`, actual `codex:gpt-5.6-luna:medium`, completed and released without repository writes. It found no viewport/container measurement state, ResizeObserver or resize listener in Calendar: rendered width is current browser flex layout; M14 owns deterministic scalar/CSS formulas; `gridRef` and `columnasRef` read current `getBoundingClientRect()` only during interactions. Existing scoped Chromium passed3/3 at375/768/1440 and resize alone produced zero PATCH/POST/DELETE.
+
+The worker's private harness did not complete the requested transition ledger and therefore failed closed without proposing an allowlist. Root preserved that report, corrected only the disposable harness outside the repository, and independently completed direct-fresh versus settled-resize comparison with identical synthetic data. After two animation frames, every normalized destination is exactly equal: 1440→768 fingerprint `8f347c5d2cfba3cf9f02edd54a3a15220e156dea2f82202a2732addf9b76eac9`; 768→375 fingerprint `59b6cbc5e221e8ecb86bb65599c1d5e51b69ac6240e87001442a6b8a54a6c63a`; 375→1440 fingerprint `449a052651e0fe24251f3a72fc5b23952b206c1f22177420d455bf70788d1e58`. Raw evidence SHA256 `f06266383c296f2863977928143ea0ddba6cb8297fa18d1bdbd7bdcab40825d5`; summary SHA256 `150ec1da2b689bc90c409c7578d0dc96c28407d515ed2850b482da1cc00a4a5a`.
+
+M18_STOP_DECISION: the user-required fail-closed condition applies. `KNOWN_GAP_NOT_REPRODUCIBLE`; no productive allowlist, writer, product/test change, correction cycle, full acceptance GATE, fresh acceptance auditor, Decision Gate or M18 checkpoint exists. Entry HEAD remains `ba542d4e557a48ffe94b003d730b6742a4382774`; accepted420-test baseline remains authoritative. STATE/RUNBOOK contain only the uncommitted process receipt, staging remains empty, no push.
+
+HUMAN_DECISION_REQUIRED: recommended direction is to close the historical resize-remeasurement item as already convergent in current M18 evidence and authorize `WEB_UX_CLOSURE_PREFLIGHT`. Alternatives are to supply an exact reproducible viewport/layout scenario for a renewed bounded M18 investigation, or explicitly authorize a different scope if evidence points outside Calendar. No option is selected automatically.
+
+M18_METRICS_AT_STOP: {"snapshotUTC":"2026-09-19T13:38:28.409860Z","wallClockMinutes":15.640,"workersLaunched":1,"lunaTasks":1,"solMediumTasks":0,"solHighTasks":0,"targetedValidations":2,"targetedDefinition":"successful existing scoped Chromium 3/3 plus completed private settled fresh-vs-transition geometry ledger; disposable harness debugging attempts excluded","fullValidations":0,"correctionCycles":0,"freshAuditFindings":0,"humanGates":1,"internalReportBytes":6267,"summaryEvidenceBytes":71861,"rawEvidenceBytes":23215,"CavemanEnabledRoles":[],"tokens":"UNREPORTED","comparison":{"M16Minutes":48.2,"M17Minutes":63.381},"causalSavingsClaim":false}
+
+## M18 NON-REPRODUCIBLE RECONCILIATION — AUTHORIZED CANDIDATE
+
+Human authorization dated 2026-09-19 permits process reconciliation of the stopped M18 evidence and, only after one fresh independent reconciliation audit passes with P0=P1=0, automatic continuation into a read-only Web UX Closure Preflight. It does not authorize a manufactured M18 fix, another functional milestone, F2E/Payments adjudication, publication, merge, rebase, tag, cutover or deployment.
+
+Mechanical reconciliation against accepted product HEAD `ba542d4e557a48ffe94b003d730b6742a4382774` confirms an empty index and exactly the expected process-only dirty paths `WEB-UX-STATE.md` and `WEB-UX-RUNBOOK.md`. All other 148 tracked product/test/package/process-plan/policy paths match the M18 entry manifest byte-for-byte; package manifests and product sources therefore remain the accepted M17 bytes. M18 evidence hashes remain: entry manifest `e0a762070bdddcf126e98cf3634386d1aa6fe1ebbf2035dd21df92eec34a7d1b`, raw settled ledger `f06266383c296f2863977928143ea0ddba6cb8297fa18d1bdbd7bdcab40825d5`, compact settled summary `150ec1da2b689bc90c409c7578d0dc96c28407d515ed2850b482da1cc00a4a5a`.
+
+RESIZE_REMEASUREMENT_HISTORICAL_GAP: NOT_REPRODUCIBLE_ON_CURRENT_ACCEPTED_BASELINE. The historical observation remains part of provenance; it is not relabelled false. Fresh reproduction on the current accepted baseline covers the authorized identical-data transitions after two animation frames: `1440→768`, `768→375`, and `375→1440`. Fresh-target and resized-target normalized fingerprints are exactly equal for every pair, without loosened tolerance, and resize-only PATCH/POST/DELETE counts are all zero.
+
+CURRENT_GEOMETRY_CONVERGENCE: PASS.
+PRODUCT_CORRECTION: NOT_REQUIRED.
+M18_CLOSURE_CANDIDATE: CLOSED_WITHOUT_PRODUCT_CHANGE.
+M18_CLOSURE_REASON: CURRENT_BEHAVIOR_ALREADY_CONVERGENT.
+M18_PRODUCT_CHECKPOINT: UNCHANGED_FROM_M17 (`ba542d4e557a48ffe94b003d730b6742a4382774`).
+F2E_COMPATIBILITY: UNVERIFIED; no backend/F2E semantic decision is made by this reconciliation.
+M18_RECONCILIATION_AUDIT: PASS; Closure Preflight may proceed under the current human authorization.
+
+M18_RECONCILIATION_AUDIT_RESULT: PASS; fresh independent Sol-high `task_de3f598df9ae` / `ctx_17765af992cd`, effective route `codex:gpt-5.6-sol:high`, P0=0, P1=0, P2=0, completed/released. It independently verified exact HEAD/index/dirty scope, all 148 protected hashes, exact JSON equality for all three settled transitions, zero resize mutations, preserved historical provenance, unchanged M17 product checkpoint and F2E `UNVERIFIED`. Report: `/tmp/feelingpilates-web-ux-closure-preflight/m18-reconciliation-audit.json`.
+
+M18_FINAL_DISPOSITION: CLOSED_WITHOUT_PRODUCT_CHANGE / CURRENT_BEHAVIOR_ALREADY_CONVERGENT / PRODUCT_CHECKPOINT_UNCHANGED_FROM_M17.
+
+## WEB UX CLOSURE PREFLIGHT — ACTIVE AUTHORITY
+
+Run `run_72fdd13d5b2b`. Human authorization permits read-only inventory, one fresh complete R1 GATE, synthetic/intercepted browser closure matrix, current residual classification, one fresh Sol-high closure audit and minimum process-only STATE/RUNBOOK closure evidence. Product/test/package writes, functional refactors, F2E/Payments decisions and all remote publication remain unauthorized. Acceptance must distinguish closure readiness from any recommendation for exactly one later bounded hardening milestone.
+
+## WEB UX CLOSURE PREFLIGHT — PRE-AUDIT EVIDENCE
+
+Fresh complete R1 GATE ran from `2026-09-19T14:56:24Z` through `2026-09-19T15:01:13Z`: `npm ls --all`, oxlint, TypeScript, 38 Vitest files with `343/343 PASS`, 11 Chromium files with `77/77 PASS`, production build and `git diff --check` all exited zero. Total is `420 PASS / 0 FAIL / 0 SKIP / 0 required flaky`. Lint emitted no warning. Build retained the measured Vite chunk warning at `989.16 kB` minified / `300.07 kB` gzip. Playwright retained only the inherited `NO_COLOR`/`FORCE_COLOR` process warning.
+
+The synthetic/intercepted closure browser matrix covers login/auth, shell, Actividades, Usuarios, Roles, Salones, Ventas and Programación at representative `375`, `768` and `1440` widths. It includes navigation, focus/keyboard, loading, empty, recoverable errors and forms/dialogs as applicable. Programación additionally covers populated/empty/error/retry, recurrent and punctual blocks, drag/resize, request ledgers, M16 listener contracts, M17 stale-read/error contracts and the exact settled M18 resize-convergence ledger. No real backend write, Payments call or Maps network call was used.
+
+Current residual classification before the fresh closure audit:
+
+- `CLOSURE-A11Y-01 / BLOCKING_FOR_WEB_UX_CLOSURE`: core Programación calendar interactions remain mouse-only or unnamed. Recurrent/punctual blocks and resize handles expose mouse handlers without keyboard equivalents; active creation areas are mouse-only; date headers use clickable non-focusable `Box`; weekly navigation controls remain unnamed. Current E2E explicitly records that the mouse-only blocks have no role/name.
+- `CLOSURE-RESP-01 / BLOCKING_FOR_WEB_UX_CLOSURE`: accepted 375px geometry can yield 19px-wide schedule blocks with `overflow:hidden`, internal padding, meaningful labels and compact actions. Fresh 375 Chromium confirms current characterized containment/geometry but does not classify that narrow presentation as usable. This is separate from M18, whose current-layout convergence passes.
+- `CLOSURE-CONTRAST-01 / BLOCKING_FOR_WEB_UX_CLOSURE`: Ventas retains the accepted local small-text ratios `3.633` for the Mixtos count badge and `3.860` for the outlined info/payment chip. Presentation-only contrast hardening is required without changing any financial semantics.
+- `CLOSURE-ARCH-01 / NONBLOCKING_HARDENING`: `CalendarioHorariosInstructor.tsx` remains 1788 lines, but accepted extractions plus lifecycle/race characterization leave no current correctness blocker attributable to size alone.
+- `CLOSURE-F2E-01 / DEFERRED_CROSS_LANE`: backend/F2E compatibility remains `UNVERIFIED`; no Web evidence authorizes cutover or backend semantic acceptance.
+- `CLOSURE-PAYMENTS-01 / DEFERRED_CROSS_LANE`: no current Web closure blocker requires a Payments decision; financial authority remains separate.
+- `CLOSURE-BUNDLE-01 / NONBLOCKING_HARDENING`: the production chunk warning remains measurable, but the build passes and current authority contains no failed performance budget or demonstrated runtime failure.
+- `CLOSURE-LINT-01 / ALREADY_CLOSED`: the historical Roles lint warning is absent from fresh lint.
+- `CLOSURE-PROCESS-01 / INFORMATIONAL`: historical P2/report-metadata incidents remain preserved, while current versioned authority and hashes are unambiguous.
+- `CLOSURE-RUNTIME-01 / INFORMATIONAL`: the inherited color-process warning has no test/product impact.
+
+CLOSURE_DECISION_CANDIDATE: `ONE_FINAL_HARDENING_MILESTONE_REQUIRED`. The proposed future scope is one bounded presentation/accessibility milestone covering Programación keyboard/semantic operability and the narrow 375px block presentation, plus the two known local Ventas contrast failures. Candidate production paths are only the Programación Calendar/header/recurrent/punctual presentation owners and the three accepted Ventas page owners; exact scope must be freshly reconciled and frozen if separately authorized. It must preserve every Programación geometry/formula/drag/resize/request/payload/F2E-adjacent invariant, Ventas financial/payment semantics, M16/M17, API/session/permissions and both cross-lane boundaries. Required future acceptance includes characterization first, keyboard/name/focus checks, `375/768/1440`, exact geometry/interaction/request equivalence, contrast `>=4.5` for the two known small-text combinations, complete `420+` R1 GATE, one fresh Sol-high audit and an actual Decision Gate. This recommendation is `NOT_AUTHORIZED`.
+
+CLOSURE_PREFLIGHT_SUMMARY_EVIDENCE: `/tmp/feelingpilates-web-ux-closure-preflight/closure-preflight-summary.json`; product/test/package bytes remain unchanged from accepted M17 HEAD.
+
+## WEB UX CLOSURE PREFLIGHT — AUDIT / DECISION / HUMAN GATE
+
+Fresh independent closure auditor `task_0fea653643cb` / `ctx_4fa1f363d5c5`, actual route `codex:gpt-5.6-sol:high`, completed/released with `WEB_UX_CLOSURE_AUDIT=FAIL`, P0=0, P1=3, P2=7. Report SHA256: `73a249fb2d350edd274fdeda6f1526d5a5393525bbd78ed4c3429ae5dd832555`. The FAIL means current technical closure is not ready; it does not invalidate the preflight. The auditor independently confirmed `CLOSURE-A11Y-01`, `CLOSURE-RESP-01` and `CLOSURE-CONTRAST-01` as closure-blocking P1, while accepting the milestone chain, M18 reconciliation, complete 420-test GATE, browser matrix, M16/M17 protections, repository integrity, process authority and no-publication boundary.
+
+The auditor corrected the future candidate ownership: `src/modulos/programacion/paginas/SalonHorarios.tsx` must be considered because the unnamed week controls are owned there. The complete future production candidate set is therefore SalonHorarios, Calendar, Calendar headers, recurrent/punctual block presentations and the three accepted Ventas page owners; five existing characterization/browser test owners are candidates. This is a recommendation subject to fresh exact recon/freeze, not an allowlist or authority to write.
+
+Closure Preflight Decision Gate task `task_5c38e6762d55` / Gate `gate_d1fdc4bc97dd` resolved `PASS`. Its accepted proposition is that the evidence competently establishes `ONE_FINAL_HARDENING_MILESTONE_REQUIRED` before technical closure, with M18 history honest, complete validation green, exactly three P1 findings, one coherent bounded recommendation, F2E/Payments unchanged and publication unauthorized. It does not accept Web UX technical closure and does not authorize the future implementation.
+
+CLOSURE_DECISION: `ONE_FINAL_HARDENING_MILESTONE_REQUIRED`.
+FINAL_HARDENING_AUTHORITY: `NOT_AUTHORIZED`.
+F2E_COMPATIBILITY: `UNVERIFIED / DEFERRED_CROSS_LANE`.
+PAYMENTS_DEPENDENCY: `NONE_FOR_CURRENT_WEB_CLOSURE_DECISION`; Payments authority remains separate.
+REMOTE_PUBLICATION: `NOT_AUTHORIZED`.
+NEXT: `HUMAN_GATE_REQUIRED / FINAL_HARDENING_REQUIRED / AWAIT_HUMAN_AUTHORIZATION_FOR_ONE_FINAL_HARDENING_MILESTONE`.
+
+One explicit process-only checkpoint may now contain exactly `WEB-UX-STATE.md` and `WEB-UX-RUNBOOK.md`. The accepted product checkpoint remains M17 `ba542d4e557a48ffe94b003d730b6742a4382774`; the containing closure-preflight process checkpoint is discoverable from Git after commit without recursive self-identity. No push.
