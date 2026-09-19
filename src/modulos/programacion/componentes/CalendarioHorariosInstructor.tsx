@@ -54,15 +54,23 @@ import type {
 import { BloqueHorarioCalendario } from './BloqueHorarioCalendario';
 import { CabecerasCalendario, type CabeceraCalendarioPresentacion } from './CabecerasCalendario';
 import { EjeHorarioCalendario, type MarcaEjeHorarioPresentacion } from './EjeHorarioCalendario';
+import {
+  ALTURA_MINIMA_ACCIONES_EN_LINEA,
+  ANCHO_EJE_HORARIO,
+  PIXELES_POR_MINUTO as PX_POR_MINUTO,
+  calcularAlturaBloqueCalendario,
+  calcularAlturaRangoCalendario,
+  calcularAlturaTotalCalendario,
+  calcularAlturaVistaPreviaCalendario,
+  calcularGeometriaColumnasCalendario,
+  calcularPosicionMarcaHoraria,
+  calcularPosicionVerticalCalendario,
+} from '../geometria/geometriaVisualCalendario';
 
 const DIAS_CORTO = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DIAS_LARGO = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const MESES_CORTO = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const SLOT_MINUTOS = 30;
-const PX_POR_HORA = 64;
-const PX_POR_MINUTO = PX_POR_HORA / 60;
-/** Bloques con menos altura que esto muestran un botón "más acciones" en vez de la fila de íconos, que no cabe. */
-const ALTURA_MINIMA_ACCIONES_EN_LINEA = 66;
 
 function aMinutos(hora: string): number {
   const [h, m] = hora.split(':').map(Number);
@@ -647,17 +655,16 @@ export function CalendarioHorariosInstructor({
     };
   }, [dias]);
 
-  const alturaTotal = (maxCierre - minApertura) * PX_POR_MINUTO;
+  const alturaTotal = calcularAlturaTotalCalendario(minApertura, maxCierre);
   const marcasHora = useMemo(() => {
     const marcas: number[] = [];
     for (let m = Math.ceil(minApertura / 60) * 60; m <= maxCierre; m += 60) marcas.push(m);
     return marcas;
   }, [minApertura, maxCierre]);
-  const anchoEjeHorario = 56;
   const marcasEjeHorario: MarcaEjeHorarioPresentacion[] = marcasHora.map((m) => ({
     valor: m,
     etiqueta: aHora(m),
-    posicionSuperior: (m - minApertura) * PX_POR_MINUTO - 7,
+    posicionSuperior: calcularPosicionMarcaHoraria(m, minApertura),
   }));
 
   function yAminutos(clientY: number): number {
@@ -1025,7 +1032,7 @@ export function CalendarioHorariosInstructor({
       <CabecerasCalendario cabeceras={cabeceras} />
 
       <Box sx={{ display: 'flex', borderTop: '1px solid', borderColor: 'divider', bgcolor: '#fbfbfc' }}>
-        <EjeHorarioCalendario ancho={anchoEjeHorario} altura={alturaTotal} marcas={marcasEjeHorario} />
+        <EjeHorarioCalendario ancho={ANCHO_EJE_HORARIO} altura={alturaTotal} marcas={marcasEjeHorario} />
 
         <Box ref={gridRef} sx={{ position: 'relative', display: 'flex', flex: 1, height: alturaTotal }}>
           {marcasHora.map((m) => (
@@ -1033,7 +1040,7 @@ export function CalendarioHorariosInstructor({
               key={m}
               sx={{
                 position: 'absolute',
-                top: (m - minApertura) * PX_POR_MINUTO,
+                top: calcularPosicionVerticalCalendario(m, minApertura),
                 left: 0,
                 right: 0,
                 borderTop: '1px dashed',
@@ -1104,14 +1111,14 @@ export function CalendarioHorariosInstructor({
                 {/* Franja fuera del horario de este día: no interactiva. */}
                 {abiertoInicio > minApertura && (
                   <Box
-                    sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: (abiertoInicio - minApertura) * PX_POR_MINUTO, bgcolor: 'action.hover' }}
+                    sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: calcularAlturaRangoCalendario(minApertura, abiertoInicio), bgcolor: 'action.hover' }}
                   />
                 )}
                 {abiertoFin < maxCierre && (
                   <Box
                     sx={{
                       position: 'absolute',
-                      top: (abiertoFin - minApertura) * PX_POR_MINUTO,
+                      top: calcularPosicionVerticalCalendario(abiertoFin, minApertura),
                       left: 0,
                       right: 0,
                       bottom: 0,
@@ -1148,10 +1155,10 @@ export function CalendarioHorariosInstructor({
                     onMouseDown={(e) => iniciarCreacion(dia, e)}
                     sx={{
                       position: 'absolute',
-                      top: (abiertoInicio - minApertura) * PX_POR_MINUTO,
+                      top: calcularPosicionVerticalCalendario(abiertoInicio, minApertura),
                       left: 0,
                       right: 0,
-                      height: (abiertoFin - abiertoInicio) * PX_POR_MINUTO,
+                      height: calcularAlturaRangoCalendario(abiertoInicio, abiertoFin),
                       cursor: puedeGestionar ? 'copy' : 'default',
                       '&:hover': puedeGestionar ? { bgcolor: 'action.selected' } : undefined,
                     }}
@@ -1164,8 +1171,8 @@ export function CalendarioHorariosInstructor({
                       position: 'absolute',
                       left: 4,
                       right: 4,
-                      top: (Math.min(creando.inicio, creando.fin) - minApertura) * PX_POR_MINUTO,
-                      height: Math.max(4, Math.abs(creando.fin - creando.inicio) * PX_POR_MINUTO),
+                      top: calcularPosicionVerticalCalendario(Math.min(creando.inicio, creando.fin), minApertura),
+                      height: calcularAlturaVistaPreviaCalendario(creando.inicio, creando.fin),
                       bgcolor: (t) => alpha(t.palette.secondary.main, 0.35),
                       border: '1.5px dashed',
                       borderColor: 'secondary.main',
@@ -1178,10 +1185,9 @@ export function CalendarioHorariosInstructor({
                   const enAjuste = ajuste?.turnoId === turno.id;
                   const inicio = enAjuste ? ajuste.inicio : aMinutos(turno.horaInicio);
                   const fin = enAjuste ? ajuste.fin : aMinutos(turno.horaFin);
-                  const alturaTurnoBloque = Math.max(28, (fin - inicio) * PX_POR_MINUTO);
+                  const alturaTurnoBloque = calcularAlturaBloqueCalendario(inicio, fin);
                   const columna = columnas.get(turno.id) ?? 0;
-                  const anchoPct = enAjuste ? 100 : 100 / total;
-                  const izqPct = enAjuste ? 0 : (columna * 100) / total;
+                  const geometriaColumnas = calcularGeometriaColumnasCalendario(columna, total, enAjuste);
 
                   // Excepción que reemplaza/redimensiona este bloque solo para esta fecha (horario
                   // especial puntual): se pinta como una sola figura, con su propio rango e
@@ -1199,7 +1205,7 @@ export function CalendarioHorariosInstructor({
                     const enAjusteExcepcion = ajusteExcepcion?.excepcionId === excepcionTurno.id;
                     const uInicio = enAjusteExcepcion ? ajusteExcepcion.inicio : aMinutos(excepcionTurno.horaInicio);
                     const uFin = enAjusteExcepcion ? ajusteExcepcion.fin : aMinutos(excepcionTurno.horaFin);
-                    const alturaExcepcionOverlay = Math.max(28, (uFin - uInicio) * PX_POR_MINUTO);
+                    const alturaExcepcionOverlay = calcularAlturaBloqueCalendario(uInicio, uFin);
                     const solapaExcepcion = enAjusteExcepcion && ajusteExcepcionSolapa;
                     const actividadesMostradas = excepcionTurno.actividades;
                     const instructoresMostrados = excepcionTurno.instructores;
@@ -1215,10 +1221,10 @@ export function CalendarioHorariosInstructor({
                         }
                         sx={{
                           position: 'absolute',
-                          left: `calc(${izqPct}% + 3px)`,
-                          width: `calc(${anchoPct}% - 6px)`,
-                          top: (uInicio - minApertura) * PX_POR_MINUTO,
-                          height: Math.max(28, (uFin - uInicio) * PX_POR_MINUTO),
+                          left: geometriaColumnas.izquierdaCss,
+                          width: geometriaColumnas.anchoCss,
+                          top: calcularPosicionVerticalCalendario(uInicio, minApertura),
+                          height: calcularAlturaBloqueCalendario(uInicio, uFin),
                           borderRadius: 1.5,
                           boxShadow: solapaExcepcion
                             ? (t) => `0 0 0 1.5px ${t.palette.error.main}, 0 1px 3px rgba(15,15,16,0.08)`
@@ -1448,10 +1454,10 @@ export function CalendarioHorariosInstructor({
                       puedeCancelarDia={puedeCancelarDia && !esFechaPasada}
                       puedeGestionar={puedeGestionar}
                       mostrarMenuCompacto={alturaTurnoBloque < ALTURA_MINIMA_ACCIONES_EN_LINEA}
-                      izquierda={`calc(${izqPct}% + 3px)`}
-                      ancho={`calc(${anchoPct}% - 6px)`}
-                      arriba={(inicio - minApertura) * PX_POR_MINUTO}
-                      altura={Math.max(28, (fin - inicio) * PX_POR_MINUTO)}
+                      izquierda={geometriaColumnas.izquierdaCss}
+                      ancho={geometriaColumnas.anchoCss}
+                      arriba={calcularPosicionVerticalCalendario(inicio, minApertura)}
+                      altura={calcularAlturaBloqueCalendario(inicio, fin)}
                       hora={`${aHora(inicio)}–${aHora(fin)}`}
                       instructores={nombresConRango(turno.instructores, turno.asignaciones)}
                       mostrarInstructores={turno.instructores.length > 0}
@@ -1498,11 +1504,10 @@ export function CalendarioHorariosInstructor({
                     const enAjusteExcepcion = ajusteExcepcion?.excepcionId === ex.id;
                     const inicio = enAjusteExcepcion ? ajusteExcepcion.inicio : aMinutos(ex.horaInicio);
                     const fin = enAjusteExcepcion ? ajusteExcepcion.fin : aMinutos(ex.horaFin);
-                    const alturaExcepcionSola = Math.max(28, (fin - inicio) * PX_POR_MINUTO);
+                    const alturaExcepcionSola = calcularAlturaBloqueCalendario(inicio, fin);
                     const solapaExcepcion = enAjusteExcepcion && ajusteExcepcionSolapa;
                     const columna = columnas.get(ex.id) ?? 0;
-                    const anchoPct = 100 / total;
-                    const izqPct = (columna * 100) / total;
+                    const geometriaColumnas = calcularGeometriaColumnasCalendario(columna, total, false);
                     const puedeArrastrarExcepcion = puedeMoverOrecortar && !esFechaPasada;
 
                     // A esta altura, toda excepción que se solapa con un turno recurrente ya se
@@ -1517,10 +1522,10 @@ export function CalendarioHorariosInstructor({
                         }
                         sx={{
                           position: 'absolute',
-                          left: `calc(${izqPct}% + 3px)`,
-                          width: `calc(${anchoPct}% - 6px)`,
-                          top: (inicio - minApertura) * PX_POR_MINUTO,
-                          height: Math.max(28, (fin - inicio) * PX_POR_MINUTO),
+                          left: geometriaColumnas.izquierdaCss,
+                          width: geometriaColumnas.anchoCss,
+                          top: calcularPosicionVerticalCalendario(inicio, minApertura),
+                          height: calcularAlturaBloqueCalendario(inicio, fin),
                           bgcolor: (t) => alpha(t.palette[solapaExcepcion ? 'error' : 'warning'].main, 0.16),
                           borderLeft: '3px solid',
                           borderColor: solapaExcepcion ? 'error.main' : 'warning.main',

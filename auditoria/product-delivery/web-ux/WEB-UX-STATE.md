@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_13
-CURRENT_PHASE: M13_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_14
+CURRENT_PHASE: M14_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_13_PASS_CLOSED; subsequent slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_14_PASS_CLOSED; subsequent slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,10 +30,10 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_7810820876d7
-LAST_GATE_ID: gate_abf1586c41cd
-LAST_ACCEPTED_CHECKPOINT: 1484848625a147b8897347f6e2d5eb0c22752d31
-CURRENT_CANDIDATE_MANIFEST: M13 accepted four-path closure candidate; preaudit exact manifest msg_c13db247740e; final receipt-only closure manifest durable in run_7810820876d7 before checkpoint
+LAST_RUN_ID: run_cc480656e9be
+LAST_GATE_ID: gate_c15e343cb577
+LAST_ACCEPTED_CHECKPOINT: f34367e73c9e525a806b5357690c5b03892f9653
+CURRENT_CANDIDATE_MANIFEST: M14 accepted five-path closure candidate; preaudit exact manifest msg_02c8afcdc43b; final receipt-only closure manifest is recorded durably in run_cc480656e9be immediately after this document snapshot
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_d4c970c680eb settled succeeded and released
+ACTIVE_WRITE_TASK: NONE; task_c0d88426373c settled succeeded and released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_50708f588539 settled succeeded and released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_82c840658bcc settled succeeded and released
 
-FROZEN_PHASE_PLAN: M13 msg_67f02f80a4dd / allowlist fingerprint b5ccd6a51b27231dab07ece5ec68dcb1038336e1cbcf05801b628febcba08254; only Calendar/new BloqueHorarioCalendario production and Root STATE/RUNBOOK; tests and all other entry files protected
+FROZEN_PHASE_PLAN: M14 msg_bdaab2a08632 / allowlist fingerprint c8a8ba7d59cde5d3b4e4bae8b69bae3cf00fd10245fe4aa21a92b30284f01b21; only Calendar/new pure geometry module/new direct pure test plus Root STATE/RUNBOOK; all other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -536,3 +536,27 @@ M13_DECISION_GATE: gate_abf1586c41cd PASS / gate-only task_476b57efee63 complete
 M13_CHECKPOINT: discover containing accepted checkpoint with `git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md`; STATE does not invent its own future SHA. No push.
 M13_METRICS: {"measurementWindow":"Run creation to precheckpoint closure snapshot","snapshotUTC":"2026-09-19T01:46:51.428129+00:00","wallClockMinutes":25.957,"workersLaunched":2,"lunaTasks":0,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":10,"targetedValidationDefinition":"prewrite Vitest/affected Chromium/private geometry; writer typecheck/Vitest/Chromium/diff-check; coordinator postwrite private geometry; auditor typecheck/Vitest","fullValidations":1,"correctionCycles":0,"freshAuditFindings":1,"findingSeverity":{"P0":0,"P1":0,"P2":1},"humanGates":1,"internalReportBytes":11520,"summaryEvidenceBytes":762933,"rawEvidenceBytes":1846299,"tokens":"UNREPORTED","CavemanEnabledRoles":[]}
 M13_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: extract deterministic visual geometry calculations (column assignment plus already-established block x/y/width/height mapping) into one Programación-owned pure module while Calendar retains temporal/business state, drag/resize interpretation, requests and F2E-adjacent authority. Candidate paths: CalendarioHorariosInstructor.tsx + one new geometry module + only indispensable characterization wiring + Root process closure. Risk HIGH. Protect numeric375/768/1440 and1440→768 geometry, overlap/adjacency, drag/resize target/results and request count/payload. Deferred gaps remain clipping375, resize remeasurement, stale/error/listener/a11y and F2E compatibility UNVERIFIED. Required validation: pure deterministic fixtures, existing Programación Vitest/Chromium, exact before/after numeric fingerprint, full R1 GATE and fresh Sol-high audit. This is recommendation only; no next slice authorized.
+
+## M14 human authorization — pure visual geometry extraction only
+
+UX-13 starts from accepted checkpoint `f34367e73c9e525a806b5357690c5b03892f9653`, clean tree and empty index. Entry tracked fingerprint `3e0c142be21f5226a4e4cd382eaa79bdea5d7e379ce7e6be7570d2e24edf6850`; package hashes remain `212064e4ca421ff6d9156a160b009af9b0340b00ff503d5652767ae38c2f0289` and `be9b0cbdb5448ef033f7ccec572211a733e97e610f29230a4350da4d245944ce`. Run `run_cc480656e9be`. Read-only recon task `task_d214e54dab81` / `ctx_07cc229bdc6a`, effective Luna-medium verified by launch receipt, classified only scalar presentation formulas as eligible; overlap/column assignment, temporal parsing/rounding, DOM/pointer mapping, interaction state, requests and F2E-adjacent decisions remain parent-owned.
+
+M14_FROZEN_SCOPE: durable msg_bdaab2a08632, fingerprint `c8a8ba7d59cde5d3b4e4bae8b69bae3cf00fd10245fe4aa21a92b30284f01b21`. Writer paths are existing `CalendarioHorariosInstructor.tsx`, new `geometria/geometriaVisualCalendario.ts`, and new direct pure test; Root alone owns STATE/RUNBOOK. All existing UI/E2E tests and every other entry path are read-only. The pure module may use explicit numeric inputs to return exact presentation geometry only, with no React/DOM/browser globals/Date/API/state/pointer/overlap/business/F2E authority.
+
+M14_PREWRITE_CHARACTERIZATION: fresh 40 Programación Vitest +20 affected Chromium +4 private numeric browser workflows PASS, 0 fail/skip/flaky. Normalized geometry fingerprint `f954463f55b3484e04e8f94e8fcb2986cf7b4eeadc7327582762fbd53a254dd4` covers 375/768/1440 and 1440→768 normal/adjacent/overlap blocks. First private harness launch used an unsupported alternate port while the repository server is fixed to4179 and timed out before tests; retained as infrastructure evidence, then corrected only in private config and all four tests passed. No repository mutation resulted.
+
+M14_IMPLEMENTATION: task `task_c0d88426373c` / dispatch `ctx_82c840658bcc`, effective Sol-medium verified, settled PASS and released. Exact three writer paths only. Calendar calls pure typed Spanish functions for established pixel scale, vertical positions/heights, minimum visual heights and CSS column geometry; Calendar still owns min/max/time parsing, column assignment/overlap/collision, state/effects/listeners, pointer/drag/resize lifecycle, requests/payloads, permissions/session and F2E-adjacent interpretation. Direct tests lock 64/60 fractional arithmetic, 56px axis, 28/4/66px minima and exact percentage/calc strings. FAST typecheck, 44 Vitest, 20 affected Chromium, diff/scope and four private numeric workflows PASS; normalized postwrite fingerprint equals prewrite exactly. No correction cycle consumed. Acceptance still requires complete final GATE, NEW Sol-high audit and actual Decision Gate; no checkpoint yet.
+
+M14_FULL_GATE: PASS. Fresh npm-ls, lint, test:typecheck, build, git diff-check and cached diff-check exit0; 332 Vitest +75 Chromium =407 PASS,0FAIL,0SKIP,0FLAKY. The four added tests are direct pure-geometry characterization; all prior403 remain green. Private 375/768/1440 and1440→768 geometry attachments are byte-equivalent after normalized schema with fingerprint `f954463f55b3484e04e8f94e8fcb2986cf7b4eeadc7327582762fbd53a254dd4`. Exact five-path candidate, empty index, package hashes unchanged and144 protected entry paths byte-identical. Accepted >500kB production chunk warning and inherited color-environment warning remain. Candidate is not accepted until a NEW Sol-high auditor and actual Gate PASS; auditor may prospectively approve a Root receipt-only closure that does not alter product/tests/packages.
+
+M14_ACCEPTANCE_AUDIT: PASS P0=0 P1=0 P2=0; task `task_c28606e113d0` / dispatch `ctx_15b7e5c35f03`, effective Sol-high verified, worker_done `msg_508b66eae74d`, released. Independent audit verified all23 required authority/purity/equivalence/integrity points and reran the four direct pure tests. It prospectively approved this Root receipt-only STATE/RUNBOOK closure without another semantic audit provided the three product/test hashes and package hashes remain unchanged.
+
+M14_DECISION_GATE: `gate_c15e343cb577` PASS / gate-only `task_1e7c0f4c0480` completed. Acceptance: exact five-path scope, pure-module contract, normalized geometry equality, interaction/request/permission/session/F2E preservation,407PASS and repository integrity.
+
+M14_CHECKPOINT: discover the containing accepted checkpoint with `git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md`; STATE does not invent its own future SHA. No push.
+
+M14_METRICS: {"measurementWindow":"Run creation through Decision Gate and precheckpoint closure preparation","snapshotUTC":"2026-09-19T02:26:42.525682+00:00","wallClockMinutes":30.725,"workersLaunched":3,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":11,"fullValidations":1,"correctionCycles":0,"freshAuditFindings":0,"findingSeverity":{"P0":0,"P1":0,"P2":0},"humanGates":1,"internalReportBytes":38442,"summaryEvidenceBytesExcludingMetricsFile":787596,"rawEvidenceBytes":1594315,"tokens":"UNREPORTED","CavemanEnabledRoles":[],"causalSavingsClaim":false}. One failed private harness launch used port4180 although the repository server is fixed to4179; it ran no tests, is retained as evidence and was corrected only in private tooling. No causal speed claim.
+
+M14_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: extract the two existing punctual-exception block presentation branches into one Programación-owned `BloqueHorarioEspecialCalendario` while Calendar retains exception matching/identity, date/time meaning, column/overlap decisions, interaction state and handlers, permissions, mutations/requests/payloads and F2E-adjacent authority. Candidate paths: Calendar + one new presentation component + only indispensable characterization wiring + Root closure docs. Risk HIGH because both branches are geometry/pointer adjacent. Protect exact replacement and standalone exception x/y/width/height, labels/actions, drag/resize targets/results, callback sequence and requests at375/768/1440 and1440→768. All known clipping/resize-remeasurement/stale/error/listener/a11y gaps and F2E compatibility remain deferred. Required validation: focused exception characterization, exact numeric before/after geometry fingerprint, existing Programación interaction suites, full R1 GATE and NEW Sol-high audit. Recommendation only; no next slice is authorized.
+
+M14_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact five-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.
