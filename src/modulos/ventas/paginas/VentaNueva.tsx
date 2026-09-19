@@ -545,6 +545,7 @@ export function VentaNueva() {
             variant="outlined"
             color={metodoPago === 'efectivo' ? 'success' : 'info'}
             label={METODO_PAGO_LABEL[metodoPago] ?? metodoPago}
+            sx={metodoPago === 'efectivo' ? undefined : { color: 'info.dark', borderColor: 'info.dark' }}
           />
         </DialogContent>
         <DialogActions>

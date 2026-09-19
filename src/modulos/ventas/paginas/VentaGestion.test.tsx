@@ -19,6 +19,12 @@ beforeEach(() => {
 async function mount() { renderRoute(<VentaGestion />); await screen.findByRole('row', { name: /Ana Prueba/ }); }
 async function action(row: HTMLElement) { await userEvent.click(within(row).getByRole('button', { name: 'Acciones' })); await userEvent.click(screen.getByRole('menuitem', { name: 'Marcar como reembolsada' })); return screen.getByRole('dialog', { name: 'Marcar como reembolsada' }); }
 describe('VentaGestion: consulta remota y acción seleccionada', () => {
+    it('usa info oscuro en el chip outlined de transferencia', async () => {
+        server.use(http.get(`${api}/ventas/buscar`, () => HttpResponse.json(pageOf([sale({ metodoPago: 'transferencia' })]))));
+        await mount();
+        const chip = screen.getByText('Transferencia').closest('.MuiChip-root') as HTMLElement;
+        expect(getComputedStyle(chip).color).toBe('rgb(1, 87, 155)');
+    });
     it.each([[], ['venta.gestion.vista'], ['venta.gestion.vista', 'venta.gestion.ver.propio'], ['venta.gestion.vista', 'venta.gestion.ver.todos'], ['venta.gestion.ver.todos']].map(granted => [granted]))('alcance explícito %j', async (granted) => {
         useAuthStore.setState({ usuario: user({ permisos: granted }) });
         renderRoute(<VentaGestion />);

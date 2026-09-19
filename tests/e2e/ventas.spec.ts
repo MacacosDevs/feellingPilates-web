@@ -81,6 +81,32 @@ async function synthetic(page: Page, baseURL: string) {
     counts: () => ({ catalogs, checkouts, histories, refunds, saves, services }) };
 }
 
+async function contrastRatio(locator: import('@playwright/test').Locator) {
+  return locator.evaluate(node => {
+    const parse = (value: string) => {
+      const values = value.match(/[\d.]+/g)!.map(Number);
+      return { rgb: values.slice(0, 3), alpha: values[3] ?? 1 };
+    };
+    const luminance = (rgb: number[]) => {
+      const values = rgb.map(value => {
+        const channel = value / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * values[0] + 0.7152 * values[1] + 0.0722 * values[2];
+    };
+    const style = getComputedStyle(node);
+    const foreground = luminance(parse(style.color).rgb);
+    const ancestry: Element[] = [];
+    for (let current: Element | null = node; current; current = current.parentElement) ancestry.unshift(current);
+    const composite = ancestry.reduce((base, element) => {
+      const layer = parse(getComputedStyle(element).backgroundColor);
+      return layer.rgb.map((channel, index) => channel * layer.alpha + base[index] * (1 - layer.alpha));
+    }, [255, 255, 255]);
+    const background = luminance(composite);
+    return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
+  });
+}
+
 for (const width of [375, 768, 1440]) {
   test(`Ventas ${width}px: caja, comprobante, historial y servicios sintéticos`, async ({ page, baseURL }, testInfo) => {
     const evidence = await synthetic(page, baseURL!);
@@ -121,6 +147,8 @@ for (const width of [375, 768, 1440]) {
       await page.screenshot({ path: testInfo.outputPath(`nueva-${width}.png`), fullPage: true });
       await page.getByRole('button', { name: 'Cobrar', exact: true }).click();
       let confirmation = page.getByRole('dialog', { name: 'Confirmar venta', exact: true });
+      const paymentChip = confirmation.getByText('Transferencia', { exact: true }).locator('..');
+      expect(await contrastRatio(paymentChip)).toBeGreaterThanOrEqual(4.5);
       await expect(confirmation).toContainText('$246.90 MXN');
       await expect(confirmation.getByText('Clase Yoga', { exact: true })).toHaveCount(0);
       await confirmation.getByRole('button', { name: 'Cancelar', exact: true }).click();
@@ -182,6 +210,13 @@ for (const width of [375, 768, 1440]) {
       await expect(page.getByRole('alert')).toContainText('Servicios sintéticos no disponibles');
       await page.getByRole('button', { name: 'Reintentar', exact: true }).click();
       await expect(page.getByRole('row', { name: /Pack Prueba/ })).toBeVisible();
+      const mixtos = page.getByRole('button', { name: /Mixtos/ });
+      await mixtos.click();
+      const count = mixtos.getByText('0', { exact: true });
+      await expect(count).toHaveCSS('color', 'rgb(255, 255, 255)');
+      await expect(count).toHaveCSS('background-color', 'rgba(0, 0, 0, 0.6)');
+      expect(await contrastRatio(count)).toBeGreaterThanOrEqual(4.5);
+      await page.getByRole('button', { name: /Todos/ }).click();
       await contained('Servicios con tabla');
       await page.getByRole('button', { name: 'Nuevo paquete', exact: true }).click();
       const create = page.getByRole('dialog', { name: 'Nuevo paquete', exact: true });

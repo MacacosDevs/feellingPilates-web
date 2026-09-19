@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { Box, Chip, Tooltip, Typography, alpha } from '@mui/material';
 import EditCalendarIcon from '@mui/icons-material/EditCalendarOutlined';
 import LockClockIcon from '@mui/icons-material/LockClockOutlined';
@@ -32,6 +32,12 @@ interface Props {
 }
 
 export function CabecerasCalendario({ cabeceras }: Props) {
+  const activarConTeclado = (evento: KeyboardEvent<HTMLElement>, cabecera: CabeceraCalendarioPresentacion) => {
+    if (!cabecera.puedeSeleccionar || (evento.key !== 'Enter' && evento.key !== ' ')) return;
+    evento.preventDefault();
+    cabecera.onSeleccionar(evento as unknown as MouseEvent<HTMLElement>);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: 56, flexShrink: 0 }} />
@@ -39,6 +45,10 @@ export function CabecerasCalendario({ cabeceras }: Props) {
         <Box
           key={cabecera.id}
           onClick={cabecera.onSeleccionar}
+          onKeyDown={(evento) => activarConTeclado(evento, cabecera)}
+          role={cabecera.puedeSeleccionar ? 'button' : undefined}
+          tabIndex={cabecera.puedeSeleccionar ? 0 : undefined}
+          aria-label={cabecera.puedeSeleccionar ? `Editar horario de ${cabecera.diaCorto} ${cabecera.diaMes}/${cabecera.mes}` : undefined}
           className="dia-header"
           sx={{
             flex: 1,
@@ -73,6 +83,9 @@ export function CabecerasCalendario({ cabeceras }: Props) {
                   boxShadow: '0 1px 4px rgba(15,15,16,0.1)',
                   '& .icono-editar': { opacity: 1 },
                 }
+              : undefined,
+            '&:focus-visible': cabecera.puedeSeleccionar
+              ? { outline: '3px solid', outlineColor: 'primary.main', outlineOffset: 2 }
               : undefined,
           }}
         >

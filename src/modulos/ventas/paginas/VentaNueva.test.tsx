@@ -137,6 +137,14 @@ describe('VentaNueva: búsqueda, caja y comprobante', () => {
         expect(within(summary()).queryByRole('textbox')).toBeNull();
         expect((screen.getByRole('button', { name: 'Cobrar' }) as HTMLButtonElement).disabled).toBe(true);
     });
+    it('usa info oscuro en el chip outlined del método no efectivo', async () => {
+        await mount();
+        await cart();
+        await choose('Método de pago', 'Transferencia');
+        const dialog = await confirm();
+        const chip = within(dialog).getByText('Transferencia').closest('.MuiChip-root') as HTMLElement;
+        expect(getComputedStyle(chip).color).toBe('rgb(1, 87, 155)');
+    });
     it('error de cobro retiene cliente y carrito, permite reintento explícito', async () => {
         let posts = 0;
         server.use(http.post(`${api}/ventas/carrito`, () => { posts++; return HttpResponse.json({ message: 'Caja no disponible' }, { status: 409 }); }));

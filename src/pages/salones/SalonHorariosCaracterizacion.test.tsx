@@ -56,3 +56,10 @@ it('integra horario semanal real, refresh de detalle y feedback sin conceder per
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   expect(screen.queryByRole('button', { name: 'Eliminar bloque completo' })).toBeNull();
 });
+
+it('nombra los controles de semana para navegación por teclado', async () => {
+  mount();
+  await screen.findByText('Horarios del salón');
+  expect(screen.getByRole('button', { name: 'Semana anterior' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Semana siguiente' })).toBeTruthy();
+});

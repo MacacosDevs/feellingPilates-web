@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import {
   Box,
   Chip,
@@ -27,11 +27,17 @@ interface Props {
   readonly puedeArrastrar: boolean;
   readonly mostrarAcciones: boolean;
   readonly mostrarMenuCompacto: boolean;
+  readonly presentacionEstrecha: boolean;
+  readonly nombreAccesible: string;
   readonly izquierda: string;
   readonly ancho: string;
   readonly arriba: number;
   readonly altura: number;
   readonly hora: string;
+  readonly minimoInicio: number;
+  readonly maximoInicio: number;
+  readonly minimoFin: number;
+  readonly maximoFin: number;
   readonly instructores: string;
   readonly mostrarInstructores: boolean;
   readonly actividades: string;
@@ -39,6 +45,10 @@ interface Props {
   readonly menuAbierto: boolean;
   readonly menuAnchor: HTMLElement | null;
   readonly onMover: (evento: MouseEvent<HTMLElement>) => void;
+  readonly onActivar: (evento: KeyboardEvent<HTMLElement>) => void;
+  readonly onMoverTeclado: (minutos: number) => void;
+  readonly onAjustarInicioTeclado: (minutos: number) => void;
+  readonly onAjustarFinTeclado: (minutos: number) => void;
   readonly onAjustarInicio: (evento: MouseEvent<HTMLElement>) => void;
   readonly onAjustarFin: (evento: MouseEvent<HTMLElement>) => void;
   readonly onAbrirMenu: (evento: MouseEvent<HTMLElement>) => void;
@@ -60,11 +70,17 @@ export function BloqueHorarioEspecialCalendario({
   puedeArrastrar,
   mostrarAcciones,
   mostrarMenuCompacto,
+  presentacionEstrecha,
+  nombreAccesible,
   izquierda,
   ancho,
   arriba,
   altura,
   hora,
+  minimoInicio,
+  maximoInicio,
+  minimoFin,
+  maximoFin,
   instructores,
   mostrarInstructores,
   actividades,
@@ -72,6 +88,10 @@ export function BloqueHorarioEspecialCalendario({
   menuAbierto,
   menuAnchor,
   onMover,
+  onActivar,
+  onMoverTeclado,
+  onAjustarInicioTeclado,
+  onAjustarFinTeclado,
   onAjustarInicio,
   onAjustarFin,
   onAbrirMenu,
@@ -86,10 +106,34 @@ export function BloqueHorarioEspecialCalendario({
   onEliminarDesdeMenu,
 }: Props) {
   const superpuesto = variante === 'SUPERPUESTO';
+  const manejarTeclaBloque = (evento: KeyboardEvent<HTMLElement>) => {
+    if (evento.currentTarget !== evento.target) return;
+    if (evento.key === 'Enter' || evento.key === ' ') {
+      evento.preventDefault();
+      onActivar(evento);
+    } else if (evento.key === 'ArrowUp' || evento.key === 'ArrowDown') {
+      evento.preventDefault();
+      onMoverTeclado(evento.key === 'ArrowUp' ? -30 : 30);
+    }
+  };
+  const manejarTeclaBorde = (evento: KeyboardEvent<HTMLElement>, callback: (minutos: number) => void) => {
+    if (evento.key !== 'ArrowUp' && evento.key !== 'ArrowDown') return;
+    evento.preventDefault();
+    evento.stopPropagation();
+    callback(evento.key === 'ArrowUp' ? -30 : 30);
+  };
+  const [horaInicio, horaFin] = hora.split('–');
+  const minutosAccesibles = (valor: string) => {
+    const [horas, minutos] = valor.split(':').map(Number);
+    return horas * 60 + minutos;
+  };
 
   return (
     <Box
       onMouseDown={onMover}
+      role="group"
+      aria-label={nombreAccesible}
+      data-presentacion-estrecha={presentacionEstrecha ? 'true' : 'false'}
       sx={{
         position: 'absolute',
         left: izquierda,
@@ -119,33 +163,79 @@ export function BloqueHorarioEspecialCalendario({
         zIndex: enAjuste ? 2 : 1,
         px: 1,
         py: 0.5,
+        '@media (max-width: 480px)': presentacionEstrecha
+          ? {
+              px: 0.25,
+              py: 0.25,
+              '& .detalle-bloque': {
+                position: 'absolute', width: 1, height: 1, p: 0, m: -1, overflow: 'hidden',
+                clip: 'rect(0 0 0 0)', clipPath: 'inset(50%)', whiteSpace: 'nowrap', border: 0,
+              },
+              '& .accion-compacta': { right: '50%', transform: 'translateX(50%)' },
+            }
+          : undefined,
       }}
     >
       {puedeArrastrar && (
         <Box
+          className="accion-principal-bloque"
+          role="button"
+          tabIndex={0}
+          aria-label={nombreAccesible}
+          onKeyDown={manejarTeclaBloque}
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 3,
+            pointerEvents: 'none',
+            '&:focus-visible': { boxShadow: 'inset 0 0 0 3px', boxShadowColor: 'primary.main' },
+          }}
+        />
+      )}
+      {puedeArrastrar && (
+        <Box
           onMouseDown={onAjustarInicio}
-          sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
+          onKeyDown={(evento) => manejarTeclaBorde(evento, onAjustarInicioTeclado)}
+          role="separator"
+          tabIndex={0}
+          aria-orientation="horizontal"
+          aria-valuemin={minimoInicio}
+          aria-valuemax={maximoInicio}
+          aria-valuenow={minutosAccesibles(horaInicio)}
+          aria-valuetext={`Inicio actual ${horaInicio}; Flecha arriba o abajo ajusta 30 minutos`}
+          aria-label={`Ajustar inicio de ${nombreAccesible}`}
+          sx={{ position: 'absolute', zIndex: 4, top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main' } }}
         />
       )}
       {puedeArrastrar && (
         <Box
           onMouseDown={onAjustarFin}
-          sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
+          onKeyDown={(evento) => manejarTeclaBorde(evento, onAjustarFinTeclado)}
+          role="separator"
+          tabIndex={0}
+          aria-orientation="horizontal"
+          aria-valuemin={minimoFin}
+          aria-valuemax={maximoFin}
+          aria-valuenow={minutosAccesibles(horaFin)}
+          aria-valuetext={`Fin actual ${horaFin}; Flecha arriba o abajo ajusta 30 minutos`}
+          aria-label={`Ajustar fin de ${nombreAccesible}`}
+          sx={{ position: 'absolute', zIndex: 4, bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main' } }}
         />
       )}
-      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+      <Stack className="detalle-bloque" direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
         <WbSunnyIcon sx={{ fontSize: 12, color: 'warning.main' }} />
         <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
           {hora}
         </Typography>
       </Stack>
       {mostrarInstructores && (
-        <Typography variant="caption" noWrap sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
+        <Typography className="detalle-bloque" variant="caption" noWrap sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
           {instructores}
         </Typography>
       )}
       {mostrarActividades && (
         <Chip
+          className="detalle-bloque"
           size="small"
           icon={<FitnessCenterIcon sx={{ fontSize: 12 }} />}
           label={actividades}
@@ -176,10 +266,11 @@ export function BloqueHorarioEspecialCalendario({
         />
       )}
       <Box sx={{ flexGrow: 1 }} />
-      {mostrarAcciones &&
-        (mostrarMenuCompacto ? (
+      {mostrarAcciones && (mostrarMenuCompacto || presentacionEstrecha) && (
           <IconButton
+            className="accion-compacta"
             size="small"
+            aria-label={`Acciones de ${nombreAccesible}`}
             onMouseDown={(e) => e.stopPropagation()}
             onClick={onAbrirMenu}
             sx={{
@@ -191,12 +282,23 @@ export function BloqueHorarioEspecialCalendario({
               bgcolor: 'background.paper',
               boxShadow: '0 1px 2px rgba(15,15,16,0.2)',
               '&:hover': { bgcolor: 'background.paper' },
+              ...(!mostrarMenuCompacto && presentacionEstrecha
+                ? { display: 'none', '@media (max-width: 480px)': { display: 'inline-flex' } }
+                : {}),
             }}
           >
             <SettingsOutlinedIcon fontSize="inherit" />
           </IconButton>
-        ) : (
-          <Stack direction="row" spacing={0.5} sx={{ alignSelf: 'flex-end' }}>
+        )}
+      {mostrarAcciones && !mostrarMenuCompacto && (
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+              alignSelf: 'flex-end',
+              ...(presentacionEstrecha ? { '@media (max-width: 480px)': { display: 'none' } } : {}),
+            }}
+          >
             {onRestaurar && (
               <Tooltip title="Quitar horario especial (vuelve al horario normal)">
                 <IconButton
@@ -244,7 +346,7 @@ export function BloqueHorarioEspecialCalendario({
               </Tooltip>
             )}
           </Stack>
-        ))}
+        )}
       <Menu
         open={menuAbierto}
         anchorEl={menuAnchor}

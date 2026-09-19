@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_CLOSURE_PREFLIGHT
-CURRENT_PHASE: CLOSURE_PREFLIGHT_COMPLETE
-STATUS: HUMAN_GATE_REQUIRED
+CURRENT_MILESTONE: WEB_UX_FINAL_HARDENING
+CURRENT_PHASE: FINAL_HARDENING_FULL_GATE_PASS_AWAITING_FRESH_AUDIT
+STATUS: MILESTONE_ACTIVE
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_FINAL_HARDENING_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,7 +30,7 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_72fdd13d5b2b
+LAST_RUN_ID: run_59f88be3c6dc
 LAST_GATE_ID: gate_d1fdc4bc97dd
 LAST_ACCEPTED_CHECKPOINT: ba542d4e557a48ffe94b003d730b6742a4382774
 CURRENT_CANDIDATE_MANIFEST: M18 entry has 150 tracked paths with canonical fingerprint d52547d258b6a29cdab96e642920b27e79749d691405a844a72457b3ecf1a7d7 and manifest SHA256 e0a762070bdddcf126e98cf3634386d1aa6fe1ebbf2035dd21df92eec34a7d1b; no productive M18 candidate exists before reproducible geometry evidence and finite allowlist freeze
@@ -40,17 +40,17 @@ LAST_ACCEPTED_PLAYWRIGHT: 77
 CORRECTION_CYCLES_USED: 0
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_ONE_FINAL_HARDENING_MILESTONE
-HUMAN_GATE_REASON: FINAL_HARDENING_REQUIRED
+NEXT_PHASE: RECON_CHARACTERIZATION_FREEZE_IMPLEMENT_VALIDATE_AUDIT_GATE_CHECKPOINT_CLOSURE_REAUDIT
+HUMAN_GATE_REASON: NONE_DURING_AUTHORIZED_FINAL_HARDENING
 REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; M18 read-only recon complete/released; no writer created
+ACTIVE_WRITE_TASK: NONE; `task_5b4f4b5baf08` completed/released after bounded implementation
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_c265d2a0fa77 complete/released
+ACTIVE_WRITE_DISPATCH: NONE; `ctx_f931523981f7` completed/released
 
-FROZEN_PHASE_PLAN: NO PRODUCT ALLOWLIST FROZEN; Closure Preflight recommends but does not authorize one future bounded hardening milestone
+FROZEN_PHASE_PLAN: PENDING fresh deterministic recon for exactly CLOSURE-A11Y-01, CLOSURE-RESP-01 and CLOSURE-CONTRAST-01
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -732,3 +732,37 @@ REMOTE_PUBLICATION: `NOT_AUTHORIZED`.
 NEXT: `HUMAN_GATE_REQUIRED / FINAL_HARDENING_REQUIRED / AWAIT_HUMAN_AUTHORIZATION_FOR_ONE_FINAL_HARDENING_MILESTONE`.
 
 One explicit process-only checkpoint may now contain exactly `WEB-UX-STATE.md` and `WEB-UX-RUNBOOK.md`. The accepted product checkpoint remains M17 `ba542d4e557a48ffe94b003d730b6742a4382774`; the containing closure-preflight process checkpoint is discoverable from Git after commit without recursive self-identity. No push.
+
+## HUMAN AUTHORIZATION — WEB_UX_FINAL_HARDENING
+
+Human authorization dated 2026-09-19 starts UX-18 from exact process checkpoint `a4b6400b8f1f915e5a9be3c87e28047005f8a9f8`, accepted product checkpoint `ba542d4e557a48ffe94b003d730b6742a4382774`, clean worktree and empty index. Run `run_59f88be3c6dc`; accepted baseline remains `343 Vitest + 77 Chromium = 420 PASS`, zero failures/skips.
+
+This is the only authorized final functional milestone and may address exactly the three accepted closure P1 findings: Programación keyboard/semantic operability, Programación narrow 375px block presentation usability within unchanged geometry, and the two measured Ventas small-text contrast failures. Fresh Luna-medium recon/characterization must identify exact owners, authoritative resize granularity and indispensable tests before freezing a finite allowlist. Any arbitrary scheduling increment, unrelated production owner or business/API/financial/session/permission/F2E change is a fail-closed Human Gate.
+
+Sol-medium implementation may begin only after characterization and finite scope. Preserve exact Programación geometry, temporal/overlap/drag/mouse-resize/request/payload semantics, M16 listener guarantees and M17 read/error guarantees; preserve every Ventas financial/Payments semantic. Complete R1 GATE, one NEW Sol-high hardening audit with P0=P1=0, actual hardening Decision Gate and one explicit local checkpoint are mandatory. After checkpoint, automatically perform a completely new Sol-high final closure re-audit and separate technical-closure gate. No dependency, backend, Payments, F2E, push, merge, publication or cutover authority.
+
+FINAL_HARDENING_RECON: Luna-medium `task_0aed7709689f` / `ctx_ec3f0d3a144c`, completed and released. It confirmed exactly the three accepted P1s, found no scope expansion, and proved keyboard resizing can reuse the existing authoritative `SLOT_MINUTOS = 30` granularity together with the current rounding, minimum-duration and opening/closing bounds. The first broad focused invocation was invalid as baseline evidence because file-parallel execution exhausted existing 5-second harness limits. Root reran the same seven-file set using the policy-comparable `--maxWorkers=1`: `91 PASS / 0 FAIL / 0 SKIP` in 96.66s. No product/test write preceded this characterization.
+
+FINAL_HARDENING_FROZEN_ALLOWLIST: exactly the following 18 product/test paths, plus Root-owned `WEB-UX-STATE.md` and `WEB-UX-RUNBOOK.md` for lifecycle receipts. Entry SHA-256 values: `SalonHorarios.tsx` `1552eba192fd2a1d4b419fb77c3de739889f9f3ba2c5b25784228a852e5ff946`; `CalendarioHorariosInstructor.tsx` `bda9df0be200d386c82848f585a093bdb8799720b70610064f2860a12f89cf39`; `CabecerasCalendario.tsx` `72ff2b7dd4c0e626080b2d01cac1ea68c13a43b08dc95672f692e3b30c65f512`; `BloqueHorarioCalendario.tsx` `13249f990fd743f6570987ce9d3a8b8d1553616c7adb48c2706fc6d2bfb43957`; `BloqueHorarioEspecialCalendario.tsx` `95b19b58b57595a2a9bba2bbb5d364f464b272ae1befc1b95bc8891d70869fa1`; `VentaNueva.tsx` `32223596750321eedfe167a510a4a7684d46c917e063494e5e067c0b782581a7`; `VentaGestion.tsx` `d6b0b1a6491d49ec81f81926ca459cf92129006d19626520a685f6bd1c8cafa2`; `VentaServicios.tsx` `e40a3310bdaf0897759ee79698f636678b4207824ed02dfc06745709bde80388`; `SalonHorarios.test.tsx` `7145b2882ed26b2250b78055e159a796923fd78117b9c75872f7b2f9803e7ce1`; `SalonHorariosCaracterizacion.test.tsx` `c595d3d90211518e492efe3e91ef252f6566ab3484ab15de464e5ecd23246df7`; `CalendarioHorariosInstructor.test.tsx` `c42af6d2ff77c1bfed4d44eeac3c540e15b8991e6473a9b889cf104b28a4c9db`; `CalendarioHorariosInstructorCaracterizacion.test.tsx` `14c77fc5cf4bdc8cced32b847aadb3b1c6cc268de62d68b616f153782a48fa3d`; `VentaNueva.test.tsx` `6fbab4ecc8cfaace4fa5c89155d371b5316fbb188bbe7ebfb8104e8760456013`; `VentaGestion.test.tsx` `3a8bbc9a31f189edf625f98876b7ad113dc275561b29f686a3ad29e9ef9d02fa`; `VentaServicios.test.tsx` `74843b6166597ae8fad2ad4c86a9a5d5d0d7aadc90a40080d15a0d8e8d2527a7`; `VentasCaracterizacion.test.tsx` `83caa07ab761e20f2b2e33bed3ae1508d4e37b93ded0a41b070a6fe017a18f67`; `tests/e2e/programacion.spec.ts` `121a0e3aaa73bae47537b1394035a32c4d270f5b70f221c8892801cdbe7e690c`; `tests/e2e/ventas.spec.ts` `87f1c1e9e8356c0a7126fdad9ca66ce97a89da7ab7c307f864b0f5275a1cf4af`. No new test path is required. `geometriaVisualCalendario.ts`, packages, shared/theme/API/auth and every other path are protected. One Sol-medium writer may edit only this finite set; Root retains the two process paths.
+
+FINAL_HARDENING_IMPLEMENTATION_AND_GATE: one Sol-medium writer `task_5b4f4b5baf08` / `ctx_f931523981f7`, completed/released, changed 15 of 18 frozen product/test paths. RED reproduced unnamed/mouse-only Programación controls and both Ventas colors. GREEN passed 109 affected Vitest and 13 affected Chromium scenarios across 375/768/1440. Weekly controls, headers, creation areas, recurrent/punctual blocks and resize handles now expose names, focus and keyboard routes to the same existing actions; resize/move uses the established 30-minute increment, bounds, overlap checks, callbacks and payloads. The <=480px compact policy applies only to already-overlapped narrow blocks and changes internal presentation/access only; outer geometry remains fixed. Ventas ratios are 5.7418 for the selected Mixtos count and 7.3999 for outlined info/payment text. Fresh complete R1 GATE passed dependency integrity, lint, TypeScript, build and diff-check with `349 Vitest + 78 Chromium = 427 PASS / 0 FAIL / 0 SKIP / 0 required flaky`. Build retains the known 995.46kB chunk warning. Current candidate has 17 dirty paths (15 product/test + 2 process); the stable 15-path product/test manifest SHA-256 is `08d8d84e4a6ba579213cc577a606e634258952593c5d2b4c82fa4c6759c1f73e`; index empty. A NEW Sol-high hardening audit remains mandatory.
+
+FINAL_HARDENING_AUDIT_01: fresh Sol-high `task_3a4dfc403025` / `ctx_cd7c569626ea` completed/released with FAIL, P0=0, P1=1, P2=0. `UX18-A11Y-ROLE-01` found that recurrent and punctual resize grips claimed button semantics without Enter/Space activation and were independent controls nested under a focusable schedule-block button. Scope, geometry, requests, contrast, M16/M17 and repository integrity otherwise passed. No Human Gate or scope expansion is required; hardening Decision Gate remains prohibited pending one bounded correction and fresh re-audit.
+
+FINAL_HARDENING_CORRECTION_01: correction cycle 1/2, Sol-medium `task_4976b04b6593` / `ctx_5a92ef4b7fbe`, completed/released and changed only four already-frozen Programación block/test paths. Schedule-block roots are now named non-focusable groups, each existing block action has an independent primary button control, and resize grips expose truthful adjustable-separator semantics for the existing 30-minute Arrow-key contract. Pointer/mouse behavior, exact geometry, bounds/collision authority, callbacks and request payloads remain fixed. Targeted lint, TypeScript, 33 Vitest, 10 Chromium at 375/768/1440, exact PATCH ledgers, mouse behavior and diff-check PASS. A refreshed full R1 GATE and completely new Sol-high re-audit remain mandatory.
+
+FINAL_HARDENING_POST_CORRECTION_GATE: PASS. Fresh dependency integrity, lint, TypeScript, `350/350` Vitest, `78/78` Chromium, production build and `git diff --check` all exit zero; `428 PASS / 0 FAIL / 0 SKIP / 0 required flaky`. The exact 15-path product/test manifest is re-frozen at SHA-256 `be5fc2c36119867bbb90e77b87825ee6f1a288cad7c4a57fac43d758289775bc`; every entry verifies and staging is empty. Build retains only the known 996.59kB chunk warning. A completely new Sol-high hardening re-audit is mandatory before the Decision Gate.
+
+FINAL_HARDENING_REAUDIT_02: fresh Sol-high `task_af5d52dca469` / `ctx_faac52341a8e` completed/released with FAIL, P0=0, P1=1, P2=0. It accepted the corrected control composition, natural first Tab transition, Enter/Space action, 30-minute Arrow behavior, focus, geometry, requests, contrast, scope and M16/M17 boundaries. `UX18-A11Y-ROLE-01` remains open only because both adjustable separators advertised 0..1440 rather than their operative opening/closing and opposite-edge minimum-duration bounds. No Human Gate or scope expansion is required.
+
+FINAL_HARDENING_CORRECTION_02: final correction cycle 2/2 is active under Sol-medium `task_008c0ad4e920` / `ctx_b20db8755ef9`. It may change only already-frozen Programación component/test paths to pass each recurrent/punctual start/end separator the exact operative bounds already enforced by `minApertura`, `maxCierre`, the opposite edge and `SLOT_MINUTOS`; no geometry, scheduling, callback, request or cross-lane authority changes. Targeted validation, refreshed complete GATE and a completely new Sol-high audit are mandatory. Any unresolved P0/P1 after this cycle requires a Human Gate.
+
+FINAL_HARDENING_CORRECTION_02_RESULT: PASS. Sol-medium `task_008c0ad4e920` / `ctx_b20db8755ef9` completed/released and changed exactly four already-frozen Programación component/test paths. Each recurrent and punctual start/end separator now receives the exact parent-owned operative minute bounds; characterization asserts min/max/now/text for all four variants. Targeted lint, TypeScript, 33 Vitest, 10 Chromium at 375/768/1440, geometry/request ledgers, scope comparison and diff-check PASS. The re-frozen 15-path product/test manifest SHA-256 is `06535c03b5645a54b8bb4331e8cd44b58303b9414c0856223ad627f223c2ab4b`; every entry verifies and staging is empty. Correction budget is exhausted 2/2; require refreshed complete GATE and a completely new Sol-high audit with P0=P1=0.
+
+FINAL_HARDENING_POST_CORRECTION_02_GATE: PASS after one preserved unrelated runtime timeout. The first serialized Vitest invocation timed out only `DialogoSalon.test.tsx` at its inherited 5000ms harness limit; the identical test passed immediately in isolation without any code change, and the complete serialized rerun passed `350/350`. Fresh dependency integrity, lint, TypeScript, `78/78` Chromium, build and diff-check also pass; accepted total `428 PASS / 0 FAIL / 0 SKIP / 0 required flaky`. The transient attempt remains recorded as informational runtime evidence rather than hidden or corrected outside scope. Exact manifest `06535c03b5645a54b8bb4331e8cd44b58303b9414c0856223ad627f223c2ab4b`, all entries verified, index empty. A completely new Sol-high hardening audit must now return P0=P1=0; otherwise correction budget exhaustion requires a Human Gate.
+
+FINAL_HARDENING_ACCEPTANCE: fresh final Sol-high auditor `task_ac3ece5c957b` / `ctx_5b926a0268c5`, completed/released, PASS with P0=0, P1=0, P2=0. It independently accepted all 20 criteria, closed `UX18-A11Y-ROLE-01`, reran the isolated Salones case plus 33 focused Vitest and 13 Chromium cases, and adjudicated the earlier timeout as resolved informational runtime evidence with no required flaky remaining. The three original closure P1s are closed; exact Programación geometry/mouse/request authority, Ventas financial authority, M16/M17, API/session/permissions, Payments and F2E boundaries are preserved.
+
+FINAL_HARDENING_DECISION_GATE: gate-only `task_84dd9f7956da`; actual Gate `gate_4499e8a43915` resolved PASS. Full accepted validation is `350 Vitest + 78 Chromium = 428 PASS`, zero failures/skips/required flaky, plus npm integrity, lint, TypeScript, build and diff-check. Scope is exact, candidate manifest `06535c03b5645a54b8bb4331e8cd44b58303b9414c0856223ad627f223c2ab4b`, audit P0/P1 zero and repository integrity PASS. One explicit 17-path local final-hardening checkpoint follows; no push. After it, automatically continue to a distinct final closure re-audit.
+
+FINAL_HARDENING_METRICS_PRECHECKPOINT: run creation through hardening Gate measured approximately 101.583 minutes; 7 workers launched (Luna-medium 1, Sol-medium 3, Sol-high 3); 2 correction cycles consumed; 3 accepted complete R1 gates plus 1 preserved interrupted full-Vitest attempt; two iterative P1 audit findings under stable id `UX18-A11Y-ROLE-01`, final P0/P1/P2 all zero; current evidence tree 215083 bytes; tokens UNREPORTED. No causal performance claim.

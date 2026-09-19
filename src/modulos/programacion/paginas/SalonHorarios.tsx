@@ -522,7 +522,7 @@ export function SalonHorarios() {
   return (
     <Box>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate('/salones')} size="small">
+        <IconButton onClick={() => navigate('/salones')} size="small" aria-label="Volver a salones">
           <ArrowBackIcon fontSize="small" />
         </IconButton>
         <Box>
@@ -552,14 +552,14 @@ export function SalonHorarios() {
       ) : (
         <Stack spacing={3}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <IconButton size="small" onClick={() => setInicioSemana((s) => sumarDias(s, -7))}>
+            <IconButton size="small" aria-label="Semana anterior" onClick={() => setInicioSemana((s) => sumarDias(s, -7))}>
               <ChevronLeftIcon fontSize="small" />
             </IconButton>
             <Typography variant="body2" sx={{ minWidth: 200, textAlign: 'center' }}>
               Semana del {inicioSemana.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })} al{' '}
               {finSemana.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })}
             </Typography>
-            <IconButton size="small" onClick={() => setInicioSemana((s) => sumarDias(s, 7))}>
+            <IconButton size="small" aria-label="Semana siguiente" onClick={() => setInicioSemana((s) => sumarDias(s, 7))}>
               <ChevronRightIcon fontSize="small" />
             </IconButton>
             <Box sx={{ flexGrow: 1 }} />

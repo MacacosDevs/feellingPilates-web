@@ -353,7 +353,8 @@ export function VentaServicios() {
                       fontWeight: 700,
                       px: 0.75,
                       borderRadius: 10,
-                      bgcolor: seleccionado ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.06)',
+                      bgcolor: seleccionado ? 'rgba(0,0,0,0.60)' : 'rgba(0,0,0,0.06)',
+                      color: seleccionado ? '#ffffff' : 'inherit',
                     }}
                   >
                     {segmento.total}

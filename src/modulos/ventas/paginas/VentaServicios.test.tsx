@@ -141,6 +141,14 @@ describe('VentaServicios: formularios y tabla local', () => {
         expect(screen.queryByRole('row', { name: /Servicio 00/ })).toBeNull();
         expect(reads).toBe(1);
     });
+    it('usa una tinta de alto contraste en el contador Mixtos seleccionado', async () => {
+        await mount();
+        const mixtos = screen.getByRole('button', { name: /Mixtos/ });
+        await userEvent.click(mixtos);
+        const contador = within(mixtos).getByText('0');
+        expect(getComputedStyle(contador).backgroundColor).toBe('rgba(0, 0, 0, 0.6)');
+        expect(getComputedStyle(contador).color).toBe('rgb(255, 255, 255)');
+    });
     it.each([['Vigencia', 'A primero'], ['Estado', 'A primero'], ['Fecha', 'A primero']])('comparador local %s asc/desc sin GET extra', async (column, first) => {
         const a = service({ id: 'a', nombre: 'A primero', vigenciaDias: 7, activo: false, creadoEn: '2025-01-02T12:00:00Z' });
         const b = service({ id: 'b', nombre: 'B segundo', vigenciaDias: 30, activo: true, creadoEn: '2026-01-02T12:00:00Z' });

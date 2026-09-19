@@ -47,7 +47,7 @@ async function isolated(context: BrowserContext, page: Page, baseURL: string, op
       }
       if (method === 'PATCH' && exact('/turnos-instructor/t1')) {
         const body = request.postDataJSON();
-        rows = rows.map(t => t.id === 't1' ? { ...t, ...body } : t);
+        rows = rows.map(t => t.id === 't1' ? { ...t, diaSemana: body.diaSemana, horaInicio: body.horaInicio, horaFin: body.horaFin } : t);
         await reply(rows.find(t => t.id === 't1'), 200, body); return;
       }
       if (method === 'POST' && exact('/salones/s1/horarios/versiones')) {
@@ -71,8 +71,8 @@ async function isolated(context: BrowserContext, page: Page, baseURL: string, op
 }
 async function ready(page: Page) { await page.goto('/salones/s1/horarios'); await expect(page.getByText('Jue 31/12', { exact: true })).toBeVisible(); }
 async function bounds(page: Page, time: string) {
-  // Mouse-only blocks have no role/name. Anchor to visible time and computed
-  // absolute box; this observes real Chromium placement without Emotion classes.
+  // Anchor to visible time and computed absolute box so geometry remains independent
+  // from the semantic controls added to the same block.
   return page.getByText(time, { exact: true }).evaluate(node => {
     let block = node.parentElement;
     while (block && !(getComputedStyle(block).position === 'absolute' && ['grab', 'default'].includes(getComputedStyle(block).cursor))) block = block.parentElement;
@@ -88,23 +88,50 @@ for (const width of [375, 768, 1440]) {
     try {
       await ready(page);
       const first = await bounds(page, '08:00–09:00'), a = await bounds(page, '09:00–11:00'), b = await bounds(page, '10:00–12:00'), adjacent = await bounds(page, '12:00–13:00'), last = await bounds(page, '17:00–18:00');
+      await expect(page.getByRole('button', { name: 'Semana anterior' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Semana siguiente' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Editar horario de Jue 31/12' })).toBeVisible();
+      const bloqueAccesible = page.getByRole('button', { name: /^Horario recurrente Jue 31\/12, 09:00–11:00/ });
+      const grupoBloque = page.getByRole('group', { name: /^Horario recurrente Jue 31\/12, 09:00–11:00/ });
+      await expect(bloqueAccesible).toBeVisible();
+      await expect(page.getByRole('separator', { name: /^Ajustar inicio de Horario recurrente Jue 31\/12, 09:00–11:00/ })).toBeVisible();
+      await expect(grupoBloque).not.toHaveAttribute('tabindex');
+      const presentacion = await grupoBloque.evaluate(node => {
+        const detalle = node.querySelector('.detalle-bloque') as HTMLElement;
+        const accion = node.querySelector('.accion-compacta') as HTMLElement | null;
+        return {
+          narrow: node.getAttribute('data-presentacion-estrecha'),
+          detalleWidth: detalle.getBoundingClientRect().width,
+          detallePosition: getComputedStyle(detalle).position,
+          detalleClipPath: getComputedStyle(detalle).clipPath,
+          accionVisible: accion ? getComputedStyle(accion).display !== 'none' : false,
+        };
+      });
+      if (width === 375) {
+        expect(a.width).toBeLessThan(24);
+        expect(presentacion).toMatchObject({ narrow: 'true', detallePosition: 'absolute', detalleClipPath: 'inset(50%)', accionVisible: true });
+      } else {
+        expect(presentacion.detallePosition).not.toBe('absolute');
+      }
       expect(a.right).toBeLessThanOrEqual(b.x + 1);
       expect(a.y).toBeLessThan(b.y); expect(a.bottom).toBeGreaterThan(b.y);
       expect(Math.abs(b.bottom - adjacent.y)).toBeLessThanOrEqual(5);
       expect(Math.abs(first.y - first.gridY)).toBeLessThanOrEqual(5);
       expect(Math.abs(last.bottom - last.gridBottom)).toBeLessThanOrEqual(5);
       if (width === 375) await page.setViewportSize({ width, height: 720 });
-      await page.getByText('17:00–18:00', { exact: true }).scrollIntoViewIfNeeded();
-      await expect(page.getByText('17:00–18:00', { exact: true })).toBeInViewport();
-      const verticalScroll = await page.getByText('17:00–18:00', { exact: true }).evaluate(node => {
+      const lastBlock = page.getByRole('button', { name: /^Horario recurrente Jue 31\/12, 17:00–18:00/ });
+      await lastBlock.scrollIntoViewIfNeeded();
+      await expect(lastBlock).toBeInViewport();
+      const verticalScroll = await lastBlock.evaluate(node => {
         let container = node.parentElement;
         while (container && !(['auto', 'scroll'].includes(getComputedStyle(container).overflowY) && container.scrollHeight > container.clientHeight)) container = container.parentElement;
         return { documentTop: document.scrollingElement!.scrollTop, localTop: container?.scrollTop ?? 0, localHeight: container?.clientHeight ?? 0, contentHeight: container?.scrollHeight ?? 0 };
       });
       expect(verticalScroll.documentTop).toBe(0);
       if (width === 375) expect(verticalScroll.localTop).toBeGreaterThan(0);
-      await page.getByText('08:00–09:00', { exact: true }).scrollIntoViewIfNeeded();
-      await expect(page.getByText('08:00–09:00', { exact: true })).toBeInViewport();
+      const firstBlock = page.getByRole('button', { name: /^Horario recurrente Jue 31\/12, 08:00–09:00/ });
+      await firstBlock.scrollIntoViewIfNeeded();
+      await expect(firstBlock).toBeInViewport();
       const scroll = await page.evaluate(() => ({ viewport: innerWidth, documentWidth: document.documentElement.scrollWidth, containers: Array.from(document.querySelectorAll('*')).filter(el => el.scrollWidth > el.clientWidth + 1 && ['auto', 'scroll'].includes(getComputedStyle(el).overflowX)).map(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth })) }));
       const lastHeader = await page.getByText('Sáb 2/1', { exact: true }).evaluate(node => {
         const text = node.getBoundingClientRect();
@@ -168,12 +195,50 @@ test('diálogo semanal retiene campos tras POST 409, reintenta y cruza semana de
     await page.getByRole('button', { name: 'Cerrar', exact: true }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     app.setWeek({ desde: '2027-01-03', hasta: '2027-01-09' });
-    // The existing week arrows lack names. The visible week text anchors its
-    // immediate row; the second direct button is its current next-week control.
-    const next = page.getByText(/^Semana del/).locator('..').locator(':scope > button').nth(1);
+    const next = page.getByRole('button', { name: 'Semana siguiente' });
     await next.click();
     await expect(page.getByText('Dom 3/1', { exact: true })).toBeVisible();
     expect(app.ledger.filter(r => r.method === 'POST').map(r => r.body)).toEqual([{ diaSemana: 0, efectivoDesde: '2026-12-31', horaApertura: '08:00', horaCierre: '18:00' }, { diaSemana: 0, efectivoDesde: '2027-01-03', horaApertura: '08:00', horaCierre: '18:00' }]);
+  } finally { app.verify(); }
+});
+
+test('teclado activa encabezado, creación, movimiento y resize con contratos equivalentes', async ({ context, page, baseURL }) => {
+  await page.setViewportSize({ width: 375, height: 720 });
+  const app = await isolated(context, page, baseURL!, { rows: [turno()] });
+  try {
+    await ready(page);
+    const header = page.getByRole('button', { name: 'Editar horario de Mié 30/12' });
+    await header.focus(); await expect(header).toBeFocused(); await page.keyboard.press('Enter');
+    await expect(page.getByText('Horario de este día', { exact: true })).toBeVisible();
+    await page.keyboard.press('Escape'); await expect(page.getByText('Horario de este día', { exact: true })).toHaveCount(0);
+
+    let block = page.getByRole('button', { name: /^Horario recurrente Mié 30\/12, 09:00–11:00/ });
+    await block.focus(); await expect(block).toBeFocused(); await page.keyboard.press('ArrowDown');
+    block = page.getByRole('button', { name: /^Horario recurrente Mié 30\/12, 09:30–11:30/ });
+    await expect(block).toBeVisible();
+    const start = page.getByRole('separator', { name: /^Ajustar inicio de Horario recurrente Mié 30\/12, 09:30–11:30/ });
+    await block.focus();
+    await page.keyboard.press('Tab');
+    await expect(start).toBeFocused();
+    await expect(start).toHaveAttribute('aria-valuenow', '570');
+    await expect(start).toHaveAttribute('aria-valuetext', /Flecha arriba o abajo ajusta 30 minutos/);
+    await page.keyboard.press('ArrowDown');
+    block = page.getByRole('button', { name: /^Horario recurrente Mié 30\/12, 10:00–11:30/ });
+    await expect(block).toBeVisible();
+    expect(app.ledger.filter(r => r.method === 'PATCH').map(r => r.body)).toEqual([
+      { diaSemana: 3, horaInicio: '09:30', horaFin: '11:30', asignaciones: [assignment] },
+      { diaSemana: 3, horaInicio: '10:00', horaFin: '11:30', asignaciones: [assignment] },
+    ]);
+
+    await block.focus(); await page.keyboard.press('Enter');
+    await expect(page.getByRole('dialog', { name: /Instructores y actividades/ })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: /Instructores y actividades/ })).toHaveCount(0);
+
+    const create = page.getByRole('button', { name: 'Crear horario en Dom 27/12, de 08:00 a 18:00' });
+    await create.focus(); await page.keyboard.press('Space');
+    await expect(page.getByRole('heading', { name: 'Nuevo horario' })).toBeVisible();
+    await expect(page.getByText(/08:00–08:30/)).toBeVisible();
   } finally { app.verify(); }
 });
 test('mouse recurrente más allá del borde superior limita al inicio global actual sin duplicar PATCH', async ({ context, page, baseURL }) => {

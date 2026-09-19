@@ -756,6 +756,19 @@ export function CalendarioHorariosInstructor({
     registrarInteraccionGlobal(mover, soltar);
   }
 
+  function iniciarCreacionTeclado(dia: HorarioOperacionResponse, inicio: number, fin: number) {
+    if (!puedeGestionar || fin - inicio < SLOT_MINUTOS) return;
+    setTipoNuevo('RECURRENTE');
+    setFechaNuevo(proximaFecha(dia.diaSemana));
+    setAsignacionesNuevas({});
+    setPendienteCreacion({
+      dia: dia.diaSemana,
+      horaInicio: aHora(inicio),
+      horaFin: aHora(inicio + SLOT_MINUTOS),
+      anchor: { top: 0, left: 0 },
+    });
+  }
+
   /** True si el rango propuesto en `pendienteCreacion` se traslapa con algún bloque existente. */
   function haySolapeCreacion(): boolean {
     if (!pendienteCreacion) return false;
@@ -907,6 +920,79 @@ export function CalendarioHorariosInstructor({
       }
     };
     registrarInteraccionGlobal(mover, soltar);
+  }
+
+  function ajustarTurnoConTeclado(
+    turno: TurnoInstructorResponse,
+    modo: 'mover' | 'inicio' | 'fin',
+    deltaMinutos: number,
+    deltaDias = 0,
+  ) {
+    if (!puedeMoverOrecortar) return;
+    const inicioOriginal = aMinutos(turno.horaInicio);
+    const finOriginal = aMinutos(turno.horaFin);
+    const diaOriginal = turno.diaSemana ?? 0;
+    let dia = diaOriginal;
+    let inicio = inicioOriginal;
+    let fin = finOriginal;
+    if (modo === 'mover') {
+      const duracion = finOriginal - inicioOriginal;
+      inicio = Math.min(Math.max(inicioOriginal + deltaMinutos, minApertura), maxCierre - duracion);
+      fin = inicio + duracion;
+      if (deltaDias !== 0) {
+        const indice = dias.findIndex((item) => item.diaSemana === diaOriginal);
+        const destino = dias[indice + deltaDias];
+        if (!destino) return;
+        dia = destino.diaSemana;
+      }
+    } else if (modo === 'inicio') {
+      inicio = Math.min(Math.max(inicioOriginal + deltaMinutos, minApertura), finOriginal - SLOT_MINUTOS);
+    } else {
+      fin = Math.max(Math.min(finOriginal + deltaMinutos, maxCierre), inicioOriginal + SLOT_MINUTOS);
+    }
+    if (inicio === inicioOriginal && fin === finOriginal && dia === diaOriginal) return;
+    if (haySolape(inicio, fin, bloquesActivosDia(dia, aIso(sumarDias(inicioSemana, dia))), turno.id)) {
+      setAvisoSolape(true);
+      return;
+    }
+    void onMover(turno.id, dia, aHora(inicio), aHora(fin), asignacionesARequest(asignacionesDeTurno(turno)));
+  }
+
+  function ajustarExcepcionConTeclado(
+    excepcion: TurnoInstructorResponse,
+    fecha: string,
+    diaSemana: number,
+    modo: 'mover' | 'inicio' | 'fin',
+    deltaMinutos: number,
+  ) {
+    if (!puedeMoverOrecortar) return;
+    const inicioOriginal = aMinutos(excepcion.horaInicio);
+    const finOriginal = aMinutos(excepcion.horaFin);
+    let inicio = inicioOriginal;
+    let fin = finOriginal;
+    if (modo === 'mover') {
+      const duracion = finOriginal - inicioOriginal;
+      inicio = Math.min(Math.max(inicioOriginal + deltaMinutos, minApertura), maxCierre - duracion);
+      fin = inicio + duracion;
+    } else if (modo === 'inicio') {
+      inicio = Math.min(Math.max(inicioOriginal + deltaMinutos, minApertura), finOriginal - SLOT_MINUTOS);
+    } else {
+      fin = Math.max(Math.min(finOriginal + deltaMinutos, maxCierre), inicioOriginal + SLOT_MINUTOS);
+    }
+    if (inicio === inicioOriginal && fin === finOriginal) return;
+    if (haySolape(inicio, fin, bloquesActivosDia(diaSemana, fecha), excepcion.id)) {
+      setAvisoSolape(true);
+      return;
+    }
+    void onAjustarFecha(
+      fecha,
+      [{
+        horaInicio: aHora(inicio),
+        horaFin: aHora(fin),
+        asignaciones: asignacionesARequest(asignacionesDeTurno(excepcion)),
+      }],
+      [excepcion.id],
+    );
   }
 
   function abrirMenuCancelar(
@@ -1167,6 +1253,14 @@ export function CalendarioHorariosInstructor({
                 {!cerradoPorExcepcion && (
                   <Box
                     onMouseDown={(e) => iniciarCreacion(dia, e)}
+                    onKeyDown={(evento) => {
+                      if (!puedeGestionar || (evento.key !== 'Enter' && evento.key !== ' ')) return;
+                      evento.preventDefault();
+                      iniciarCreacionTeclado(dia, abiertoInicio, abiertoFin);
+                    }}
+                    role={puedeGestionar ? 'button' : undefined}
+                    tabIndex={puedeGestionar ? 0 : undefined}
+                    aria-label={puedeGestionar ? `Crear horario en ${DIAS_CORTO[dia.diaSemana]} ${fechaColumna.getDate()}/${fechaColumna.getMonth() + 1}, de ${aHora(abiertoInicio)} a ${aHora(abiertoFin)}` : undefined}
                     sx={{
                       position: 'absolute',
                       top: calcularPosicionVerticalCalendario(abiertoInicio, minApertura),
@@ -1175,6 +1269,7 @@ export function CalendarioHorariosInstructor({
                       height: calcularAlturaRangoCalendario(abiertoInicio, abiertoFin),
                       cursor: puedeGestionar ? 'copy' : 'default',
                       '&:hover': puedeGestionar ? { bgcolor: 'action.selected' } : undefined,
+                      '&:focus-visible': puedeGestionar ? { outline: '3px solid', outlineColor: 'primary.main', outlineOffset: -3 } : undefined,
                     }}
                   />
                 )}
@@ -1225,6 +1320,7 @@ export function CalendarioHorariosInstructor({
                     const instructoresMostrados = excepcionTurno.instructores;
                     const asignacionesMostradas = excepcionTurno.asignaciones;
                     const puedeArrastrarExcepcion = puedeMoverOrecortar && !esFechaPasada;
+                    const nombreAccesible = `Horario especial ${DIAS_CORTO[dia.diaSemana]} ${fechaColumna.getDate()}/${fechaColumna.getMonth() + 1}, ${aHora(uInicio)}–${aHora(uFin)}${instructoresMostrados.length ? `, ${nombresConRango(instructoresMostrados, asignacionesMostradas)}` : ''}${actividadesMostradas.length ? `, ${nombresDe(actividadesMostradas)}` : ''}`;
 
                     const abrirConfirmacionEliminar = () =>
                       setConfirmEliminar({
@@ -1245,11 +1341,17 @@ export function CalendarioHorariosInstructor({
                         puedeArrastrar={puedeArrastrarExcepcion}
                         mostrarAcciones={puedeMoverOrecortar}
                         mostrarMenuCompacto={alturaExcepcionOverlay < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                        presentacionEstrecha={total > 1}
+                        nombreAccesible={nombreAccesible}
                         izquierda={geometriaColumnas.izquierdaCss}
                         ancho={geometriaColumnas.anchoCss}
                         arriba={calcularPosicionVerticalCalendario(uInicio, minApertura)}
                         altura={calcularAlturaBloqueCalendario(uInicio, uFin)}
                         hora={`${aHora(uInicio)}–${aHora(uFin)}`}
+                        minimoInicio={minApertura}
+                        maximoInicio={aMinutos(excepcionTurno.horaFin) - SLOT_MINUTOS}
+                        minimoFin={aMinutos(excepcionTurno.horaInicio) + SLOT_MINUTOS}
+                        maximoFin={maxCierre}
                         instructores={nombresConRango(instructoresMostrados, asignacionesMostradas)}
                         mostrarInstructores={instructoresMostrados.length > 0}
                         actividades={nombresDe(actividadesMostradas)}
@@ -1260,6 +1362,10 @@ export function CalendarioHorariosInstructor({
                           puedeArrastrarExcepcion &&
                           iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'mover', e)
                         }
+                        onActivar={(e) => abrirMenuEditarBloque(e as unknown as React.MouseEvent<HTMLElement>, turno, aIso(fechaColumna), excepcionTurno)}
+                        onMoverTeclado={(minutos) => ajustarExcepcionConTeclado(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'mover', minutos)}
+                        onAjustarInicioTeclado={(minutos) => ajustarExcepcionConTeclado(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'inicio', minutos)}
+                        onAjustarFinTeclado={(minutos) => ajustarExcepcionConTeclado(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'fin', minutos)}
                         onAjustarInicio={(e) =>
                           iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'inicio', e)
                         }
@@ -1307,6 +1413,7 @@ export function CalendarioHorariosInstructor({
                       instructores: turno.instructores.map((i) => i.nombre),
                       actividades: turno.actividades.map((a) => a.nombre),
                     });
+                  const nombreAccesible = `Horario recurrente ${DIAS_CORTO[dia.diaSemana]} ${fechaColumna.getDate()}/${fechaColumna.getMonth() + 1}, ${aHora(inicio)}–${aHora(fin)}${turno.instructores.length ? `, ${nombresConRango(turno.instructores, turno.asignaciones)}` : ''}${turno.actividades.length ? `, ${nombresDe(turno.actividades)}` : ''}`;
 
                   return (
                     <BloqueHorarioCalendario
@@ -1319,11 +1426,17 @@ export function CalendarioHorariosInstructor({
                       puedeCancelarDia={puedeCancelarDia && !esFechaPasada}
                       puedeGestionar={puedeGestionar}
                       mostrarMenuCompacto={alturaTurnoBloque < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                      presentacionEstrecha={total > 1}
+                      nombreAccesible={nombreAccesible}
                       izquierda={geometriaColumnas.izquierdaCss}
                       ancho={geometriaColumnas.anchoCss}
                       arriba={calcularPosicionVerticalCalendario(inicio, minApertura)}
                       altura={calcularAlturaBloqueCalendario(inicio, fin)}
                       hora={`${aHora(inicio)}–${aHora(fin)}`}
+                      minimoInicio={minApertura}
+                      maximoInicio={aMinutos(turno.horaFin) - SLOT_MINUTOS}
+                      minimoFin={aMinutos(turno.horaInicio) + SLOT_MINUTOS}
+                      maximoFin={maxCierre}
                       instructores={nombresConRango(turno.instructores, turno.asignaciones)}
                       mostrarInstructores={turno.instructores.length > 0}
                       actividades={nombresDe(turno.actividades)}
@@ -1333,6 +1446,10 @@ export function CalendarioHorariosInstructor({
                       onMover={(e) =>
                         !cerradoPorExcepcion && puedeMoverOrecortar && iniciarAjuste(turno, 'mover', e)
                       }
+                      onActivar={(e) => abrirMenuEditarBloque(e as unknown as React.MouseEvent<HTMLElement>, turno, aIso(fechaColumna))}
+                      onMoverTeclado={(minutos, diasDelta) => ajustarTurnoConTeclado(turno, 'mover', minutos, diasDelta)}
+                      onAjustarInicioTeclado={(minutos) => ajustarTurnoConTeclado(turno, 'inicio', minutos)}
+                      onAjustarFinTeclado={(minutos) => ajustarTurnoConTeclado(turno, 'fin', minutos)}
                       onAjustarInicio={(e) => iniciarAjuste(turno, 'inicio', e)}
                       onAjustarFin={(e) => iniciarAjuste(turno, 'fin', e)}
                       onAbrirMenu={(e) => {
@@ -1374,6 +1491,7 @@ export function CalendarioHorariosInstructor({
                     const columna = columnas.get(ex.id) ?? 0;
                     const geometriaColumnas = calcularGeometriaColumnasCalendario(columna, total, false);
                     const puedeArrastrarExcepcion = puedeMoverOrecortar && !esFechaPasada;
+                    const nombreAccesible = `Horario especial ${DIAS_CORTO[dia.diaSemana]} ${fechaColumna.getDate()}/${fechaColumna.getMonth() + 1}, ${aHora(inicio)}–${aHora(fin)}${ex.instructores.length ? `, ${nombresConRango(ex.instructores, ex.asignaciones)}` : ''}${ex.actividades.length ? `, ${nombresDe(ex.actividades)}` : ''}`;
 
                     // A esta altura, toda excepción que se solapa con un turno recurrente ya se
                     // pintó junto a ese turno más arriba (y quedó en excepcionesUsadas). Lo que
@@ -1388,11 +1506,17 @@ export function CalendarioHorariosInstructor({
                         puedeArrastrar={puedeArrastrarExcepcion}
                         mostrarAcciones={puedeMoverOrecortar}
                         mostrarMenuCompacto={alturaExcepcionSola < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                        presentacionEstrecha={total > 1}
+                        nombreAccesible={nombreAccesible}
                         izquierda={geometriaColumnas.izquierdaCss}
                         ancho={geometriaColumnas.anchoCss}
                         arriba={calcularPosicionVerticalCalendario(inicio, minApertura)}
                         altura={calcularAlturaBloqueCalendario(inicio, fin)}
                         hora={`${aHora(inicio)}–${aHora(fin)}`}
+                        minimoInicio={minApertura}
+                        maximoInicio={aMinutos(ex.horaFin) - SLOT_MINUTOS}
+                        minimoFin={aMinutos(ex.horaInicio) + SLOT_MINUTOS}
+                        maximoFin={maxCierre}
                         instructores={nombresConRango(ex.instructores, ex.asignaciones)}
                         mostrarInstructores={ex.instructores.length > 0}
                         actividades={nombresDe(ex.actividades)}
@@ -1403,6 +1527,10 @@ export function CalendarioHorariosInstructor({
                           puedeArrastrarExcepcion &&
                           iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'mover', e)
                         }
+                        onActivar={(e) => abrirMenuEditarBloque(e as unknown as React.MouseEvent<HTMLElement>, ex, ex.fecha ?? aIso(fechaColumna), ex)}
+                        onMoverTeclado={(minutos) => ajustarExcepcionConTeclado(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'mover', minutos)}
+                        onAjustarInicioTeclado={(minutos) => ajustarExcepcionConTeclado(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'inicio', minutos)}
+                        onAjustarFinTeclado={(minutos) => ajustarExcepcionConTeclado(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'fin', minutos)}
                         onAjustarInicio={(e) =>
                           iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'inicio', e)
                         }

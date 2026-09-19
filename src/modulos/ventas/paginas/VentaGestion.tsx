@@ -464,6 +464,7 @@ export function VentaGestion() {
                     color={METODO_COLOR[primero.metodoPago]}
                     variant="outlined"
                     label={METODO_LABEL[primero.metodoPago] ?? primero.metodoPago}
+                    sx={primero.metodoPago === 'transferencia' ? { color: 'info.dark', borderColor: 'info.dark' } : undefined}
                   />
                 </TableCell>
                 <TableCell>{primero.salonNombre ?? '—'}</TableCell>
