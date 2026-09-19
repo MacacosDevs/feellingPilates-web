@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Autocomplete,
@@ -595,6 +595,7 @@ export function CalendarioHorariosInstructor({
 }: Props) {
   const gridRef = useRef<HTMLDivElement>(null);
   const columnasRef = useRef<Record<number, HTMLDivElement | null>>({});
+  const limpiarInteraccionGlobalRef = useRef<(() => void) | null>(null);
   const [creando, setCreando] = useState<EstadoCreacion | null>(null);
   const [ajuste, setAjuste] = useState<EstadoAjuste | null>(null);
   const [ajusteSolapa, setAjusteSolapa] = useState(false);
@@ -635,6 +636,34 @@ export function CalendarioHorariosInstructor({
 
   const puedeMoverOrecortar = puedeGestionar || puedeEditar;
   const puedeCancelarDia = puedeGestionar || puedeCancelar;
+
+  function registrarInteraccionGlobal(
+    mover: (evento: MouseEvent) => void,
+    soltar: (evento: MouseEvent) => void,
+  ) {
+    limpiarInteraccionGlobalRef.current?.();
+    let activa = true;
+    const moverRegistrado = (evento: MouseEvent) => {
+      if (activa) mover(evento);
+    };
+    const limpiar = () => {
+      if (!activa) return;
+      activa = false;
+      window.removeEventListener('mousemove', moverRegistrado);
+      window.removeEventListener('mouseup', soltarRegistrado);
+      if (limpiarInteraccionGlobalRef.current === limpiar) limpiarInteraccionGlobalRef.current = null;
+    };
+    const soltarRegistrado = (evento: MouseEvent) => {
+      if (!activa) return;
+      limpiar();
+      soltar(evento);
+    };
+    limpiarInteraccionGlobalRef.current = limpiar;
+    window.addEventListener('mousemove', moverRegistrado);
+    window.addEventListener('mouseup', soltarRegistrado);
+  }
+
+  useEffect(() => () => limpiarInteraccionGlobalRef.current?.(), []);
 
   const dias = useMemo(
     () => [...horarios].sort((a, b) => a.diaSemana - b.diaSemana),
@@ -709,8 +738,6 @@ export function CalendarioHorariosInstructor({
       setCreando({ ...estado });
     };
     const soltar = (ev: MouseEvent) => {
-      window.removeEventListener('mousemove', mover);
-      window.removeEventListener('mouseup', soltar);
       setCreando(null);
       const inicioFinal = Math.min(estado.inicio, estado.fin);
       const finFinal = Math.max(estado.inicio, estado.fin);
@@ -726,8 +753,7 @@ export function CalendarioHorariosInstructor({
         });
       }
     };
-    window.addEventListener('mousemove', mover);
-    window.addEventListener('mouseup', soltar);
+    registrarInteraccionGlobal(mover, soltar);
   }
 
   /** True si el rango propuesto en `pendienteCreacion` se traslapa con algún bloque existente. */
@@ -794,8 +820,6 @@ export function CalendarioHorariosInstructor({
       );
     };
     const soltar = () => {
-      window.removeEventListener('mousemove', mover);
-      window.removeEventListener('mouseup', soltar);
       setAjuste(null);
       const solapa = haySolape(
         estado.inicio,
@@ -818,8 +842,7 @@ export function CalendarioHorariosInstructor({
         );
       }
     };
-    window.addEventListener('mousemove', mover);
-    window.addEventListener('mouseup', soltar);
+    registrarInteraccionGlobal(mover, soltar);
   }
 
   /**
@@ -862,8 +885,6 @@ export function CalendarioHorariosInstructor({
       );
     };
     const soltar = () => {
-      window.removeEventListener('mousemove', mover);
-      window.removeEventListener('mouseup', soltar);
       setAjusteExcepcion(null);
       const solapa = haySolape(estado.inicio, estado.fin, bloquesActivosDia(estado.dia, estado.fecha), estado.excepcionId);
       setAjusteExcepcionSolapa(false);
@@ -885,8 +906,7 @@ export function CalendarioHorariosInstructor({
         );
       }
     };
-    window.addEventListener('mousemove', mover);
-    window.addEventListener('mouseup', soltar);
+    registrarInteraccionGlobal(mover, soltar);
   }
 
   function abrirMenuCancelar(

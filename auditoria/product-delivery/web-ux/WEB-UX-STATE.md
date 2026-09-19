@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_15
-CURRENT_PHASE: M15_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_16
+CURRENT_PHASE: M16_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_15_PASS_CLOSED; SUBSEQUENT_MILESTONE_NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_16_PASS_CLOSED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,14 +30,14 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_3854059a7512
-LAST_GATE_ID: gate_0443d065d19f
-LAST_ACCEPTED_CHECKPOINT: e833c463ea79520b57df85878b23b8245cba2c16
-CURRENT_CANDIDATE_MANIFEST: M15 accepted exact four-path set under msg_50f6e59ceffe; Calendar sha256 3d0f310d5f9a0cb2d41e4cfc24c7121269723e377db566194a26fa2118e846bc; BloqueHorarioEspecialCalendario sha256 95b19b58b57595a2a9bba2bbb5d364f464b272ae1befc1b95bc8891d70869fa1; Root-only receipt hashes and final candidate fingerprint are captured immediately before explicit staging
-LAST_ACCEPTED_TESTS: 407
-LAST_ACCEPTED_VITEST: 332
+LAST_RUN_ID: run_09f066b63527
+LAST_GATE_ID: gate_1536a1efee5c
+LAST_ACCEPTED_CHECKPOINT: M16_CHECKPOINT_CONTAINING_THIS_STATE; discover exact SHA with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
+CURRENT_CANDIDATE_MANIFEST: M16 accepted exact four-path candidate; final post-receipt fingerprint is durable in Orca Run run_09f066b63527 and checkpoint staging evidence, avoiding a recursive STATE self-hash claim
+LAST_ACCEPTED_TESTS: 412
+LAST_ACCEPTED_VITEST: 337
 LAST_ACCEPTED_PLAYWRIGHT: 75
-CORRECTION_CYCLES_USED: 0
+CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
 NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_c510585c7929 settled succeeded and released
+ACTIVE_WRITE_TASK: NONE; task_c5c663c81ac6 correction settled succeeded and released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_e6a6b1e648d5 settled succeeded and released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_f82a3adfb4df correction settled succeeded and released
 
-FROZEN_PHASE_PLAN: M15 msg_50f6e59ceffe / allowlist fingerprint 826fa29a124562c127a4d4ee3aeb93e4a2ea13355898e1c8fe8c49c9aad2e275; only Calendar/new BloqueHorarioEspecialCalendario plus Root STATE/RUNBOOK; all other entry files protected
+FROZEN_PHASE_PLAN: M16 msg_3865d619108f / allowlist fingerprint 0cd772e6dec8a74cfc8c77eb41464ebb39401f535dfda957097b44a8733b9e3d; only Calendar/existing Calendar component test plus Root STATE/RUNBOOK; all other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 407
+TEST_BASELINE: 412
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -582,3 +582,37 @@ M15_METRICS: {"measurementWindow":"Run creation through Decision Gate and preche
 M15_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: one future slice may add unmount-safe cleanup for the three existing Calendar window mousemove/mouseup listener flows (create, recurrent adjust and punctual adjust) while preserving normal geometry, pointer results, callbacks, requests, permissions and F2E-adjacent semantics. Candidate scope: Calendar plus only indispensable existing characterization/Chromium wiring and Root closure docs. Risk HIGH interaction lifecycle. Protect mid-drag unmount, normal drag/resize at 375/768/1440 and 1440→768, and exact callback/request ledgers; require full 407+ R1 GATE, new Sol-high audit and actual Gate. Recommendation only; no subsequent slice is authorized.
 
 M15_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. F2E compatibility remains UNVERIFIED and all known clipping, resize-remeasurement, stale-response, error-as-empty, listener and broader accessibility gaps remain deferred except that the listener gap is only recommended for a future separately authorized slice.
+
+## M16 AUTHORIZATION / IMPLEMENTATION IN PROGRESS
+
+Human authorization UX-15 starts from exact accepted checkpoint `8955d01789a12d1319aec430cccbc4747d35a49b`, clean worktree and empty index. Run `run_09f066b63527`. Entry manifest: 150 tracked files, fingerprint `1a691ee221d675d5f7be7af0a0cae02dd8b2c3c318ed97398021b4a8073efdde`; package manifest/lock hashes remain `212064e4ca421ff6d9156a160b009af9b0340b00ff503d5652767ae38c2f0289` and `be9b0cbdb5448ef033f7ccec572211a733e97e610f29230a4350da4d245944ce`.
+
+M16_RECON: `task_74409cb26714` / `ctx_7031b6c33e7b`, verified `gpt-5.6-luna` medium, read-only PASS and released. Exactly three window mouse-listener flows exist: empty-day creation, recurrent move/resize, and punctual-exception move/resize. Each registered one mousemove/mouseup pair and removed exact identities on normal mouseup, but lacked active-unmount cleanup and allowed a superseding interaction to leave the previous pair active. No fourth flow or baseline drift.
+
+M16_FROZEN_SCOPE: durable authority `msg_3865d619108f`; exact four paths, fingerprint `0cd772e6dec8a74cfc8c77eb41464ebb39401f535dfda957097b44a8733b9e3d`: STATE, RUNBOOK, existing Calendar and existing Calendar main component test. Every other tracked path is protected. The test path is indispensable to reproduce listener registration/removal, active unmount, repetition and stale-handler prevention without backend calls.
+
+M16_TEST_FIRST_IMPLEMENTATION: `task_2d19305e884a` / `ctx_2a2b0ac94043`, verified `gpt-5.6-sol` medium, PASS and released. RED on unchanged production: 23 tests passed, two lifecycle tests failed because active unmount and interaction supersession removed zero exact handlers; normal termination controls for all three flows passed. GREEN: one component-owned cleanup ref registers exact wrapper identities, idempotently removes the sole active pair on mouseup, supersession and unmount, and disables stale wrapper delivery. No geometry, drag/resize math, callback order, request/payload, permission/session, child or F2E change. FAST validation: TypeScript, test typecheck, lint, 27/27 Calendar Vitest, 20/20 scoped Chromium and diff-check PASS. Full GATE, fresh audit and actual Decision Gate remain pending.
+
+M16_FULL_GATE: PASS. Fresh dependency integrity, lint, TypeScript, 337/337 Vitest, 75/75 Chromium Playwright, production build and `git diff --check` all exit zero; total 412 PASS, 0 FAIL, 0 SKIPPED and no required flaky test. Five lifecycle contracts increase the accepted baseline without replacing prior tests. Four-path pre-audit snapshot fingerprint `b37bdaf9a298a3e626e9bfa910ce51db0e83f059d4ff3638245ad0eef96414d8`; staging empty, package bytes exact and 146 protected entry paths byte-identical. Only the inherited >500kB chunk warning remains. Fresh Sol-high audit and actual Decision Gate are still mandatory.
+
+M16_FRESH_AUDIT_01: `task_6fab0f8edc56` / `ctx_a5d6829af90f`, verified `gpt-5.6-sol` high, read-only FAIL with P0=0, P1=1 and P2=1. M16-TEST-01 found a bounded proof gap: implementation guards stale wrappers and uses an idempotent disposer, but tests did not directly invoke captured wrappers after unmount/supersession or prove double cleanup. M16-PROCESS-01 records that the historical pre-audit manifest's STATE hash became stale after the full-GATE receipt; product/test/package scope remained exact. Neither finding requires scope expansion or a Human Gate.
+
+M16_CORRECTION_01: correction cycle 1/2 is consumed before write. Only the already-frozen Calendar component test may add direct assertions for stale captured mover/mouseup delivery after unmount and supersession, plus normal mouseup followed by unmount/repeated stale invocation. Production bytes remain fixed unless those tests expose a real defect. A new exact candidate manifest, affected validation and a completely fresh Sol-high re-audit are mandatory before any Decision Gate.
+
+M16_CORRECTION_01_RESULT: PASS. `task_c5c663c81ac6` / `ctx_f82a3adfb4df`, launch receipt verifies `gpt-5.6-sol` medium, changed only the existing Calendar component test. Captured stale mousemove/mouseup wrappers are now invoked after unmount and after supersession for all three flows; normal mouseup followed by unmount and repeated stale mouseup proves cleanup/callback idempotence. No production defect was exposed and Calendar production SHA remains `bda9df0be200d386c82848f585a093bdb8799720b70610064f2860a12f89cf39`. Targeted 25/25 plus characterization 2/2, TypeScript, lint, 20/20 affected Chromium and diff-check PASS. The worker report incorrectly self-labelled its model/effort as codex:gpt-5/high; preserve that report and the authoritative launch receipt as M16-PROCESS-02 pending fresh-auditor adjudication.
+
+M16_POST_CORRECTION_FULL_GATE: PASS. Fresh dependency integrity, lint, TypeScript, 337/337 Vitest, 75/75 Chromium Playwright, production build and `git diff --check` all exit zero; 412 PASS, 0 FAIL, 0 SKIPPED and no required flaky test. Exact four-path scope, empty index, package hashes unchanged and all 146 protected paths byte-identical. Post-correction pre-receipt candidate fingerprint `7daa7428ae14ed574fe44710e9e26c0016ce617e2610f8259d020736209dbad6`; Calendar test SHA `c42af6d2ff77c1bfed4d44eeac3c540e15b8991e6473a9b889cf104b28a4c9db`. A completely fresh Sol-high re-audit remains mandatory before the Decision Gate.
+
+## M16 ACCEPTANCE / RECEIPT-ONLY CLOSURE
+
+Fresh independent re-audit `task_4a850c578445` / `ctx_ed042bc3c58a`, actual `gpt-5.6-sol` high, PASS with P0=0, P1=0 and P2=2; worker_done `msg_1de6a9f40805`, released. It independently reran the focused lifecycle suite 25/25 and accepted all 24 criteria. M16-TEST-01 is resolved: direct behavior assertions prove stale captured wrappers cannot deliver after unmount or supersession for all three flows, and cleanup/callback effects remain idempotent after normal termination. The product implementation remained unchanged during correction.
+
+M16-PROCESS-01 is RESOLVED_PROSPECTIVELY_NONBLOCKING: the historical pre-audit manifest remains preserved as its earlier snapshot and was superseded by exact current evidence; no retrospective exactness claim is made. M16-PROCESS-02 remains OPEN_HISTORICAL_METADATA_DISCREPANCY_NONBLOCKING: the correction report self-labelled codex:gpt-5/high while the immutable launch receipt proves requested/effective gpt-5.6-sol/medium. Both artifacts remain preserved; product, scope and validation evidence are unaffected.
+
+Actual Decision Gate gate-only `task_0ab270012608` / `gate_1536a1efee5c` resolved PASS. Exactly three Calendar listener flows now share one component-owned active disposer that removes exact mousemove/mouseup identities on normal mouseup, supersession and unmount, disables stale wrapper delivery, and is safe when invoked repeatedly. Drag/resize, geometry, callback order, request counts/payloads, permissions/session and F2E-adjacent semantics remain unchanged. Full post-correction GATE: 337 Vitest + 75 Chromium = 412 PASS, 0 FAIL, 0 SKIPPED; dependency integrity, lint, TypeScript, build and diff-check PASS. All 146 protected paths and package files remain exact.
+
+M16_METRICS_PRECHECKPOINT: {"measurementWindow":"Run creation through Decision Gate and receipt-only closure preparation","wallClockMinutes":45.750,"workersLaunched":5,"lunaTasks":1,"solMediumTasks":2,"solHighTasks":2,"targetedValidations":17,"fullValidations":2,"correctionCycles":1,"freshAuditFindings":3,"finalFindingSeverity":{"P0":0,"P1":0,"P2":2},"humanGates":1,"internalReportBytes":56627,"summaryEvidenceBytes":87160,"rawEvidenceBytes":83071,"tokens":"UNREPORTED","CavemanEnabledRoles":[],"causalSavingsClaim":false}. The second full GATE followed the bounded test-evidence correction. No causal performance claim is made.
+
+M16_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: after separate human authorization, consider one finite SalonHorarios-owned slice for stale read generation guards across week/site/filter reads plus truthful recoverable feedback for current error-as-empty paths. Preserve DTOs, request methods/order/payloads, auth/session/permissions, temporal/overlap semantics, Payments/F2E authority and all accepted M16 listener behavior. Use focused synthetic characterization, browser validation, complete R1 GATE and fresh Sol-high audit. Recommendation only; no next slice is authorized.
+
+M16_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One explicit exact four-path local checkpoint follows this closure; no later slice, push or remote publication is authorized. F2E compatibility remains UNVERIFIED and clipping, resize remeasurement, stale/error and broader accessibility gaps remain deferred.

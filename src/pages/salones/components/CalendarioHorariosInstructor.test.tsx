@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
@@ -7,13 +7,68 @@ import { renderWithTheme } from '../../../components/test-support/renderWithThem
 import { choose, deferred } from '../../../components/test-support/regression';
 import { activities, salon, turno } from '../../../../tests/fixtures/regression';
 beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 8, 16, 23, 30)); });
-afterEach(() => vi.useRealTimers());
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 type Props = ComponentProps<typeof CalendarioHorariosInstructor>;
 function props(overrides: Partial<Props> = {}): Props {
     return { horarios: salon().horarios, turnosRecurrentes: [turno()], turnosPuntuales: [], instructoresSalon: [{ id: 'i1', nombre: 'Inés Prueba' }, { id: 'i2', nombre: 'Luz Prueba' }], actividadesSalon: activities, mapaEspecialidades: { i1: ['a1'], i2: ['a2'] }, inicioSemana: new Date(2026, 8, 13), excepciones: [], puedeGestionar: true, puedeEditar: false, puedeCancelar: false, puedeAdministrarSalon: true, onCrear: vi.fn(), onMover: vi.fn().mockResolvedValue(null), onAjustarFecha: vi.fn().mockResolvedValue(null), onEliminar: vi.fn(), onCancelarFecha: vi.fn(), onGuardarExcepcion: vi.fn(), onEliminarExcepcion: vi.fn(), ...overrides };
 }
 async function edit() { await userEvent.click(screen.getByRole('button', { name: 'Editar actividades e instructores' })); return screen.getByRole('dialog', { name: /Instructores y actividades/ }); }
 async function addLuz() { await choose('Agregar instructor', 'Luz Prueba'); await choose('Actividades', /Yoga/); await userEvent.keyboard('{Escape}'); }
+
+type VistaCalendario = ReturnType<typeof renderWithTheme>;
+type EscuchadorRaton = EventListenerOrEventListenerObject;
+
+function columnaCalendario(vista: VistaCalendario, indice: number): HTMLElement {
+    const cabeceras = vista.container.querySelectorAll('.dia-header');
+    const rejilla = cabeceras[0].parentElement!.nextElementSibling!.children[1];
+    return Array.from(rejilla.children).slice(-cabeceras.length)[indice] as HTMLElement;
+}
+
+function zonaCreacion(vista: VistaCalendario, indiceDia = 0): HTMLElement {
+    return columnaCalendario(vista, indiceDia).firstElementChild as HTMLElement;
+}
+
+function bloqueRecurrente(): HTMLElement {
+    return screen.getByText('09:00–11:00').parentElement as HTMLElement;
+}
+
+function bloquePuntual(): HTMLElement {
+    return screen.getByText('12:00–13:00').parentElement!.parentElement as HTMLElement;
+}
+
+function vigilarEscuchadoresRaton() {
+    const agregar = vi.spyOn(window, 'addEventListener');
+    const quitar = vi.spyOn(window, 'removeEventListener');
+    const altas = () => agregar.mock.calls.filter(([tipo]) => tipo === 'mousemove' || tipo === 'mouseup');
+    const bajas = () => quitar.mock.calls.filter(([tipo]) => tipo === 'mousemove' || tipo === 'mouseup');
+    const identidades = () => {
+        expect(altas()).toHaveLength(2);
+        expect(altas().map(([tipo]) => tipo)).toEqual(['mousemove', 'mouseup']);
+        return {
+            mover: altas()[0][1] as EscuchadorRaton,
+            soltar: altas()[1][1] as EscuchadorRaton,
+        };
+    };
+    const esperarBajaExacta = ({ mover, soltar }: { mover: EscuchadorRaton; soltar: EscuchadorRaton }) => {
+        expect(bajas()).toEqual([
+            ['mousemove', mover],
+            ['mouseup', soltar],
+        ]);
+    };
+    return { agregar, quitar, altas, bajas, identidades, esperarBajaExacta };
+}
+
+function invocarEscuchadorRaton(escuchador: EscuchadorRaton, tipo: 'mousemove' | 'mouseup', clientX: number, clientY: number) {
+    const evento = new MouseEvent(tipo, { clientX, clientY });
+    act(() => {
+        if (typeof escuchador === 'function') escuchador(evento);
+        else escuchador.handleEvent(evento);
+    });
+}
+
+function excepcionPuntual() {
+    return turno({ id: 'e1', tipo: 'EXCEPCION', diaSemana: null, fecha: '2026-09-16', horaInicio: '12:00:00', horaFin: '13:00:00' });
+}
 describe('Calendario: contratos de asignación y permisos', () => {
     it('mantiene independientes la fecha y el recurrente, y reinicia cambios al reabrir', async () => {
         renderWithTheme(<CalendarioHorariosInstructor {...props()}/>);
@@ -168,5 +223,148 @@ describe('Calendario: contratos de asignación y permisos', () => {
         expect(screen.getByText('Mié 16/9')).toBeTruthy();
         expect(screen.getByText('Solo puedes consultar este calendario.')).toBeTruthy();
         expect(screen.queryByRole('button', { name: 'Eliminar bloque completo' })).toBeNull();
+    });
+});
+
+describe('Calendario: ciclo de vida de interacciones globales', () => {
+    it('creación registra y retira las identidades exactas, y conserva el request al confirmar', async () => {
+        const p = props();
+        const vista = renderWithTheme(<CalendarioHorariosInstructor {...p}/>);
+        const listeners = vigilarEscuchadoresRaton();
+
+        fireEvent.mouseDown(zonaCreacion(vista), { clientX: 20, clientY: 120 });
+        const identidades = listeners.identidades();
+        fireEvent.mouseMove(window, { clientX: 20, clientY: 184 });
+        fireEvent.mouseUp(window, { clientX: 20, clientY: 184 });
+
+        listeners.esperarBajaExacta(identidades);
+        expect(p.onCrear).not.toHaveBeenCalled();
+        await choose('Agregar instructor', 'Inés Prueba');
+        await choose('Actividades', /Pilates/);
+        await userEvent.keyboard('{Escape}');
+        await userEvent.click(screen.getByRole('button', { name: 'Crear horario' }));
+        expect(p.onCrear).toHaveBeenCalledExactlyOnceWith('RECURRENTE', 0, null, '10:00', '11:00', [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }]);
+    });
+
+    it('movimiento recurrente registra y retira las identidades exactas, y conserva el callback con limpieza idempotente', () => {
+        const p = props();
+        const vista = renderWithTheme(<CalendarioHorariosInstructor {...p}/>);
+        const listeners = vigilarEscuchadoresRaton();
+
+        fireEvent.mouseDown(bloqueRecurrente(), { clientX: 100, clientY: 64 });
+        const identidades = listeners.identidades();
+        fireEvent.mouseMove(window, { clientX: 100, clientY: 96 });
+        fireEvent.mouseUp(window, { clientX: 100, clientY: 96 });
+
+        listeners.esperarBajaExacta(identidades);
+        expect(p.onMover).toHaveBeenCalledExactlyOnceWith('t1', 3, '09:30', '11:30', [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }]);
+        vista.unmount();
+        invocarEscuchadorRaton(identidades.soltar, 'mouseup', 100, 128);
+        invocarEscuchadorRaton(identidades.soltar, 'mouseup', 100, 160);
+        listeners.esperarBajaExacta(identidades);
+        expect(p.onMover).toHaveBeenCalledExactlyOnceWith('t1', 3, '09:30', '11:30', [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }]);
+    });
+
+    it('movimiento puntual registra y retira las identidades exactas, y conserva el request por fecha', () => {
+        const p = props({ turnosPuntuales: [excepcionPuntual()] });
+        renderWithTheme(<CalendarioHorariosInstructor {...p}/>);
+        const listeners = vigilarEscuchadoresRaton();
+
+        fireEvent.mouseDown(bloquePuntual(), { clientX: 100, clientY: 256 });
+        const identidades = listeners.identidades();
+        fireEvent.mouseMove(window, { clientX: 100, clientY: 288 });
+        fireEvent.mouseUp(window, { clientX: 100, clientY: 288 });
+
+        listeners.esperarBajaExacta(identidades);
+        expect(p.onAjustarFecha).toHaveBeenCalledExactlyOnceWith('2026-09-16', [{ horaInicio: '12:30', horaFin: '13:30', asignaciones: [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }] }], ['e1']);
+    });
+
+    it('desmonta sin fugas tras inicios repetidos de los tres flujos', () => {
+        const casos = [
+            { preparar: () => props(), iniciar: (vista: VistaCalendario) => fireEvent.mouseDown(zonaCreacion(vista), { clientY: 120 }) },
+            { preparar: () => props(), iniciar: () => fireEvent.mouseDown(bloqueRecurrente(), { clientY: 64 }) },
+            { preparar: () => props({ turnosPuntuales: [excepcionPuntual()] }), iniciar: () => fireEvent.mouseDown(bloquePuntual(), { clientY: 256 }) },
+        ];
+
+        for (const caso of casos) {
+            for (let repeticion = 0; repeticion < 2; repeticion += 1) {
+                const p = caso.preparar();
+                const vista = renderWithTheme(<CalendarioHorariosInstructor {...p}/>);
+                const listeners = vigilarEscuchadoresRaton();
+                caso.iniciar(vista);
+                const identidades = listeners.identidades();
+                vista.unmount();
+                listeners.esperarBajaExacta(identidades);
+                invocarEscuchadorRaton(identidades.mover, 'mousemove', 200, 352);
+                invocarEscuchadorRaton(identidades.soltar, 'mouseup', 200, 352);
+                invocarEscuchadorRaton(identidades.soltar, 'mouseup', 200, 384);
+                listeners.esperarBajaExacta(identidades);
+                expect(screen.queryByRole('dialog')).toBeNull();
+                expect(p.onCrear).not.toHaveBeenCalled();
+                expect(p.onMover).not.toHaveBeenCalled();
+                expect(p.onAjustarFecha).not.toHaveBeenCalled();
+                listeners.agregar.mockRestore();
+                listeners.quitar.mockRestore();
+            }
+        }
+    });
+
+    it('al superseder cada flujo sus wrappers obsoletos no actúan y sólo concluye la interacción vigente', () => {
+        const casos = [
+            {
+                anterior: (vista: VistaCalendario) => fireEvent.mouseDown(zonaCreacion(vista), { clientX: 20, clientY: 120 }),
+                vigente: () => fireEvent.mouseDown(bloqueRecurrente(), { clientX: 100, clientY: 64 }),
+                moverVigente: { clientX: 100, clientY: 96 },
+                comprobar: (p: Props) => {
+                    expect(screen.queryByText('Nuevo horario')).toBeNull();
+                    expect(p.onCrear).not.toHaveBeenCalled();
+                    expect(p.onMover).toHaveBeenCalledExactlyOnceWith('t1', 3, '09:30', '11:30', [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }]);
+                    expect(p.onAjustarFecha).not.toHaveBeenCalled();
+                },
+            },
+            {
+                anterior: () => fireEvent.mouseDown(bloqueRecurrente(), { clientX: 100, clientY: 64 }),
+                vigente: () => fireEvent.mouseDown(bloquePuntual(), { clientX: 100, clientY: 256 }),
+                moverVigente: { clientX: 100, clientY: 288 },
+                comprobar: (p: Props) => {
+                    expect(p.onCrear).not.toHaveBeenCalled();
+                    expect(p.onMover).not.toHaveBeenCalled();
+                    expect(p.onAjustarFecha).toHaveBeenCalledExactlyOnceWith('2026-09-16', [{ horaInicio: '12:30', horaFin: '13:30', asignaciones: [{ instructorId: 'i1', tipoActividadIds: ['a1'], horaInicio: null, horaFin: null }] }], ['e1']);
+                },
+            },
+            {
+                anterior: () => fireEvent.mouseDown(bloquePuntual(), { clientX: 100, clientY: 256 }),
+                vigente: (vista: VistaCalendario) => fireEvent.mouseDown(zonaCreacion(vista), { clientX: 20, clientY: 120 }),
+                moverVigente: { clientX: 20, clientY: 184 },
+                comprobar: (p: Props) => {
+                    expect(screen.getByText('Nuevo horario')).toBeTruthy();
+                    expect(p.onCrear).not.toHaveBeenCalled();
+                    expect(p.onMover).not.toHaveBeenCalled();
+                    expect(p.onAjustarFecha).not.toHaveBeenCalled();
+                },
+            },
+        ];
+
+        for (const caso of casos) {
+            const p = props({ turnosPuntuales: [excepcionPuntual()] });
+            const vista = renderWithTheme(<CalendarioHorariosInstructor {...p}/>);
+            const listeners = vigilarEscuchadoresRaton();
+            caso.anterior(vista);
+            const anteriores = listeners.identidades();
+            caso.vigente(vista);
+            listeners.esperarBajaExacta(anteriores);
+            expect(listeners.altas()).toHaveLength(4);
+
+            invocarEscuchadorRaton(anteriores.mover, 'mousemove', 240, 448);
+            invocarEscuchadorRaton(anteriores.soltar, 'mouseup', 240, 448);
+            listeners.esperarBajaExacta(anteriores);
+            fireEvent.mouseMove(window, caso.moverVigente);
+            fireEvent.mouseUp(window, caso.moverVigente);
+            caso.comprobar(p);
+            expect(listeners.bajas()).toHaveLength(4);
+            vista.unmount();
+            listeners.agregar.mockRestore();
+            listeners.quitar.mockRestore();
+        }
     });
 });
