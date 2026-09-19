@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_11
-CURRENT_PHASE: M11_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_12
+CURRENT_PHASE: M12_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_11_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_12_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,14 +30,14 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_c93bdbdddab4
-LAST_GATE_ID: gate_b17ae1df054d
-LAST_ACCEPTED_CHECKPOINT: 64e05f03accac23464d0eb03ffc7d9f33c262d31
-CURRENT_CANDIDATE_MANIFEST: M11 exact accepted four-path closure candidate; final145file path/hash map and fingerprint durable in run_c93bdbdddab4 after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
+LAST_RUN_ID: run_3d021349d7ea
+LAST_GATE_ID: gate_27be8664ee57
+LAST_ACCEPTED_CHECKPOINT: 488c8dd529bef163ab6a3b86b54d860126d573b8
+CURRENT_CANDIDATE_MANIFEST: M12 exact accepted four-path closure candidate; final path/hash map and fingerprint durable in run_3d021349d7ea after receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
-CORRECTION_CYCLES_USED: 1
+CORRECTION_CYCLES_USED: 0
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
 NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_11744899d45b and correction task_7150e85ef303 settled/released
+ACTIVE_WRITE_TASK: NONE; task_04a5cf7fce2f settled and released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_cf5828c0b4a2 and ctx_4581ab99aaf2 settled/released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_42fe68df63da settled and released
 
-FROZEN_PHASE_PLAN: msg_1438165b1125; only calendar/new Cabeceras production, RootSTATE/RUNBOOK; all tests and other entry files protected
+FROZEN_PHASE_PLAN: M12 freeze message in run_3d021349d7ea; only calendar/new EjeHorarioCalendario production and Root STATE/RUNBOOK; all tests and other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -495,3 +495,31 @@ M11_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-19T00:39:23.710551+00:00","wa
 M11_NEXT_RECOMMENDATION_NOT_AUTHORIZED: Extract only the 56px time-axis presentation into a new Programación-owned EjeHorarioCalendario while Calendar retains marcas/min/max computation, PX geometry, grid ref/origin, block placement, interactions and requests. Candidate paths: existing CalendarioHorariosInstructor.tsx, new EjeHorarioCalendario.tsx and only indispensable existing characterization wiring, plus Root closure docs. Risk MEDIUM-HIGH because the axis borders the grid; protect exact axis/grid boxes, time labels, block x/y/width/height, overlap/adjacency/drag/request counts at375/768/1440 and transition1440→768, then full403+ regression and NEW Sol-high audit. All known clipping/resize/stale/error/listener/a11y gaps remain deferred; F2E compatibility UNVERIFIED and no backend decision is expected. This is a recommendation only and requires new human authorization.
 
 M11_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact four-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.
+
+## M12 ENTRY / FROZEN AUTHORITY
+
+Human authorization M12 UX-11 time-axis presentation extraction from exact M11 checkpoint 488c8dd529bef163ab6a3b86b54d860126d573b8. Clean tree/empty index and 145 tracked-file entry fingerprint df02f37c1d5942f878ff6433dea2185b27af259bac998fb411480b9a57560fac verified before process-document entry writes. Frozen finite paths: existing `src/modulos/programacion/componentes/CalendarioHorariosInstructor.tsx`, new `src/modulos/programacion/componentes/EjeHorarioCalendario.tsx`, and Root-owned STATE/RUNBOOK only; tests/packages and every other entry file remain read-only.
+
+Prewrite characterization PASS: 22 affected Vitest, 20 existing scheduling Chromium, and four private numeric time-axis workflows. At 375/768/1440 the axis is exactly 56px; its right edge equals the grid origin, labels span 08:00 through 18:00 with exact vertical coordinates, and populated blocks/header/grid measurements were captured. Empty transition 1440→768 is captured without claiming the known resize-geometry gap fixed. Private geometry summary SHA-256: 763b2235674cc4eddbfe33a1750c713580b81cdc41ef320ab1eb11d5372e0307.
+
+The parent must retain min/max and label/position computation, temporal semantics, grid/block geometry, overlap, drag/resize, requests, permissions/session and F2E-adjacent authority. The new Programación-owned leaf may render only explicit readonly parent-computed axis presentation; no effects/API/business/global abstraction. All M08–M11 known gaps remain deferred and F2E compatibility UNVERIFIED. Risk MEDIUM-HIGH; implementation route Sol-medium, final fresh independent audit Sol-high; correction budget starts 0/2. No subsequent slice is authorized.
+
+M12_IMPLEMENTATION: task_04a5cf7fce2f / ctx_42fe68df63da, worker-start requested/effective `codex:gpt-5.6-sol:medium`, PASS and released. `CalendarioHorariosInstructor` retains temporal/geometry/request authority and passes the parent-computed width, height, label and top coordinate to the new readonly presentation-only `EjeHorarioCalendario`. Writer FAST validation: typecheck, 22 targeted Vitest, 20 affected Chromium, 4 private numeric workflows and diff-check PASS. The decoded private before/after JSON is exactly identical, SHA-256 763b2235674cc4eddbfe33a1750c713580b81cdc41ef320ab1eb11d5372e0307.
+
+M12-PROCESS-01: worker durable 15-field report self-reported `model:gpt-5` / `effort:unspecified` despite the authoritative worker-start receipt proving requested/effective `gpt-5.6-sol` / `medium`. Coordinator sent a correction before settlement, but worker_done followed without changing the already-written report. Preserve both artifacts; actual routing comes from the runtime receipt. Pending fresh-auditor severity adjudication; no product, scope or test evidence is missing.
+
+M12_FULL_GATE_OBSERVED: fresh npm-ls/lint/typecheck/build/diff-check exit 0; 328 Vitest + 75 Chromium = 403 PASS, 0 FAIL, 0 SKIP, 0 FLAKY. Exact four-path candidate, empty index, all 142 protected entry files and package files byte-identical. Accepted >500kB production chunk warning remains. Candidate is not accepted until NEW Sol-high audit and actual Decision Gate PASS.
+
+## M12 ACCEPTANCE / RECEIPT-ONLY CLOSURE
+
+Fresh independent Sol-high audit task_b39c6399610a / ctx_b1b0a047fe14 PASS with P0=0, P1=0 and P2=1; immutable worker_done msg_63e8de7be1e3, release complete. Auditor independently confirmed all 19 acceptance criteria, exact before/after geometry, complete 403-test GATE, 142 protected hashes, unchanged packages and empty index. It prospectively authorizes this Root receipt-only STATE/RUNBOOK closure after actual Gate PASS while product/tests/packages remain fixed.
+
+Actual M12 Decision Gate task_7f7f2ec3f2e7 / gate_27be8664ee57 resolved PASS. The Programación-owned `EjeHorarioCalendario` renders only the supplied axis presentation; parent retains width authority, min/max, time labels and positions, grid/block geometry, drag/resize, requests, permissions/session and F2E-adjacent semantics. Numeric geometry is exactly identical at 375/768/1440 and empty 1440→768 transition. No correction cycle was consumed; known M08–M11 gaps remain deferred and F2E compatibility UNVERIFIED.
+
+M12-PROCESS-01 remains P2 NONBLOCKING_UNRESOLVED_ORIGINAL_WORKER_REPORT_PROVENANCE_DEFECT: original writer report says gpt-5/unspecified although immutable launch receipt proves requested/effective gpt-5.6-sol/medium. Both artifacts remain preserved; do not relabel the original report as compliant. Complete product/scope/test evidence is unaffected.
+
+M12_METRICS_PRECHECKPOINT: wall-clock from Run creation through Decision Gate 20.617 minutes; workers launched 2; Luna tasks 0; Sol-medium 1; Sol-high 1; targeted validation invocations 9, including one retained infrastructure port-collision launch and eight successful targeted checks; full validations 1; correction cycles 0; fresh audit findings 1 P2; Human Gates 1; tokens UNREPORTED. Byte metrics and the final candidate identity are retained in Run evidence. No causal speedup claim is made from a single slice.
+
+M12_NEXT_RECOMMENDATION_NOT_AUTHORIZED: extract only recurrent schedule-block presentation into a Programación-owned `BloqueHorarioCalendario`, with Calendar retaining all time/overlap/column/position calculations, refs, drag/resize state and handlers, mutations, permissions and F2E-adjacent decisions. Candidate paths: existing Calendar, one new block presentation file and only indispensable characterization wiring plus Root closure docs. Risk HIGH because block DOM and pointer targets are geometry-sensitive. Protect exact block x/y/width/height, overlap/adjacency, visible labels, resize handles, drag displacement and request counts at 375/768/1440 and transition coverage; run full 403+ GATE and NEW Sol-high audit. Defer clipping, resize remeasurement, stale/error/listener/a11y gaps; F2E compatibility remains UNVERIFIED. New human authorization is required.
+
+M12_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact four-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.

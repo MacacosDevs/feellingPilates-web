@@ -52,6 +52,7 @@ import type {
   TurnoInstructorResponse,
 } from '../../../api/types';
 import { CabecerasCalendario, type CabeceraCalendarioPresentacion } from './CabecerasCalendario';
+import { EjeHorarioCalendario, type MarcaEjeHorarioPresentacion } from './EjeHorarioCalendario';
 
 const DIAS_CORTO = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DIAS_LARGO = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -651,6 +652,12 @@ export function CalendarioHorariosInstructor({
     for (let m = Math.ceil(minApertura / 60) * 60; m <= maxCierre; m += 60) marcas.push(m);
     return marcas;
   }, [minApertura, maxCierre]);
+  const anchoEjeHorario = 56;
+  const marcasEjeHorario: MarcaEjeHorarioPresentacion[] = marcasHora.map((m) => ({
+    valor: m,
+    etiqueta: aHora(m),
+    posicionSuperior: (m - minApertura) * PX_POR_MINUTO - 7,
+  }));
 
   function yAminutos(clientY: number): number {
     const rect = gridRef.current?.getBoundingClientRect();
@@ -1017,18 +1024,7 @@ export function CalendarioHorariosInstructor({
       <CabecerasCalendario cabeceras={cabeceras} />
 
       <Box sx={{ display: 'flex', borderTop: '1px solid', borderColor: 'divider', bgcolor: '#fbfbfc' }}>
-        <Box sx={{ width: 56, flexShrink: 0, position: 'relative', height: alturaTotal }}>
-          {marcasHora.map((m) => (
-            <Typography
-              key={m}
-              variant="caption"
-              color="text.secondary"
-              sx={{ position: 'absolute', top: (m - minApertura) * PX_POR_MINUTO - 7, right: 8 }}
-            >
-              {aHora(m)}
-            </Typography>
-          ))}
-        </Box>
+        <EjeHorarioCalendario ancho={anchoEjeHorario} altura={alturaTotal} marcas={marcasEjeHorario} />
 
         <Box ref={gridRef} sx={{ position: 'relative', display: 'flex', flex: 1, height: alturaTotal }}>
           {marcasHora.map((m) => (
