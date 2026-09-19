@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_12
-CURRENT_PHASE: M12_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_13
+CURRENT_PHASE: M13_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_12_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_13_PASS_CLOSED; subsequent slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,10 +30,10 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_3d021349d7ea
-LAST_GATE_ID: gate_27be8664ee57
-LAST_ACCEPTED_CHECKPOINT: 488c8dd529bef163ab6a3b86b54d860126d573b8
-CURRENT_CANDIDATE_MANIFEST: M12 exact accepted four-path closure candidate; final path/hash map and fingerprint durable in run_3d021349d7ea after receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
+LAST_RUN_ID: run_7810820876d7
+LAST_GATE_ID: gate_abf1586c41cd
+LAST_ACCEPTED_CHECKPOINT: 1484848625a147b8897347f6e2d5eb0c22752d31
+CURRENT_CANDIDATE_MANIFEST: M13 accepted four-path closure candidate; preaudit exact manifest msg_c13db247740e; final receipt-only closure manifest durable in run_7810820876d7 before checkpoint
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_04a5cf7fce2f settled and released
+ACTIVE_WRITE_TASK: NONE; task_d4c970c680eb settled succeeded and released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_42fe68df63da settled and released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_50708f588539 settled succeeded and released
 
-FROZEN_PHASE_PLAN: M12 freeze message in run_3d021349d7ea; only calendar/new EjeHorarioCalendario production and Root STATE/RUNBOOK; all tests and other entry files protected
+FROZEN_PHASE_PLAN: M13 msg_67f02f80a4dd / allowlist fingerprint b5ccd6a51b27231dab07ece5ec68dcb1038336e1cbcf05801b628febcba08254; only Calendar/new BloqueHorarioCalendario production and Root STATE/RUNBOOK; tests and all other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -523,3 +523,16 @@ M12_METRICS_PRECHECKPOINT: wall-clock from Run creation through Decision Gate 20
 M12_NEXT_RECOMMENDATION_NOT_AUTHORIZED: extract only recurrent schedule-block presentation into a Programación-owned `BloqueHorarioCalendario`, with Calendar retaining all time/overlap/column/position calculations, refs, drag/resize state and handlers, mutations, permissions and F2E-adjacent decisions. Candidate paths: existing Calendar, one new block presentation file and only indispensable characterization wiring plus Root closure docs. Risk HIGH because block DOM and pointer targets are geometry-sensitive. Protect exact block x/y/width/height, overlap/adjacency, visible labels, resize handles, drag displacement and request counts at 375/768/1440 and transition coverage; run full 403+ GATE and NEW Sol-high audit. Defer clipping, resize remeasurement, stale/error/listener/a11y gaps; F2E compatibility remains UNVERIFIED. New human authorization is required.
 
 M12_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact four-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.
+
+
+## M13 human authorization — schedule-block presentation only
+
+UX-12 from accepted 1484848625a147b8897347f6e2d5eb0c22752d31. Frozen scope msg_67f02f80a4dd: existing `CalendarioHorariosInstructor.tsx`, new Programación-owned `BloqueHorarioCalendario.tsx`, and Root STATE/RUNBOOK only; all tests and other entry files read-only because fresh 22 Vitest +20 affected Chromium +4 private numeric workflows PASS before write. Extract only normal recurrent block markup with explicit readonly parent-computed geometry/content/state and handlers. Calendar retains time/geometry/overlap/adjacency/collision, drag/resize/pointer interpretation, menu state, mutation/request/payload, permissions/session and F2E-adjacent decisions. Exact numeric before/after equivalence is mandatory at 375/768/1440 and 1440→768; preserve labels/styles/DOM targets/action sequence/request count/payload. No exception-block extraction and no known clipping/resize/stale/error/listener/a11y gap correction. Risk HIGH; Sol-medium writer, FAST then full GATE preserving 328+75, NEW Sol-high audit P0/P1 zero and actual Gate before explicit checkpoint. Max two correction cycles; no dependency/backend/Payments/F2E/publication or next-slice authority.
+
+M13_IMPLEMENTER: task_d4c970c680eb / ctx_50708f588539; effective gpt-5.6-sol/medium verified by launch receipt; PASS within two production paths. Prewrite 22 targeted Vitest +20 affected Chromium +4 private geometry/DOM PASS. FAST typecheck, same22 Vitest, same20 Chromium and diff-check PASS. Private normalized geometry/DOM fingerprint `ba14259d3c6e396fd275cb8488a1391d243d3b7e24ffea4cee8cc734106aefa8` is exactly identical before/after at375/768/1440 and populated1440→768; no unexplained 1/64px delta. Full GATE npm-ls/lint/typecheck/build/diff-check PASS,328Vitest+75Chromium=403PASS0FAIL0SKIP0FLAKY. Four-path scope exact, index empty, packages unchanged,143 protected entry paths byte-identical. Acceptance still requires new Sol-high audit and actual Decision Gate; no checkpoint yet.
+
+M13_ACCEPTANCE_AUDIT: PASS P0=0 P1=0 P2=1; task_08b4b6658a53 / ctx_7dd71f469045; effective gpt-5.6-sol/high verified; worker_done msg_263b501d6b9c; released. M13-PROCESS-01 was nonblocking stale preaudit STATE receipt metadata and is resolved prospectively in this Root receipt-only closure: LAST_ACCEPTED_CHECKPOINT now names the exact prior M12 entry `1484848625a147b8897347f6e2d5eb0c22752d31`, and durable preaudit manifest `msg_c13db247740e` is recorded. No retrospective process claim and no product correction cycle.
+M13_DECISION_GATE: gate_abf1586c41cd PASS / gate-only task_476b57efee63 completed. Acceptance: exact geometry/content/DOM fingerprint equality, request/interaction/permission/session/F2E authority preservation,403PASS and four-path repository integrity.
+M13_CHECKPOINT: discover containing accepted checkpoint with `git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md`; STATE does not invent its own future SHA. No push.
+M13_METRICS: {"measurementWindow":"Run creation to precheckpoint closure snapshot","snapshotUTC":"2026-09-19T01:46:51.428129+00:00","wallClockMinutes":25.957,"workersLaunched":2,"lunaTasks":0,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":10,"targetedValidationDefinition":"prewrite Vitest/affected Chromium/private geometry; writer typecheck/Vitest/Chromium/diff-check; coordinator postwrite private geometry; auditor typecheck/Vitest","fullValidations":1,"correctionCycles":0,"freshAuditFindings":1,"findingSeverity":{"P0":0,"P1":0,"P2":1},"humanGates":1,"internalReportBytes":11520,"summaryEvidenceBytes":762933,"rawEvidenceBytes":1846299,"tokens":"UNREPORTED","CavemanEnabledRoles":[]}
+M13_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: extract deterministic visual geometry calculations (column assignment plus already-established block x/y/width/height mapping) into one Programación-owned pure module while Calendar retains temporal/business state, drag/resize interpretation, requests and F2E-adjacent authority. Candidate paths: CalendarioHorariosInstructor.tsx + one new geometry module + only indispensable characterization wiring + Root process closure. Risk HIGH. Protect numeric375/768/1440 and1440→768 geometry, overlap/adjacency, drag/resize target/results and request count/payload. Deferred gaps remain clipping375, resize remeasurement, stale/error/listener/a11y and F2E compatibility UNVERIFIED. Required validation: pure deterministic fixtures, existing Programación Vitest/Chromium, exact before/after numeric fingerprint, full R1 GATE and fresh Sol-high audit. This is recommendation only; no next slice authorized.

@@ -51,6 +51,7 @@ import type {
   SalonHorarioExcepcionResponse,
   TurnoInstructorResponse,
 } from '../../../api/types';
+import { BloqueHorarioCalendario } from './BloqueHorarioCalendario';
 import { CabecerasCalendario, type CabeceraCalendarioPresentacion } from './CabecerasCalendario';
 import { EjeHorarioCalendario, type MarcaEjeHorarioPresentacion } from './EjeHorarioCalendario';
 
@@ -1426,216 +1427,67 @@ export function CalendarioHorariosInstructor({
                     );
                   }
 
+                  const abrirConfirmacionEliminar = () =>
+                    setConfirmEliminar({
+                      ids: [turno.id],
+                      dia: DIAS_LARGO[dia.diaSemana],
+                      horaInicio: aHora(inicio),
+                      horaFin: aHora(fin),
+                      instructores: turno.instructores.map((i) => i.nombre),
+                      actividades: turno.actividades.map((a) => a.nombre),
+                    });
+
                   return (
-                    <Tooltip
+                    <BloqueHorarioCalendario
                       key={turno.id}
-                      title={cerradoPorExcepcion ? `No aplica: salón cerrado el ${aIso(fechaColumna)}` : ''}
-                      disableHoverListener={!cerradoPorExcepcion}
-                    >
-                      <Box
-                        onMouseDown={(e) => !cerradoPorExcepcion && puedeMoverOrecortar && iniciarAjuste(turno, 'mover', e)}
-                        sx={{
-                          position: 'absolute',
-                          left: `calc(${izqPct}% + 3px)`,
-                          width: `calc(${anchoPct}% - 6px)`,
-                          top: (inicio - minApertura) * PX_POR_MINUTO,
-                          height: Math.max(28, (fin - inicio) * PX_POR_MINUTO),
-                          bgcolor: (t) =>
-                            alpha(t.palette[enAjuste && ajusteSolapa ? 'error' : 'secondary'].main, 0.12),
-                          borderLeft: '3px solid',
-                          borderColor: enAjuste && ajusteSolapa ? 'error.main' : 'secondary.main',
-                          color: 'text.primary',
-                          opacity: cerradoPorExcepcion ? 0.4 : 1,
-                          borderRadius: 1.5,
-                          boxShadow:
-                            enAjuste && ajusteSolapa
-                              ? (t) => `0 0 0 1.5px ${t.palette.error.main}, 0 1px 3px rgba(15,15,16,0.08)`
-                              : '0 1px 3px rgba(15,15,16,0.08)',
-                          transition: 'box-shadow .15s ease, background-color .15s ease',
-                          cursor: cerradoPorExcepcion ? 'not-allowed' : puedeMoverOrecortar ? 'grab' : 'default',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          overflow: 'hidden',
-                          px: 1,
-                          py: 0.5,
-                          zIndex: enAjuste ? 2 : 1,
-                          '&:hover': !cerradoPorExcepcion
-                            ? { bgcolor: (t) => alpha(t.palette.secondary.main, 0.18), boxShadow: '0 2px 6px rgba(15,15,16,0.14)' }
-                            : undefined,
-                        }}
-                      >
-                      {puedeMoverOrecortar && (
-                        <Box
-                          onMouseDown={(e) => iniciarAjuste(turno, 'inicio', e)}
-                          sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                        />
-                      )}
-                      <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1.3, color: 'secondary.dark' }}>
-                        {aHora(inicio)}–{aHora(fin)}
-                      </Typography>
-                      {turno.instructores.length > 0 && (
-                        <Stack direction="row" spacing={0.4} sx={{ alignItems: 'center' }}>
-                          <GroupIcon sx={{ fontSize: 12, color: 'text.secondary' }} />
-                          <Typography variant="caption" noWrap sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
-                            {nombresConRango(turno.instructores, turno.asignaciones)}
-                          </Typography>
-                        </Stack>
-                      )}
-                      {turno.actividades.length > 0 && (
-                        <Chip
-                          size="small"
-                          icon={<FitnessCenterIcon sx={{ fontSize: 12 }} />}
-                          label={nombresDe(turno.actividades)}
-                          sx={{
-                            mt: 0.4,
-                            height: 18,
-                            fontSize: '0.65rem',
-                            fontWeight: 600,
-                            alignSelf: 'flex-start',
-                            maxWidth: '100%',
-                            bgcolor: 'background.paper',
-                            border: '1px solid',
-                            borderColor: (t) => alpha(t.palette.secondary.main, 0.35),
-                            '& .MuiChip-icon': { color: 'secondary.main', ml: '4px' },
-                          }}
-                        />
-                      )}
-                      <Box sx={{ flexGrow: 1 }} />
-                      {alturaTurnoBloque < ALTURA_MINIMA_ACCIONES_EN_LINEA ? (
-                        (puedeMoverOrecortar || (puedeCancelarDia && !esFechaPasada) || puedeGestionar) && (
-                          <IconButton
-                            size="small"
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setMenuAccionesBloque({ anchor: e.currentTarget, id: turno.id });
-                            }}
-                            sx={{
-                              position: 'absolute',
-                              bottom: 2,
-                              right: 2,
-                              color: 'text.secondary',
-                              p: 0.25,
-                              bgcolor: 'background.paper',
-                              boxShadow: '0 1px 2px rgba(15,15,16,0.2)',
-                              '&:hover': { bgcolor: 'background.paper' },
-                            }}
-                          >
-                            <SettingsOutlinedIcon fontSize="inherit" />
-                          </IconButton>
-                        )
-                      ) : (
-                      <Stack direction="row" spacing={0.5} sx={{ alignSelf: 'flex-end' }}>
-                        {puedeMoverOrecortar && (
-                          <Tooltip title="Editar actividades e instructores">
-                            <IconButton
-                              size="small"
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onClick={(e) => abrirMenuEditarBloque(e, turno, aIso(fechaColumna))}
-                              sx={{ color: 'text.secondary', p: 0.25 }}
-                            >
-                              <TuneIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {puedeCancelarDia && !esFechaPasada && (
-                          <Tooltip title="Cancelar un día puntual">
-                            <IconButton
-                              size="small"
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onClick={(e) => abrirMenuCancelar(e, turno)}
-                              sx={{ color: 'text.secondary', p: 0.25 }}
-                            >
-                              <EventBusyIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {puedeGestionar && (
-                          <Tooltip title="Eliminar bloque completo">
-                            <IconButton
-                              size="small"
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setConfirmEliminar({
-                                  ids: [turno.id],
-                                  dia: DIAS_LARGO[dia.diaSemana],
-                                  horaInicio: aHora(inicio),
-                                  horaFin: aHora(fin),
-                                  instructores: turno.instructores.map((i) => i.nombre),
-                                  actividades: turno.actividades.map((a) => a.nombre),
-                                });
-                              }}
-                              sx={{ color: 'error.main', p: 0.25 }}
-                            >
-                              <DeleteOutlineIcon fontSize="inherit" />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Stack>
-                      )}
-                      <Menu
-                        open={menuAccionesBloque?.id === turno.id}
-                        anchorEl={menuAccionesBloque?.anchor ?? null}
-                        onClose={() => setMenuAccionesBloque(null)}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                      >
-                        {puedeMoverOrecortar && (
-                          <MenuItem
-                            onClick={(e) => {
-                              setMenuAccionesBloque(null);
-                              abrirMenuEditarBloque(e, turno, aIso(fechaColumna));
-                            }}
-                          >
-                            <ListItemIcon>
-                              <TuneIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Editar actividades e instructores</ListItemText>
-                          </MenuItem>
-                        )}
-                        {puedeCancelarDia && !esFechaPasada && (
-                          <MenuItem
-                            onClick={(e) => {
-                              setMenuAccionesBloque(null);
-                              abrirMenuCancelar(e, turno);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <EventBusyIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Cancelar un día puntual</ListItemText>
-                          </MenuItem>
-                        )}
-                        {puedeGestionar && (
-                          <MenuItem
-                            onClick={() => {
-                              setMenuAccionesBloque(null);
-                              setConfirmEliminar({
-                                ids: [turno.id],
-                                dia: DIAS_LARGO[dia.diaSemana],
-                                horaInicio: aHora(inicio),
-                                horaFin: aHora(fin),
-                                instructores: turno.instructores.map((i) => i.nombre),
-                                actividades: turno.actividades.map((a) => a.nombre),
-                              });
-                            }}
-                          >
-                            <ListItemIcon>
-                              <DeleteOutlineIcon fontSize="small" sx={{ color: 'error.main' }} />
-                            </ListItemIcon>
-                            <ListItemText>Eliminar bloque completo</ListItemText>
-                          </MenuItem>
-                        )}
-                      </Menu>
-                      {puedeMoverOrecortar && (
-                        <Box
-                          onMouseDown={(e) => iniciarAjuste(turno, 'fin', e)}
-                          sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                        />
-                      )}
-                      </Box>
-                    </Tooltip>
+                      tooltip={cerradoPorExcepcion ? `No aplica: salón cerrado el ${aIso(fechaColumna)}` : ''}
+                      cerrado={cerradoPorExcepcion}
+                      enAjuste={enAjuste}
+                      solapa={ajusteSolapa}
+                      puedeMoverOrecortar={puedeMoverOrecortar}
+                      puedeCancelarDia={puedeCancelarDia && !esFechaPasada}
+                      puedeGestionar={puedeGestionar}
+                      mostrarMenuCompacto={alturaTurnoBloque < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                      izquierda={`calc(${izqPct}% + 3px)`}
+                      ancho={`calc(${anchoPct}% - 6px)`}
+                      arriba={(inicio - minApertura) * PX_POR_MINUTO}
+                      altura={Math.max(28, (fin - inicio) * PX_POR_MINUTO)}
+                      hora={`${aHora(inicio)}–${aHora(fin)}`}
+                      instructores={nombresConRango(turno.instructores, turno.asignaciones)}
+                      mostrarInstructores={turno.instructores.length > 0}
+                      actividades={nombresDe(turno.actividades)}
+                      mostrarActividades={turno.actividades.length > 0}
+                      menuAbierto={menuAccionesBloque?.id === turno.id}
+                      menuAnchor={menuAccionesBloque?.anchor ?? null}
+                      onMover={(e) =>
+                        !cerradoPorExcepcion && puedeMoverOrecortar && iniciarAjuste(turno, 'mover', e)
+                      }
+                      onAjustarInicio={(e) => iniciarAjuste(turno, 'inicio', e)}
+                      onAjustarFin={(e) => iniciarAjuste(turno, 'fin', e)}
+                      onAbrirMenu={(e) => {
+                        e.stopPropagation();
+                        setMenuAccionesBloque({ anchor: e.currentTarget, id: turno.id });
+                      }}
+                      onCerrarMenu={() => setMenuAccionesBloque(null)}
+                      onEditar={(e) => abrirMenuEditarBloque(e, turno, aIso(fechaColumna))}
+                      onEditarDesdeMenu={(e) => {
+                        setMenuAccionesBloque(null);
+                        abrirMenuEditarBloque(e, turno, aIso(fechaColumna));
+                      }}
+                      onCancelar={(e) => abrirMenuCancelar(e, turno)}
+                      onCancelarDesdeMenu={(e) => {
+                        setMenuAccionesBloque(null);
+                        abrirMenuCancelar(e, turno);
+                      }}
+                      onEliminar={(e) => {
+                        e.stopPropagation();
+                        abrirConfirmacionEliminar();
+                      }}
+                      onEliminarDesdeMenu={() => {
+                        setMenuAccionesBloque(null);
+                        abrirConfirmacionEliminar();
+                      }}
+                    />
                   );
                 })}
 
