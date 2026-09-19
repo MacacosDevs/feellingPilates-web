@@ -14,9 +14,7 @@ import {
   Divider,
   IconButton,
   InputAdornment,
-  ListItemIcon,
   ListItemText,
-  Menu,
   MenuItem,
   Paper,
   Popover,
@@ -25,21 +23,16 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
   Typography,
   alpha,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTimeOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditCalendarIcon from '@mui/icons-material/EditCalendarOutlined';
-import EventBusyIcon from '@mui/icons-material/EventBusyOutlined';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenterOutlined';
 import GroupIcon from '@mui/icons-material/GroupOutlined';
 import LockClockIcon from '@mui/icons-material/LockClockOutlined';
-import RestoreIcon from '@mui/icons-material/RestoreOutlined';
 import SearchIcon from '@mui/icons-material/SearchOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import TuneIcon from '@mui/icons-material/TuneOutlined';
 import WarningAmberIcon from '@mui/icons-material/WarningAmberOutlined';
 import WbSunnyIcon from '@mui/icons-material/WbSunnyOutlined';
 import type {
@@ -52,6 +45,7 @@ import type {
   TurnoInstructorResponse,
 } from '../../../api/types';
 import { BloqueHorarioCalendario } from './BloqueHorarioCalendario';
+import { BloqueHorarioEspecialCalendario } from './BloqueHorarioEspecialCalendario';
 import { CabecerasCalendario, type CabeceraCalendarioPresentacion } from './CabecerasCalendario';
 import { EjeHorarioCalendario, type MarcaEjeHorarioPresentacion } from './EjeHorarioCalendario';
 import {
@@ -1212,224 +1206,75 @@ export function CalendarioHorariosInstructor({
                     const asignacionesMostradas = excepcionTurno.asignaciones;
                     const puedeArrastrarExcepcion = puedeMoverOrecortar && !esFechaPasada;
 
+                    const abrirConfirmacionEliminar = () =>
+                      setConfirmEliminar({
+                        ids: [turno.id, excepcionTurno.id],
+                        dia: DIAS_LARGO[dia.diaSemana],
+                        horaInicio: aHora(uInicio),
+                        horaFin: aHora(uFin),
+                        instructores: instructoresMostrados.map((i) => i.nombre),
+                        actividades: actividadesMostradas.map((a) => a.nombre),
+                      });
+
                     return (
-                      <Box
+                      <BloqueHorarioEspecialCalendario
                         key={turno.id}
-                        onMouseDown={(e) =>
+                        variante="SUPERPUESTO"
+                        enAjuste={enAjusteExcepcion}
+                        solapa={solapaExcepcion}
+                        puedeArrastrar={puedeArrastrarExcepcion}
+                        mostrarAcciones={puedeMoverOrecortar}
+                        mostrarMenuCompacto={alturaExcepcionOverlay < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                        izquierda={geometriaColumnas.izquierdaCss}
+                        ancho={geometriaColumnas.anchoCss}
+                        arriba={calcularPosicionVerticalCalendario(uInicio, minApertura)}
+                        altura={calcularAlturaBloqueCalendario(uInicio, uFin)}
+                        hora={`${aHora(uInicio)}–${aHora(uFin)}`}
+                        instructores={nombresConRango(instructoresMostrados, asignacionesMostradas)}
+                        mostrarInstructores={instructoresMostrados.length > 0}
+                        actividades={nombresDe(actividadesMostradas)}
+                        mostrarActividades={actividadesMostradas.length > 0}
+                        menuAbierto={menuAccionesBloque?.id === excepcionTurno.id}
+                        menuAnchor={menuAccionesBloque?.anchor ?? null}
+                        onMover={(e) =>
                           puedeArrastrarExcepcion &&
                           iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'mover', e)
                         }
-                        sx={{
-                          position: 'absolute',
-                          left: geometriaColumnas.izquierdaCss,
-                          width: geometriaColumnas.anchoCss,
-                          top: calcularPosicionVerticalCalendario(uInicio, minApertura),
-                          height: calcularAlturaBloqueCalendario(uInicio, uFin),
-                          borderRadius: 1.5,
-                          boxShadow: solapaExcepcion
-                            ? (t) => `0 0 0 1.5px ${t.palette.error.main}, 0 1px 3px rgba(15,15,16,0.08)`
-                            : '0 1px 3px rgba(15,15,16,0.08)',
-                          overflow: 'hidden',
-                          border: '1px solid',
-                          borderColor: (t) => alpha(t.palette[solapaExcepcion ? 'error' : 'warning'].main, 0.5),
-                          bgcolor: (t) => alpha(t.palette[solapaExcepcion ? 'error' : 'warning'].main, 0.12),
-                          borderLeft: '3px solid',
-                          cursor: puedeArrastrarExcepcion ? 'grab' : 'default',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          zIndex: enAjusteExcepcion ? 2 : 1,
-                          px: 1,
-                          py: 0.5,
+                        onAjustarInicio={(e) =>
+                          iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'inicio', e)
+                        }
+                        onAjustarFin={(e) =>
+                          iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'fin', e)
+                        }
+                        onAbrirMenu={(e) => setMenuAccionesBloque({ anchor: e.currentTarget, id: excepcionTurno.id })}
+                        onCerrarMenu={() => setMenuAccionesBloque(null)}
+                        onEditar={(e) => abrirMenuEditarBloque(e, turno, aIso(fechaColumna), excepcionTurno)}
+                        onEditarDesdeMenu={(e) => {
+                          setMenuAccionesBloque(null);
+                          abrirMenuEditarBloque(e, turno, aIso(fechaColumna), excepcionTurno);
                         }}
-                      >
-                        {puedeArrastrarExcepcion && (
-                          <Box
-                            onMouseDown={(e) => iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'inicio', e)}
-                            sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                          />
-                        )}
-                        {puedeArrastrarExcepcion && (
-                          <Box
-                            onMouseDown={(e) => iniciarAjusteExcepcion(excepcionTurno, aIso(fechaColumna), dia.diaSemana, 'fin', e)}
-                            sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                          />
-                        )}
-                        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                          <WbSunnyIcon sx={{ fontSize: 12, color: 'warning.main' }} />
-                          <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
-                            {aHora(uInicio)}–{aHora(uFin)}
-                          </Typography>
-                        </Stack>
-                        {instructoresMostrados.length > 0 && (
-                          <Typography variant="caption" noWrap sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
-                            {nombresConRango(instructoresMostrados, asignacionesMostradas)}
-                          </Typography>
-                        )}
-                        {actividadesMostradas.length > 0 && (
-                          <Chip
-                            size="small"
-                            icon={<FitnessCenterIcon sx={{ fontSize: 12 }} />}
-                            label={nombresDe(actividadesMostradas)}
-                            sx={{
-                              mt: 0.4,
-                              height: 18,
-                              fontSize: '0.65rem',
-                              fontWeight: 600,
-                              alignSelf: 'flex-start',
-                              maxWidth: '100%',
-                              bgcolor: 'background.paper',
-                              border: '1px solid',
-                              borderColor: (t) => alpha(t.palette.warning.main, 0.4),
-                              '& .MuiChip-icon': { color: 'warning.main', ml: '4px' },
-                            }}
-                          />
-                        )}
-                        <Box sx={{ flexGrow: 1 }} />
-                        {puedeMoverOrecortar && (
-                          alturaExcepcionOverlay < ALTURA_MINIMA_ACCIONES_EN_LINEA ? (
-                            <IconButton
-                              size="small"
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onClick={(e) => setMenuAccionesBloque({ anchor: e.currentTarget, id: excepcionTurno.id })}
-                              sx={{
-                                position: 'absolute',
-                                bottom: 2,
-                                right: 2,
-                                color: 'text.secondary',
-                                p: 0.25,
-                                bgcolor: 'background.paper',
-                                boxShadow: '0 1px 2px rgba(15,15,16,0.2)',
-                                '&:hover': { bgcolor: 'background.paper' },
-                              }}
-                            >
-                              <SettingsOutlinedIcon fontSize="inherit" />
-                            </IconButton>
-                          ) : (
-                          <Stack direction="row" spacing={0.5} sx={{ alignSelf: 'flex-end' }}>
-                            {!esFechaPasada && (
-                              <Tooltip title="Quitar horario especial (vuelve al horario normal)">
-                                <IconButton
-                                  size="small"
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                  onClick={() => onEliminar(excepcionTurno.id)}
-                                  sx={{ color: 'error.main', p: 0.25 }}
-                                >
-                                  <RestoreIcon fontSize="inherit" />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                            <Tooltip title="Editar actividades e instructores">
-                              <IconButton
-                                size="small"
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onClick={(e) => abrirMenuEditarBloque(e, turno, aIso(fechaColumna), excepcionTurno)}
-                                sx={{ color: 'text.secondary', p: 0.25 }}
-                              >
-                                <TuneIcon fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
-                            {puedeCancelarDia && !esFechaPasada && (
-                              <Tooltip title="Cancelar un día puntual">
-                                <IconButton
-                                  size="small"
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                  onClick={(e) => abrirMenuCancelar(e, turno, instructoresMostrados)}
-                                  sx={{ color: 'text.secondary', p: 0.25 }}
-                                >
-                                  <EventBusyIcon fontSize="inherit" />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                            {puedeGestionar && (
-                              <Tooltip title="Eliminar bloque completo">
-                                <IconButton
-                                  size="small"
-                                  onMouseDown={(e) => e.stopPropagation()}
-                                  onClick={() =>
-                                    setConfirmEliminar({
-                                      ids: [turno.id, excepcionTurno.id],
-                                      dia: DIAS_LARGO[dia.diaSemana],
-                                      horaInicio: aHora(uInicio),
-                                      horaFin: aHora(uFin),
-                                      instructores: instructoresMostrados.map((i) => i.nombre),
-                                      actividades: actividadesMostradas.map((a) => a.nombre),
-                                    })
-                                  }
-                                  sx={{ color: 'error.main', p: 0.25 }}
-                                >
-                                  <DeleteOutlineIcon fontSize="inherit" />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                          </Stack>
-                          )
-                        )}
-                        <Menu
-                          open={menuAccionesBloque?.id === excepcionTurno.id}
-                          anchorEl={menuAccionesBloque?.anchor ?? null}
-                          onClose={() => setMenuAccionesBloque(null)}
-                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        >
-                          {!esFechaPasada && (
-                            <MenuItem
-                              onClick={() => {
-                                setMenuAccionesBloque(null);
-                                onEliminar(excepcionTurno.id);
-                              }}
-                            >
-                              <ListItemIcon>
-                                <RestoreIcon fontSize="small" sx={{ color: 'error.main' }} />
-                              </ListItemIcon>
-                              <ListItemText>Quitar horario especial (vuelve al horario normal)</ListItemText>
-                            </MenuItem>
-                          )}
-                          <MenuItem
-                            onClick={(e) => {
+                        onRestaurar={!esFechaPasada ? () => onEliminar(excepcionTurno.id) : undefined}
+                        onRestaurarDesdeMenu={!esFechaPasada ? () => {
+                          setMenuAccionesBloque(null);
+                          onEliminar(excepcionTurno.id);
+                        } : undefined}
+                        onCancelar={puedeCancelarDia && !esFechaPasada
+                          ? (e) => abrirMenuCancelar(e, turno, instructoresMostrados)
+                          : undefined}
+                        onCancelarDesdeMenu={puedeCancelarDia && !esFechaPasada
+                          ? (e) => {
                               setMenuAccionesBloque(null);
-                              abrirMenuEditarBloque(e, turno, aIso(fechaColumna), excepcionTurno);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <TuneIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Editar actividades e instructores</ListItemText>
-                          </MenuItem>
-                          {puedeCancelarDia && !esFechaPasada && (
-                            <MenuItem
-                              onClick={(e) => {
-                                setMenuAccionesBloque(null);
-                                abrirMenuCancelar(e, turno, instructoresMostrados);
-                              }}
-                            >
-                              <ListItemIcon>
-                                <EventBusyIcon fontSize="small" />
-                              </ListItemIcon>
-                              <ListItemText>Cancelar un día puntual</ListItemText>
-                            </MenuItem>
-                          )}
-                          {puedeGestionar && (
-                            <MenuItem
-                              onClick={() => {
-                                setMenuAccionesBloque(null);
-                                setConfirmEliminar({
-                                  ids: [turno.id, excepcionTurno.id],
-                                  dia: DIAS_LARGO[dia.diaSemana],
-                                  horaInicio: aHora(uInicio),
-                                  horaFin: aHora(uFin),
-                                  instructores: instructoresMostrados.map((i) => i.nombre),
-                                  actividades: actividadesMostradas.map((a) => a.nombre),
-                                });
-                              }}
-                            >
-                              <ListItemIcon>
-                                <DeleteOutlineIcon fontSize="small" sx={{ color: 'error.main' }} />
-                              </ListItemIcon>
-                              <ListItemText>Eliminar bloque completo</ListItemText>
-                            </MenuItem>
-                          )}
-                        </Menu>
-                      </Box>
+                              abrirMenuCancelar(e, turno, instructoresMostrados);
+                            }
+                          : undefined}
+                        onEliminar={puedeGestionar ? abrirConfirmacionEliminar : undefined}
+                        onEliminarDesdeMenu={puedeGestionar
+                          ? () => {
+                              setMenuAccionesBloque(null);
+                              abrirConfirmacionEliminar();
+                            }
+                          : undefined}
+                      />
                     );
                   }
 
@@ -1515,140 +1360,48 @@ export function CalendarioHorariosInstructor({
                     // llega aquí es siempre un horario especial independiente, sin turno
                     // recurrente detrás.
                     return (
-                      <Box
+                      <BloqueHorarioEspecialCalendario
                         key={ex.id}
-                        onMouseDown={(e) =>
-                          puedeArrastrarExcepcion && iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'mover', e)
+                        variante="INDEPENDIENTE"
+                        enAjuste={enAjusteExcepcion}
+                        solapa={solapaExcepcion}
+                        puedeArrastrar={puedeArrastrarExcepcion}
+                        mostrarAcciones={puedeMoverOrecortar}
+                        mostrarMenuCompacto={alturaExcepcionSola < ALTURA_MINIMA_ACCIONES_EN_LINEA}
+                        izquierda={geometriaColumnas.izquierdaCss}
+                        ancho={geometriaColumnas.anchoCss}
+                        arriba={calcularPosicionVerticalCalendario(inicio, minApertura)}
+                        altura={calcularAlturaBloqueCalendario(inicio, fin)}
+                        hora={`${aHora(inicio)}–${aHora(fin)}`}
+                        instructores={nombresConRango(ex.instructores, ex.asignaciones)}
+                        mostrarInstructores={ex.instructores.length > 0}
+                        actividades={nombresDe(ex.actividades)}
+                        mostrarActividades={ex.actividades.length > 0}
+                        menuAbierto={menuAccionesBloque?.id === ex.id}
+                        menuAnchor={menuAccionesBloque?.anchor ?? null}
+                        onMover={(e) =>
+                          puedeArrastrarExcepcion &&
+                          iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'mover', e)
                         }
-                        sx={{
-                          position: 'absolute',
-                          left: geometriaColumnas.izquierdaCss,
-                          width: geometriaColumnas.anchoCss,
-                          top: calcularPosicionVerticalCalendario(inicio, minApertura),
-                          height: calcularAlturaBloqueCalendario(inicio, fin),
-                          bgcolor: (t) => alpha(t.palette[solapaExcepcion ? 'error' : 'warning'].main, 0.16),
-                          borderLeft: '3px solid',
-                          borderColor: solapaExcepcion ? 'error.main' : 'warning.main',
-                          borderRadius: 1.5,
-                          boxShadow: solapaExcepcion
-                            ? (t) => `0 0 0 1.5px ${t.palette.error.main}, 0 1px 3px rgba(15,15,16,0.08)`
-                            : '0 1px 3px rgba(15,15,16,0.08)',
-                          cursor: puedeArrastrarExcepcion ? 'grab' : 'default',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          overflow: 'hidden',
-                          zIndex: enAjusteExcepcion ? 2 : 1,
-                          px: 1,
-                          py: 0.5,
+                        onAjustarInicio={(e) =>
+                          iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'inicio', e)
+                        }
+                        onAjustarFin={(e) =>
+                          iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'fin', e)
+                        }
+                        onAbrirMenu={(e) => setMenuAccionesBloque({ anchor: e.currentTarget, id: ex.id })}
+                        onCerrarMenu={() => setMenuAccionesBloque(null)}
+                        onEditar={(e) => abrirMenuEditarBloque(e, ex, ex.fecha ?? aIso(fechaColumna), ex)}
+                        onEditarDesdeMenu={(e) => {
+                          setMenuAccionesBloque(null);
+                          abrirMenuEditarBloque(e, ex, ex.fecha ?? aIso(fechaColumna), ex);
                         }}
-                      >
-                        {puedeArrastrarExcepcion && (
-                          <Box
-                            onMouseDown={(e) => iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'inicio', e)}
-                            sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                          />
-                        )}
-                        {puedeArrastrarExcepcion && (
-                          <Box
-                            onMouseDown={(e) => iniciarAjusteExcepcion(ex, ex.fecha ?? aIso(fechaColumna), dia.diaSemana, 'fin', e)}
-                            sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }}
-                          />
-                        )}
-                        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                          <WbSunnyIcon sx={{ fontSize: 12, color: 'warning.main' }} />
-                          <Typography variant="caption" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
-                            {aHora(inicio)}–{aHora(fin)}
-                          </Typography>
-                        </Stack>
-                        {ex.instructores.length > 0 && (
-                          <Typography variant="caption" noWrap sx={{ color: 'text.secondary', lineHeight: 1.3 }}>
-                            {nombresConRango(ex.instructores, ex.asignaciones)}
-                          </Typography>
-                        )}
-                        {ex.actividades.length > 0 && (
-                          <Chip
-                            size="small"
-                            icon={<FitnessCenterIcon sx={{ fontSize: 12 }} />}
-                            label={nombresDe(ex.actividades)}
-                            sx={{ mt: 0.4, height: 18, fontSize: '0.65rem', fontWeight: 600, alignSelf: 'flex-start', maxWidth: '100%', bgcolor: 'background.paper' }}
-                          />
-                        )}
-                        <Box sx={{ flexGrow: 1 }} />
-                        {puedeMoverOrecortar && (
-                          alturaExcepcionSola < ALTURA_MINIMA_ACCIONES_EN_LINEA ? (
-                            <IconButton
-                              size="small"
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onClick={(e) => setMenuAccionesBloque({ anchor: e.currentTarget, id: ex.id })}
-                              sx={{
-                                position: 'absolute',
-                                bottom: 2,
-                                right: 2,
-                                color: 'text.secondary',
-                                p: 0.25,
-                                bgcolor: 'background.paper',
-                                boxShadow: '0 1px 2px rgba(15,15,16,0.2)',
-                                '&:hover': { bgcolor: 'background.paper' },
-                              }}
-                            >
-                              <SettingsOutlinedIcon fontSize="inherit" />
-                            </IconButton>
-                          ) : (
-                          <Stack direction="row" spacing={0.5} sx={{ alignSelf: 'flex-end' }}>
-                            <Tooltip title="Editar actividades e instructores">
-                              <IconButton
-                                size="small"
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onClick={(e) => abrirMenuEditarBloque(e, ex, ex.fecha ?? aIso(fechaColumna), ex)}
-                                sx={{ color: 'text.secondary', p: 0.25 }}
-                              >
-                                <TuneIcon fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Eliminar este horario puntual">
-                              <IconButton
-                                size="small"
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onClick={() => onEliminar(ex.id)}
-                                sx={{ color: 'error.main', p: 0.25 }}
-                              >
-                                <DeleteOutlineIcon fontSize="inherit" />
-                              </IconButton>
-                            </Tooltip>
-                          </Stack>
-                          )
-                        )}
-                        <Menu
-                          open={menuAccionesBloque?.id === ex.id}
-                          anchorEl={menuAccionesBloque?.anchor ?? null}
-                          onClose={() => setMenuAccionesBloque(null)}
-                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        >
-                          <MenuItem
-                            onClick={(e) => {
-                              setMenuAccionesBloque(null);
-                              abrirMenuEditarBloque(e, ex, ex.fecha ?? aIso(fechaColumna), ex);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <TuneIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Editar actividades e instructores</ListItemText>
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => {
-                              setMenuAccionesBloque(null);
-                              onEliminar(ex.id);
-                            }}
-                          >
-                            <ListItemIcon>
-                              <DeleteOutlineIcon fontSize="small" sx={{ color: 'error.main' }} />
-                            </ListItemIcon>
-                            <ListItemText>Eliminar este horario puntual</ListItemText>
-                          </MenuItem>
-                        </Menu>
-                      </Box>
+                        onEliminar={() => onEliminar(ex.id)}
+                        onEliminarDesdeMenu={() => {
+                          setMenuAccionesBloque(null);
+                          onEliminar(ex.id);
+                        }}
+                      />
                     );
                   })}
               </Box>

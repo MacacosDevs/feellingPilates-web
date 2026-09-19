@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_14
-CURRENT_PHASE: M14_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_15
+CURRENT_PHASE: M15_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_14_PASS_CLOSED; subsequent slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_15_PASS_CLOSED; SUBSEQUENT_MILESTONE_NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,12 +30,12 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_cc480656e9be
-LAST_GATE_ID: gate_c15e343cb577
-LAST_ACCEPTED_CHECKPOINT: f34367e73c9e525a806b5357690c5b03892f9653
-CURRENT_CANDIDATE_MANIFEST: M14 accepted five-path closure candidate; preaudit exact manifest msg_02c8afcdc43b; final receipt-only closure manifest is recorded durably in run_cc480656e9be immediately after this document snapshot
-LAST_ACCEPTED_TESTS: 403
-LAST_ACCEPTED_VITEST: 328
+LAST_RUN_ID: run_3854059a7512
+LAST_GATE_ID: gate_0443d065d19f
+LAST_ACCEPTED_CHECKPOINT: e833c463ea79520b57df85878b23b8245cba2c16
+CURRENT_CANDIDATE_MANIFEST: M15 accepted exact four-path set under msg_50f6e59ceffe; Calendar sha256 3d0f310d5f9a0cb2d41e4cfc24c7121269723e377db566194a26fa2118e846bc; BloqueHorarioEspecialCalendario sha256 95b19b58b57595a2a9bba2bbb5d364f464b272ae1befc1b95bc8891d70869fa1; Root-only receipt hashes and final candidate fingerprint are captured immediately before explicit staging
+LAST_ACCEPTED_TESTS: 407
+LAST_ACCEPTED_VITEST: 332
 LAST_ACCEPTED_PLAYWRIGHT: 75
 CORRECTION_CYCLES_USED: 0
 MAX_CORRECTION_CYCLES: 2
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_c0d88426373c settled succeeded and released
+ACTIVE_WRITE_TASK: NONE; task_c510585c7929 settled succeeded and released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_82c840658bcc settled succeeded and released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_e6a6b1e648d5 settled succeeded and released
 
-FROZEN_PHASE_PLAN: M14 msg_bdaab2a08632 / allowlist fingerprint c8a8ba7d59cde5d3b4e4bae8b69bae3cf00fd10245fe4aa21a92b30284f01b21; only Calendar/new pure geometry module/new direct pure test plus Root STATE/RUNBOOK; all other entry files protected
+FROZEN_PHASE_PLAN: M15 msg_50f6e59ceffe / allowlist fingerprint 826fa29a124562c127a4d4ee3aeb93e4a2ea13355898e1c8fe8c49c9aad2e275; only Calendar/new BloqueHorarioEspecialCalendario plus Root STATE/RUNBOOK; all other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -60,7 +60,7 @@ RUNBOOK_AUTHORITY_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
 SHELL_CHARACTERIZATION_CORRECTION_CYCLES_USED: 1
 
-TEST_BASELINE: 403
+TEST_BASELINE: 407
 
 PROCESS_BOOTSTRAP_BASELINE_HEAD: 076a2639ae3c42040e15bf60eedc211031e2464a
 PROCESS_BOOTSTRAP_TRACKED_FILES: 117
@@ -560,3 +560,25 @@ M14_METRICS: {"measurementWindow":"Run creation through Decision Gate and preche
 M14_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: extract the two existing punctual-exception block presentation branches into one Programación-owned `BloqueHorarioEspecialCalendario` while Calendar retains exception matching/identity, date/time meaning, column/overlap decisions, interaction state and handlers, permissions, mutations/requests/payloads and F2E-adjacent authority. Candidate paths: Calendar + one new presentation component + only indispensable characterization wiring + Root closure docs. Risk HIGH because both branches are geometry/pointer adjacent. Protect exact replacement and standalone exception x/y/width/height, labels/actions, drag/resize targets/results, callback sequence and requests at375/768/1440 and1440→768. All known clipping/resize-remeasurement/stale/error/listener/a11y gaps and F2E compatibility remain deferred. Required validation: focused exception characterization, exact numeric before/after geometry fingerprint, existing Programación interaction suites, full R1 GATE and NEW Sol-high audit. Recommendation only; no next slice is authorized.
 
 M14_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact five-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.
+
+## M15 AUTHORIZATION / IMPLEMENTATION IN PROGRESS
+
+Human authorization UX-14 starts from exact accepted checkpoint `e833c463ea79520b57df85878b23b8245cba2c16`, clean worktree and empty index. Run `run_3854059a7512`. The entry contains 149 tracked files with fingerprint `3c723e7bc73e6c2cfd5ed935d8d097c5dd5f8943ff0d1b3437c345971eb783ad`; package manifest/lock hashes remain `212064e4ca421ff6d9156a160b009af9b0340b00ff503d5652767ae38c2f0289` and `be9b0cbdb5448ef033f7ccec572211a733e97e610f29230a4350da4d245944ce`.
+
+M15_RECON: `task_6538330131ad` / `ctx_09302c2d2eeb`, verified `gpt-5.6-luna` medium, read-only PASS and released. It identified the recurrent-overlap overlay and independent unmatched-punctual branches as a stable common presentation shell with explicit variants. Matching, identity, date/temporal meaning, overlap/columns, geometry, permissions, handlers, mutations/requests and F2E authority remain parent-owned.
+
+M15_FROZEN_SCOPE: durable authority `msg_50f6e59ceffe`; four exact paths, fingerprint `826fa29a124562c127a4d4ee3aeb93e4a2ea13355898e1c8fe8c49c9aad2e275`: STATE, RUNBOOK, existing Calendar and new `BloqueHorarioEspecialCalendario.tsx`. Every other tracked path is protected. Prewrite evidence: 40 relevant Vitest + 20 relevant Chromium + six private exception cases PASS. Normalized geometry fingerprint `b74fd5559482671d01bf61f584fbc70e105f91572d5f6929c8c158083aefa99a` covers 375/768/1440 and 1440→768 plus both interactions.
+
+M15_IMPLEMENTATION: `task_c510585c7929` / `ctx_e6a6b1e648d5`, verified `gpt-5.6-sol` medium, PASS and released. The new readonly variant component renders only pre-resolved presentation and explicit handlers; Calendar retains all domain, geometry, interaction and request authority. FAST lint, TypeScript, 22 calendar Vitest, diff check and six private before/after cases PASS. Combined pre/post normalized evidence is byte-identical: overlay resize keeps the inherited overlap block with zero requests; standalone resize keeps exact DELETE then POST method/order/payload. No product correction cycle used. Full GATE, fresh acceptance audit and Decision Gate remain pending.
+
+M15_FULL_GATE: PASS. Fresh dependency integrity, lint, TypeScript, 332/332 Vitest, 75/75 Chromium Playwright, production build and `git diff --check` all exit zero; total 407 PASS, 0 FAIL, 0 SKIPPED and no required flaky test. The four-path pre-audit snapshot fingerprint is `13bc0039757b5985fabc9c66c9c0f7d4f18e1321c958c75b820692139d994d67`; staging is empty, package bytes remain exact and 146 protected entry paths outside the three existing allowlist files remain byte-identical. The build retains only the accepted >500kB chunk warning. Fresh Sol-high acceptance audit and actual Decision Gate remain required before materialization.
+
+M15_FRESH_ACCEPTANCE_AUDIT: `task_f0165e6093ed` / `ctx_89c656e1f46b`, verified `gpt-5.6-sol` high, read-only PASS, P0=0, P1=0, P2=0, report sha256 `0ea54d641618ace4ba6ab018e2c13a1d990542030765da19d173fe59c5fca0ba`, worker_done `msg_2db5b3d4ac21`, released. It independently reran lint, TypeScript and 22 focused Vitest tests and accepted all 21 criteria. Both original branches remain distinct variants; the child owns presentation only; Calendar retains matching, temporal, geometry, interaction, permissions, request/mutation and F2E-adjacent authority. Concatenated four-case prewrite geometry plus two-case interaction evidence equals the six-case postwrite ledger exactly.
+
+M15_DECISION_GATE: gate-only `task_588540c6a362`; actual Gate `gate_0443d065d19f` resolved PASS. Full GATE, audit P0/P1 zero, exact finite scope, behavior equivalence and repository integrity satisfy acceptance. One explicit four-path local checkpoint follows this truthful receipt closure; no push.
+
+M15_METRICS: {"measurementWindow":"Run creation through Decision Gate and precheckpoint closure preparation","wallClockMinutes":33.433,"workersLaunched":3,"lunaTasks":1,"solMediumTasks":1,"solHighTasks":1,"targetedValidations":12,"fullValidations":1,"correctionCycles":0,"freshAuditFindings":0,"findingSeverity":{"P0":0,"P1":0,"P2":0},"humanGates":1,"internalReportBytes":28013,"summaryEvidenceBytesExcludingMetricsFile":101944,"rawEvidenceBytes":85774,"tokens":"UNREPORTED","CavemanEnabledRoles":[],"causalSavingsClaim":false}. Three workers were released; no product correction was required.
+
+M15_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: one future slice may add unmount-safe cleanup for the three existing Calendar window mousemove/mouseup listener flows (create, recurrent adjust and punctual adjust) while preserving normal geometry, pointer results, callbacks, requests, permissions and F2E-adjacent semantics. Candidate scope: Calendar plus only indispensable existing characterization/Chromium wiring and Root closure docs. Risk HIGH interaction lifecycle. Protect mid-drag unmount, normal drag/resize at 375/768/1440 and 1440→768, and exact callback/request ledgers; require full 407+ R1 GATE, new Sol-high audit and actual Gate. Recommendation only; no subsequent slice is authorized.
+
+M15_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. F2E compatibility remains UNVERIFIED and all known clipping, resize-remeasurement, stale-response, error-as-empty, listener and broader accessibility gaps remain deferred except that the listener gap is only recommended for a future separately authorized slice.
