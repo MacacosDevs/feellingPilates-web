@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_10
-CURRENT_PHASE: M10_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_11
+CURRENT_PHASE: M11_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_10_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_11_PASS_CLOSED; next functional milestone/slice NONE_AUTHORIZED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,14 +30,14 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_366be9321c42
-LAST_GATE_ID: gate_a7b5235cb004
-LAST_ACCEPTED_CHECKPOINT: 625e5dcd343611c71e1621dfbad620a3a1e18f9a
-CURRENT_CANDIDATE_MANIFEST: M10 exact accepted four-path presentation candidate, final144file byte-map/fingerprint durable in run_366be9321c42 after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
+LAST_RUN_ID: run_c93bdbdddab4
+LAST_GATE_ID: gate_b17ae1df054d
+LAST_ACCEPTED_CHECKPOINT: 64e05f03accac23464d0eb03ffc7d9f33c262d31
+CURRENT_CANDIDATE_MANIFEST: M11 exact accepted four-path closure candidate; final145file path/hash map and fingerprint durable in run_c93bdbdddab4 after this receipt-only closure; discover containing accepted checkpoint with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
 LAST_ACCEPTED_TESTS: 403
 LAST_ACCEPTED_VITEST: 328
 LAST_ACCEPTED_PLAYWRIGHT: 75
-CORRECTION_CYCLES_USED: 2
+CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
 NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; writer/auditor positively settled/released
+ACTIVE_WRITE_TASK: NONE; task_11744899d45b and correction task_7150e85ef303 settled/released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_2c68aeb28ab3 and ctx_1ab9795e73b7 settled/released
+ACTIVE_WRITE_DISPATCH: NONE; ctx_cf5828c0b4a2 and ctx_4581ab99aaf2 settled/released
 
-FROZEN_PHASE_PLAN: msg_ee7d0b70c5c8; only dialog/newform production, RootSTATE/RUNBOOK; alltests and other files protected
+FROZEN_PHASE_PLAN: msg_1438165b1125; only calendar/new Cabeceras production, RootSTATE/RUNBOOK; all tests and other entry files protected
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -469,3 +469,29 @@ M10_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-18T23:54:49.837983+00:00","wa
 Next bounded recommendation ONLY, NOT_AUTHORIZED: M11 calendarheader presentation to new CabecerasCalendario, existingCalendar and only indispensable CalendarCaracterizacion test wiring. Header consumes alreadycomputed labels/data and explicit date-operation callback. Keep date sort/minmax/refs/geometry/columns/ranges/overlays/mousehandlers/types/assignments/preflight inCalendar. HIGH geometry risk; preserve all wrappers/dimensions/margins/copy/tooltips/classes and actualplacements; no extraction of blocks/overlays/algorithms. Required affectedVitest/TypeScript/lint, both schedulingChromiumspecs375/768/1440/resize/thirteenexistingdragcases, full403+GATE, NEW Sol-high auditor and actualGate. Allknown375/resize/async/listener/a11ygaps deferred; F2EUNVERIFIED and any backend authority ambiguity requiresHumanGate. No nextslice authorized; await explicit human grant.
 
 One exactlocalcheckpoint follows actualGatePASS with explicitfourpathstaging, no ownfutureSHA/amend/squash/push. LAST_ACCEPTED_CHECKPOINT intentionally retains real existing625e5dcd343611c71e1621dfbad620a3a1e18f9a; containing acceptedSTATEcommit resolved by Gitlog and actualresultdurable inthisRun. Finalpostcheckpointmetrics and identity are recorded inOrca after materialization.
+
+## M11 ENTRY / FROZEN AUTHORITY
+
+Human authorization M11 UX-10 calendar-header presentation extraction from exact M10 checkpoint64e05f03accac23464d0eb03ffc7d9f33c262d31. Clean tree/empty index and144 tracked-file entry fingerprint c3926248bcc56a831d9cc7776160ebeeaacd1b06b54ba2503d21abf3960c823b verified. Freeze msg_1438165b1125 grants one existing production path CalendarioHorariosInstructor, one new production path CabecerasCalendario and Root-owned STATE/RUNBOOK only; tests remain read-only. Prewrite22 affected Vitest +20 existing scheduling Chromium +4 private numeric header/grid/block geometry cases PASS at375/768/1440 and transition1440→768.
+
+The parent retains date/exception interpretation, all state, geometry, column/block placement, drag/resize, interactions, API/requests, permissions/session and F2E-adjacent semantics. The leaf receives parent-precomputed presentation values and explicit callbacks and renders only the existing header row. Exact DOM/layout/classes/dimensions/labels/callback behavior required. All known M08-M10 gaps remain deferred and F2E compatibility UNVERIFIED. Risk HIGH; implementation route Sol-medium, final fresh independent audit Sol-high. New real M11 phase correction budget starts0/2. No next slice is authorized.
+
+M11_CORRECTION_01: M11-GEOM-01. First post-extraction private Chromium capture was stable across two runs but at375px each `.dia-header` width changed from38.71875 to38.703125 (1/64px) and cumulative last-right changed0.109375px; all other recorded 375/768/1440/empty/transition/grid/block values matched. Root cause is the extracted date label becoming one text node instead of the original segmented JSX text, changing intrinsic inline shaping at the known narrow overflow. This is a deterministic technical defect inside the frozen two-file scope; correction1/2 is consumed before correction. Restore original text-node segmentation from explicit parent-precomputed primitives, retain all semantics/styles/tests, then require exact private numeric equality and NEW final auditor.
+
+M11_CORRECTION_01_RESULT: PASS. task_7150e85ef303/ctx_4581ab99aaf2 actualSol-medium restored segmented date and habitual-hour JSX using an explicit discriminated presentation contract, preserving lazy branch evaluation. 22 affected Vitest, typecheck, lint, diff-check and four private Chromium cases PASS; all measurement JSON is exactly equal to the prewrite baseline. Correction worker report has all required15 R1 fields and exact two files; its worker_done payload listed only CabecerasCalendario although the durable report correctly lists both files changed during the correction. Preserve as M11-PROCESS-01 pending independent severity adjudication; no product evidence is missing.
+
+M11_FULL_GATE_OBSERVED: fresh npm-ls/lint/typecheck/build/diff-check exit0; 328Vitest +75Chromium =403PASS,0FAIL,0SKIP,0FLAKY. Four private after-correction Chromium measurements are exactly equal to prewrite at375/768/1440 and empty transition1440→768. Exact four-path scope, empty index; pre-receipt product/initial-doc snapshot fingerprint ed40f294d764c8ea0cd327f34383bb9bcf8e67237c23114e30df464590e49cad. All141 protected entry files and all tests byte-identical, package files unchanged. Final self-containing two-document receipt identity is recorded in Orca rather than claimed recursively in this file. Build retains accepted >500kB warning. Candidate not accepted until NEW Sol-high audit and actual DecisionGate PASS.
+
+## M11 ACCEPTANCE / RECEIPT-ONLY CLOSURE
+
+Run run_c93bdbdddab4. Initial writer task_11744899d45b/ctx_cf5828c0b4a2 actualSol-medium and correction task_7150e85ef303/ctx_4581ab99aaf2 actualSol-medium both settled/released. Fresh independent auditor task_fc3e4a44df72/ctx_5b3f4d1c29f0 actualSol-high PASS P0=0 P1=0 P2=1, uniqueDone msg_9d87d552e469 and released. Actual DecisionGate gate_b17ae1df054d PASS, gate-only task_add9925b9bf2 completed. Auditor prospectively approved this receipt-only two-document closure, exact post-closure manifest and checkpoint without another semantic audit, provided source/tests remain unchanged.
+
+The new Programación-owned CabecerasCalendario renders only the prior flex header row from explicit readonly precomputed values/callbacks. Calendar retains date/exception computation, state, geometry, grid/block placement, drag/resize, requests, permissions/session and F2E-adjacent authority. M11-GEOM-01 consumed correction1/2 and restored exact segmented text, lazy branch evaluation and exact numeric before/after measurements at375/768/1440 and empty transition1440→768. Full fresh GATE:328Vitest+75Chromium=403PASS0FAIL0SKIP0FLAKY; npm-ls/lint/typecheck/build/diff-check PASS. All tests/packages and141 entry-protected files exact; no API/business/F2E/dependency change.
+
+M11-PROCESS-01 remains P2 NONBLOCKING_UNRESOLVED_ORIGINAL_LIFECYCLE_SUMMARY_DEFECT: correction worker_done payload listed only CabecerasCalendario, while its complete15-field durable report, exact manifest, hashes and transcript correctly name both changed production files. No retrospective compliance claim; no product/scope/test evidence is missing. Future worker_done payloads must list every changed file exactly.
+
+M11_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-19T00:39:23.710551+00:00","wallClockMinutes":37.329,"measurementWindow":"actual M11 Run creation to precheckpoint metric snapshot; pre-Run recon UNREPORTED; no human pause","workersLaunched":3,"lunaTasks":0,"solMediumTasks":2,"solHighTasks":1,"targetedValidations":23,"targetedDefinition":"unique retained non-GATE command invocations including one failed private-browser launch; failures retained","fullValidations":1,"correctionCycles":1,"productSourceCorrectionCycles":1,"freshAuditFindings":1,"humanGates":1,"internalReportBytes":20705,"summaryEvidenceBytes":161378,"rawEvidenceBytes":1666584,"CavemanEnabledRoles":[],"tokens":"UNREPORTED","comparisonMinutes":{"M03":103.8,"M04":73.648,"M05":37.537,"M06":49.059,"M07":32.357,"M08":28.603,"M09":30.916,"M10":19.737},"causalSavingsClaim":false}
+
+M11_NEXT_RECOMMENDATION_NOT_AUTHORIZED: Extract only the 56px time-axis presentation into a new Programación-owned EjeHorarioCalendario while Calendar retains marcas/min/max computation, PX geometry, grid ref/origin, block placement, interactions and requests. Candidate paths: existing CalendarioHorariosInstructor.tsx, new EjeHorarioCalendario.tsx and only indispensable existing characterization wiring, plus Root closure docs. Risk MEDIUM-HIGH because the axis borders the grid; protect exact axis/grid boxes, time labels, block x/y/width/height, overlap/adjacency/drag/request counts at375/768/1440 and transition1440→768, then full403+ regression and NEW Sol-high audit. All known clipping/resize/stale/error/listener/a11y gaps remain deferred; F2E compatibility UNVERIFIED and no backend decision is expected. This is a recommendation only and requires new human authorization.
+
+M11_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact four-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.

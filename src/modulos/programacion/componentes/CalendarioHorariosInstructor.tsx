@@ -51,6 +51,7 @@ import type {
   SalonHorarioExcepcionResponse,
   TurnoInstructorResponse,
 } from '../../../api/types';
+import { CabecerasCalendario, type CabeceraCalendarioPresentacion } from './CabecerasCalendario';
 
 const DIAS_CORTO = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DIAS_LARGO = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -982,101 +983,38 @@ export function CalendarioHorariosInstructor({
     );
   }
 
+  const cabeceras: CabeceraCalendarioPresentacion[] = dias.map((dia) => {
+    const fechaColumna = sumarDias(inicioSemana, dia.diaSemana);
+    const excepcion = excepciones.find((ex) => ex.fecha === aIso(fechaColumna)) ?? null;
+    const estaCerrado = excepcion?.cerrado ?? false;
+    return {
+      id: dia.diaSemana,
+      diaCorto: DIAS_CORTO[dia.diaSemana],
+      diaMes: fechaColumna.getDate(),
+      mes: fechaColumna.getMonth() + 1,
+      ...(estaCerrado
+        ? { tipoHorario: 'cerrado' as const, etiquetaHorario: 'Cerrado' }
+        : excepcion
+          ? {
+              tipoHorario: 'excepcion' as const,
+              etiquetaHorario: `${corta(excepcion.horaApertura!)}–${corta(excepcion.horaCierre!)}`,
+            }
+          : {
+              tipoHorario: 'habitual' as const,
+              horaAperturaHabitual: corta(dia.horaApertura),
+              horaCierreHabitual: corta(dia.horaCierre),
+            }),
+      esHoy: aIso(fechaColumna) === aIso(new Date()),
+      tieneExcepcion: excepcion !== null,
+      estaCerrado,
+      puedeSeleccionar: puedeAdministrarSalon,
+      onSeleccionar: (evento) => abrirMenuExcepcion(evento, dia),
+    };
+  });
+
   return (
     <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
-      <Box sx={{ display: 'flex' }}>
-        <Box sx={{ width: 56, flexShrink: 0 }} />
-        {dias.map((dia) => {
-          const fechaColumna = sumarDias(inicioSemana, dia.diaSemana);
-          const excepcion = excepciones.find((ex) => ex.fecha === aIso(fechaColumna)) ?? null;
-          const hoy = aIso(fechaColumna) === aIso(new Date());
-          return (
-            <Box
-              key={dia.diaSemana}
-              onClick={(e) => abrirMenuExcepcion(e, dia)}
-              className="dia-header"
-              sx={{
-                flex: 1,
-                position: 'relative',
-                textAlign: 'center',
-                py: 1.25,
-                mx: 0.5,
-                my: 0.5,
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: excepcion?.cerrado
-                  ? (t) => alpha(t.palette.error.main, 0.25)
-                  : excepcion
-                    ? (t) => alpha(t.palette.warning.main, 0.3)
-                    : 'transparent',
-                bgcolor: excepcion?.cerrado
-                  ? (t) => alpha(t.palette.error.main, 0.06)
-                  : excepcion
-                    ? (t) => alpha(t.palette.warning.main, 0.08)
-                    : hoy
-                      ? (t) => alpha(t.palette.secondary.main, 0.08)
-                      : 'transparent',
-                cursor: puedeAdministrarSalon ? 'pointer' : 'default',
-                transition: 'background-color .15s ease, border-color .15s ease, box-shadow .15s ease',
-                '&:hover': puedeAdministrarSalon
-                  ? {
-                      bgcolor: excepcion?.cerrado
-                        ? (t) => alpha(t.palette.error.main, 0.12)
-                        : excepcion
-                          ? (t) => alpha(t.palette.warning.main, 0.14)
-                          : (t) => alpha(t.palette.secondary.main, 0.1),
-                      boxShadow: '0 1px 4px rgba(15,15,16,0.1)',
-                      '& .icono-editar': { opacity: 1 },
-                    }
-                  : undefined,
-              }}
-            >
-              {puedeAdministrarSalon && (
-                <Tooltip title="Editar horario de este día">
-                  <EditCalendarIcon
-                    className="icono-editar"
-                    sx={{
-                      position: 'absolute',
-                      top: 4,
-                      right: 4,
-                      fontSize: 15,
-                      color: 'text.disabled',
-                      opacity: 0.55,
-                      transition: 'opacity .15s ease',
-                    }}
-                  />
-                </Tooltip>
-              )}
-              <Typography variant="subtitle2" sx={{ color: hoy ? 'secondary.main' : 'text.primary' }}>
-                {DIAS_CORTO[dia.diaSemana]} {fechaColumna.getDate()}/{fechaColumna.getMonth() + 1}
-              </Typography>
-              {excepcion?.cerrado ? (
-                <Chip
-                  size="small"
-                  icon={<LockClockIcon sx={{ fontSize: 14 }} />}
-                  label="Cerrado"
-                  color="error"
-                  variant="outlined"
-                  sx={{ mt: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 600 }}
-                />
-              ) : excepcion ? (
-                <Chip
-                  size="small"
-                  icon={<WbSunnyIcon sx={{ fontSize: 14 }} />}
-                  label={`${corta(excepcion.horaApertura!)}–${corta(excepcion.horaCierre!)}`}
-                  color="warning"
-                  variant="outlined"
-                  sx={{ mt: 0.5, height: 20, fontSize: '0.7rem', fontWeight: 600 }}
-                />
-              ) : (
-                <Typography variant="caption" color="text.secondary">
-                  {corta(dia.horaApertura)}–{corta(dia.horaCierre)}
-                </Typography>
-              )}
-            </Box>
-          );
-        })}
-      </Box>
+      <CabecerasCalendario cabeceras={cabeceras} />
 
       <Box sx={{ display: 'flex', borderTop: '1px solid', borderColor: 'divider', bgcolor: '#fbfbfc' }}>
         <Box sx={{ width: 56, flexShrink: 0, position: 'relative', height: alturaTotal }}>
