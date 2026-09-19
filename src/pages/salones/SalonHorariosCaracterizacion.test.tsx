@@ -12,23 +12,27 @@ beforeEach(() => {
   server.use(http.get(`${api}/salones/s1`, () => HttpResponse.json(salon())), http.get(`${api}/admin/usuarios`, () => HttpResponse.json(pageOf([user({ id: 'i1', nombre: 'Inés Prueba', rolesAsignados: [{ rol: 'INSTRUCTOR', salonIds: ['s1'] }] })]))), http.get(`${api}/admin/usuarios/i1/especialidades`, () => HttpResponse.json([])), http.get(`${api}/turnos-instructor`, () => HttpResponse.json([])), http.get(`${api}/turnos-instructor/puntuales`, () => HttpResponse.json(pageOf([]))), http.get(`${api}/salones/s1/excepciones-horario`, () => HttpResponse.json([])), http.get(`${api}/salones/s1/horarios/historial`, () => HttpResponse.json([])));
 });
 function mount() { return renderRoute(<Routes><Route path="/salones/:id/horarios" element={<SalonHorarios />} /></Routes>, '/salones/s1/horarios'); }
-it('mantiene carga inicial mientras detalle está pendiente y permite recuperar un GET inicial fallido al remontar', async () => {
+it('mantiene carga inicial mientras detalle está pendiente y reintenta explícitamente el mismo contexto', async () => {
   const hold = deferred<Response>();
-  let started = false;
-  server.use(http.get(`${api}/salones/s1`, () => { started = true; return hold.promise; }));
-  const view = mount();
-  await waitFor(() => expect(started).toBe(true));
+  let detailReads = 0;
+  let userReads = 0;
+  server.use(
+    http.get(`${api}/salones/s1`, () => ++detailReads === 1 ? hold.promise : HttpResponse.json(salon())),
+    http.get(`${api}/admin/usuarios`, () => { userReads++; return HttpResponse.json(pageOf([user({ id: 'i1', nombre: 'Inés Prueba', rolesAsignados: [{ rol: 'INSTRUCTOR', salonIds: ['s1'] }] })])); }),
+  );
+  mount();
+  await waitFor(() => expect(detailReads).toBe(1));
   expect(screen.getByRole('progressbar')).toBeTruthy();
   expect(screen.queryByText('Horarios del salón')).toBeNull();
   hold.resolve(HttpResponse.json({ message: 'Detalle sintético no disponible' }, { status: 503 }));
-  await screen.findByRole('alert');
-  // KNOWN_BEHAVIOR_GAP_NOT_LOCKED: fallback wording and missing inline retry
-  // are not the desired error contract. Recovery uses the current route remount.
+  const error = (await screen.findByText('No se pudo cargar la información del salón.')).closest('[role="alert"]') as HTMLElement;
   expect(screen.queryByRole('progressbar')).toBeNull();
-  view.unmount();
-  server.use(http.get(`${api}/salones/s1`, () => HttpResponse.json(salon())));
-  mount();
+  expect(detailReads).toBe(1);
+  await userEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
   await screen.findByText('Horarios del salón');
+  expect(error.isConnected).toBe(false);
+  expect(detailReads).toBe(2);
+  expect(userReads).toBe(2);
   expect(screen.getByText('Solo puedes consultar este calendario.')).toBeTruthy();
   expect(screen.queryByRole('alert')).toBeNull();
 });

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -50,9 +50,21 @@ import type {
 import { CalendarioHorariosInstructor } from '../componentes/CalendarioHorariosInstructor';
 import { EditarHorarioSemanalDialog } from '../componentes/EditarHorarioSemanalDialog';
 import { aIso } from '../../../pages/salones/fechas';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
 
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const TAMANO_PAGINA_PUNTUALES = 10;
+
+interface ContextoPuntuales {
+  salonId: string;
+  page: number;
+  tipo: '' | 'EXCEPCION' | 'CANCELACION';
+  diaSemana: number | '';
+}
+
+function invalidarGeneracion(ref: { current: number }) {
+  ref.current++;
+}
 
 /** Domingo (inicio de semana, consistente con diaSemana 0=domingo) de la semana que contiene `fecha`. */
 function domingoDeLaSemana(fecha: Date): Date {
@@ -150,6 +162,9 @@ export function SalonHorarios() {
   const [cargando, setCargando] = useState(true);
   const [cargandoTurnos, setCargandoTurnos] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCargaInicial, setErrorCargaInicial] = useState<string | null>(null);
+  const [errorTurnos, setErrorTurnos] = useState<string | null>(null);
+  const [errorExcepciones, setErrorExcepciones] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [editandoHorarioSemanal, setEditandoHorarioSemanal] = useState(false);
 
@@ -158,6 +173,12 @@ export function SalonHorarios() {
   const [filtroTipoPuntual, setFiltroTipoPuntual] = useState<'' | 'EXCEPCION' | 'CANCELACION'>('');
   const [filtroDiaPuntual, setFiltroDiaPuntual] = useState<number | ''>('');
   const [cargandoPuntuales, setCargandoPuntuales] = useState(false);
+  const [errorPuntuales, setErrorPuntuales] = useState<string | null>(null);
+
+  const generacionInformacion = useRef(0);
+  const generacionTurnos = useRef(0);
+  const generacionExcepciones = useRef(0);
+  const generacionPuntuales = useRef(0);
 
   const finSemana = useMemo(() => sumarDias(inicioSemana, 6), [inicioSemana]);
 
@@ -167,30 +188,103 @@ export function SalonHorarios() {
   );
   const actividadesSalon = salon?.tiposActividad.map((a) => ({ id: a.id, nombre: a.nombre })) ?? [];
 
-  useEffect(() => {
-    if (!id) return;
+  function cargarInformacionSalon(salonId: string): number {
+    const generacion = ++generacionInformacion.current;
     setCargando(true);
-    Promise.all([obtenerSalon(id), listarUsuarios({ rol: 'INSTRUCTOR', size: 100 })])
+    setErrorCargaInicial(null);
+    Promise.all([obtenerSalon(salonId), listarUsuarios({ rol: 'INSTRUCTOR', size: 100 })])
       .then(([detalleSalon, pagina]) => {
-        setSalon(detalleSalon);
         const delSalon = pagina.content.filter((u) =>
-          u.rolesAsignados.some((ra) => ra.rol === 'INSTRUCTOR' && ra.salonIds.includes(id)),
+          u.rolesAsignados.some((ra) => ra.rol === 'INSTRUCTOR' && ra.salonIds.includes(salonId)),
         );
-        setInstructores(delSalon);
-        return Promise.all(delSalon.map((u) => listarEspecialidadesUsuario(u.id).catch(() => [])));
-      })
-      .then((listas) => {
-        setInstructores((actual) => {
+        return Promise.all(delSalon.map((u) => listarEspecialidadesUsuario(u.id))).then((listas) => {
+          if (generacion !== generacionInformacion.current) return;
           const mapa: Record<string, string[]> = {};
-          actual.forEach((u, i) => {
-            mapa[u.id] = (listas[i] ?? []).map((e) => e.tipoActividadId);
+          delSalon.forEach((u, i) => {
+            mapa[u.id] = listas[i].map((e) => e.tipoActividadId);
           });
+          setSalon(detalleSalon);
+          setInstructores(delSalon);
           setMapaEspecialidades(mapa);
-          return actual;
         });
       })
-      .catch(() => setError('No se pudo cargar la información del salón.'))
-      .finally(() => setCargando(false));
+      .catch(() => {
+        if (generacion === generacionInformacion.current) setErrorCargaInicial('No se pudo cargar la información del salón.');
+      })
+      .finally(() => {
+        if (generacion === generacionInformacion.current) setCargando(false);
+      });
+    return generacion;
+  }
+
+  function cargarTurnos(salonId: string): number {
+    const generacion = ++generacionTurnos.current;
+    setCargandoTurnos(true);
+    setErrorTurnos(null);
+    listarTurnosPorSalon(salonId)
+      .then((respuesta) => {
+        if (generacion === generacionTurnos.current) setTurnos(respuesta);
+      })
+      .catch(() => {
+        if (generacion === generacionTurnos.current) setErrorTurnos('No se pudieron cargar los horarios recurrentes.');
+      })
+      .finally(() => {
+        if (generacion === generacionTurnos.current) setCargandoTurnos(false);
+      });
+    return generacion;
+  }
+
+  function cargarExcepciones(contexto: { salonId: string; desde: string; hasta: string }): number {
+    const generacion = ++generacionExcepciones.current;
+    setErrorExcepciones(null);
+    listarExcepcionesSalon(contexto.salonId, contexto.desde, contexto.hasta)
+      .then((respuesta) => {
+        if (generacion === generacionExcepciones.current) setExcepciones(respuesta);
+      })
+      .catch(() => {
+        if (generacion === generacionExcepciones.current) setErrorExcepciones('No se pudieron cargar las excepciones de esta semana.');
+      });
+    return generacion;
+  }
+
+  function cargarPuntuales(contexto: ContextoPuntuales = {
+    salonId: id ?? '',
+    page: numeroPaginaPuntuales,
+    tipo: filtroTipoPuntual,
+    diaSemana: filtroDiaPuntual,
+  }): number | undefined {
+    if (!contexto.salonId) return;
+    const generacion = ++generacionPuntuales.current;
+    setCargandoPuntuales(true);
+    setErrorPuntuales(null);
+    listarTurnosPuntuales(contexto.salonId, undefined, {
+      page: contexto.page,
+      size: TAMANO_PAGINA_PUNTUALES,
+      tipo: contexto.tipo,
+      diaSemana: contexto.diaSemana,
+    })
+      .then((respuesta) => {
+        if (generacion === generacionPuntuales.current) setPaginaPuntuales(respuesta);
+      })
+      .catch(() => {
+        if (generacion === generacionPuntuales.current) setErrorPuntuales('No se pudieron cargar las excepciones y cancelaciones.');
+      })
+      .finally(() => {
+        if (generacion === generacionPuntuales.current) setCargandoPuntuales(false);
+      });
+    return generacion;
+  }
+
+  useEffect(() => {
+    if (!id) return;
+    setSalon(null);
+    setInstructores([]);
+    setMapaEspecialidades({});
+    cargarInformacionSalon(id);
+    return () => {
+      invalidarGeneracion(generacionInformacion);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -198,18 +292,22 @@ export function SalonHorarios() {
       setTurnos([]);
       return;
     }
-    setCargandoTurnos(true);
-    listarTurnosPorSalon(id)
-      .then(setTurnos)
-      .catch(() => setTurnos([]))
-      .finally(() => setCargandoTurnos(false));
+    setTurnos([]);
+    cargarTurnos(id);
+    return () => {
+      invalidarGeneracion(generacionTurnos);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
     if (!id) return;
-    listarExcepcionesSalon(id, aIso(inicioSemana), aIso(finSemana))
-      .then(setExcepciones)
-      .catch(() => setExcepciones([]));
+    setExcepciones([]);
+    cargarExcepciones({ salonId: id, desde: aIso(inicioSemana), hasta: aIso(finSemana) });
+    return () => {
+      invalidarGeneracion(generacionExcepciones);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, inicioSemana, finSemana]);
 
   useEffect(() => {
@@ -221,23 +319,18 @@ export function SalonHorarios() {
       setPaginaPuntuales(null);
       return;
     }
-    cargarPuntuales();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, numeroPaginaPuntuales, filtroTipoPuntual, filtroDiaPuntual]);
-
-  function cargarPuntuales() {
-    if (!id) return;
-    setCargandoPuntuales(true);
-    listarTurnosPuntuales(id, undefined, {
+    setPaginaPuntuales(null);
+    const generacion = cargarPuntuales({
+      salonId: id,
       page: numeroPaginaPuntuales,
-      size: TAMANO_PAGINA_PUNTUALES,
       tipo: filtroTipoPuntual,
       diaSemana: filtroDiaPuntual,
-    })
-      .then(setPaginaPuntuales)
-      .catch(() => setPaginaPuntuales(null))
-      .finally(() => setCargandoPuntuales(false));
-  }
+    });
+    return () => {
+      if (generacion !== undefined) invalidarGeneracion(generacionPuntuales);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, numeroPaginaPuntuales, filtroTipoPuntual, filtroDiaPuntual]);
 
   async function handleGuardarExcepcion(fecha: string, cerrado: boolean, horaApertura: string | null, horaCierre: string | null) {
     if (!id) return;
@@ -407,7 +500,7 @@ export function SalonHorarios() {
     .filter((t) => t.tipo !== 'RECURRENTE')
     .sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''));
 
-  if (cargando) {
+  if (cargando && !salon) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
         <CircularProgress />
@@ -416,6 +509,13 @@ export function SalonHorarios() {
   }
 
   if (!salon) {
+    if (errorCargaInicial && id) {
+      return (
+        <ErrorRecuperable onReintentar={() => cargarInformacionSalon(id)}>
+          {errorCargaInicial}
+        </ErrorRecuperable>
+      );
+    }
     return <Alert severity="error">No se encontró el salón.</Alert>;
   }
 
@@ -437,6 +537,12 @@ export function SalonHorarios() {
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
           {error}
         </Alert>
+      )}
+
+      {errorCargaInicial && id && (
+        <ErrorRecuperable sx={{ mb: 2 }} onReintentar={() => cargarInformacionSalon(id)} disabled={cargando}>
+          {errorCargaInicial}
+        </ErrorRecuperable>
       )}
 
       {instructores.length === 0 ? (
@@ -467,6 +573,20 @@ export function SalonHorarios() {
               </Button>
             )}
           </Stack>
+
+          {errorExcepciones && id && (
+            <ErrorRecuperable
+              onReintentar={() => cargarExcepciones({ salonId: id, desde: aIso(inicioSemana), hasta: aIso(finSemana) })}
+            >
+              {errorExcepciones}
+            </ErrorRecuperable>
+          )}
+
+          {errorTurnos && id && (
+            <ErrorRecuperable onReintentar={() => cargarTurnos(id)} disabled={cargandoTurnos}>
+              {errorTurnos}
+            </ErrorRecuperable>
+          )}
 
           {cargandoTurnos ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -530,11 +650,24 @@ export function SalonHorarios() {
               </TextField>
             </Stack>
 
-            {cargandoPuntuales ? (
+            {errorPuntuales && id && (
+              <ErrorRecuperable
+                onReintentar={() => cargarPuntuales({
+                  salonId: id,
+                  page: numeroPaginaPuntuales,
+                  tipo: filtroTipoPuntual,
+                  diaSemana: filtroDiaPuntual,
+                })}
+                disabled={cargandoPuntuales}
+              >
+                {errorPuntuales}
+              </ErrorRecuperable>
+            )}
+            {cargandoPuntuales && !paginaPuntuales ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
                 <CircularProgress size={24} />
               </Box>
-            ) : !paginaPuntuales || paginaPuntuales.content.length === 0 ? (
+            ) : !paginaPuntuales ? null : paginaPuntuales.content.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
                 Sin excepciones ni cancelaciones registradas.
               </Typography>

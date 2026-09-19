@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
 import type { CalendarioHorariosInstructor } from '../../modulos/programacion/componentes/CalendarioHorariosInstructor';
@@ -30,19 +30,27 @@ beforeEach(() => {
 });
 async function mount() { renderRoute(<Routes><Route path="/salones/:id/horarios" element={<SalonHorarios />}/></Routes>, '/salones/s1/horarios'); await screen.findByRole('region', { name: 'Calendario de prueba' }); return harness.current!; }
 const segment = { horaInicio: '12:00', horaFin: '13:00', asignaciones: [assignment] };
+function CambiarSalon() {
+    const navigate = useNavigate();
+    return <><button onClick={() => navigate('/salones/s2/horarios')}>Cambiar salón</button><Routes><Route path="/salones/:id/horarios" element={<SalonHorarios />}/></Routes></>;
+}
 describe('SalonHorarios: transporte y coordinación', () => {
-    it('lanza lecturas independientes antes de especialidades, filtra rolesAsignados y tolera una especialidad fallida', async () => {
+    it('lanza lecturas independientes, presenta la especialidad fallida y recupera el mismo contexto', async () => {
         const hold = deferred<Response>();
         let specialtyStarted = false;
-        server.use(http.get(`${api}/admin/usuarios/i1/especialidades`, () => { specialtyStarted = true; return hold.promise; }), http.get(`${api}/admin/usuarios/i2/especialidades`, () => HttpResponse.json({ message: 'Especialidad no disponible' }, { status: 503 })));
+        let lecturasI1 = 0;
+        let fallosI2 = 0;
+        server.use(http.get(`${api}/admin/usuarios/i1/especialidades`, () => { specialtyStarted = true; return ++lecturasI1 === 1 ? hold.promise : HttpResponse.json([{ tipoActividadId: 'a1', nombre: 'Pilates', duracionMinutos: 60 }]); }), http.get(`${api}/admin/usuarios/i2/especialidades`, () => ++fallosI2 === 1 ? HttpResponse.json({ message: 'Especialidad no disponible' }, { status: 503 }) : HttpResponse.json([])));
         renderRoute(<Routes><Route path="/salones/:id/horarios" element={<SalonHorarios />}/></Routes>, '/salones/s1/horarios');
         await waitFor(() => { expect(specialtyStarted).toBe(true); expect(reads).toContain('turnos'); expect(reads.some(r => r.startsWith('semana:'))).toBe(true); expect(reads.some(r => r.startsWith('puntuales:'))).toBe(true); });
         hold.resolve(HttpResponse.json([{ tipoActividadId: 'a1', nombre: 'Pilates', duracionMinutos: 60 }]));
+        const error = (await screen.findByText('No se pudo cargar la información del salón.')).closest('[role="alert"]') as HTMLElement;
+        await userEvent.click(within(error).getByRole('button', { name: 'Reintentar' }));
         await screen.findByRole('region', { name: 'Calendario de prueba' });
         expect(screen.getByText('Inés Prueba, Luz Prueba')).toBeTruthy();
         expect(harness.current!.mapaEspecialidades.i1).toEqual(['a1']);
-        // KNOWN_BEHAVIOR_GAP_NOT_LOCKED: failed specialty lookup must not
-        // establish an empty-specialties UI contract for i2.
+        expect(harness.current!.mapaEspecialidades.i2).toEqual([]);
+        expect(fallosI2).toBe(2);
         expect(harness.current).toMatchObject({ puedeGestionar: true, puedeCancelar: true, puedeEditar: true, puedeAdministrarSalon: true });
     });
     it.each(['RECURRENTE', 'EXCEPCION'] as const)('crea %s con DTO exacto y respuesta local del servidor', async (tipo) => {
@@ -241,5 +249,74 @@ describe('SalonHorarios: transporte y coordinación', () => {
         await act(async () => { await p.onEliminarExcepcion('op1'); });
         expect(harness.current!.excepciones).toEqual([op]);
         expect(screen.getByText('No se puede eliminar')).toBeTruthy();
+    });
+    it('descarta una semana anterior que termina después de la semana vigente', async () => {
+        const antigua = deferred<Response>();
+        let consultas = 0;
+        server.use(http.get(`${api}/salones/s1/excepciones-horario`, () => {
+            consultas++;
+            return consultas === 1
+                ? antigua.promise
+                : HttpResponse.json([{ id: 'semana-vigente', fecha: '2026-09-20', cerrado: true, horaApertura: null, horaCierre: null }]);
+        }));
+        await mount();
+        const week = screen.getByText(/^Semana del/).parentElement!;
+        await userEvent.click(within(week).getAllByRole('button')[1]);
+        await waitFor(() => expect(harness.current!.excepciones.map((e) => e.id)).toEqual(['semana-vigente']));
+        antigua.resolve(HttpResponse.json([{ id: 'semana-antigua', fecha: '2026-09-13', cerrado: true, horaApertura: null, horaCierre: null }]));
+        await waitFor(() => expect(consultas).toBe(2));
+        expect(harness.current!.excepciones.map((e) => e.id)).toEqual(['semana-vigente']);
+    });
+    it('una falla anterior no reemplaza el éxito del salón vigente', async () => {
+        const turnosAnteriores = deferred<Response>();
+        server.use(
+            http.get(`${api}/salones/:salonId`, ({ params }) => HttpResponse.json(salon({ id: String(params.salonId), nombre: params.salonId === 's2' ? 'Sede Vigente' : 'Sede Prueba' }))),
+            http.get(`${api}/admin/usuarios`, () => HttpResponse.json(pageOf([user({ id: 'i1', nombre: 'Inés Prueba', rolesAsignados: [{ rol: 'INSTRUCTOR', salonIds: ['s1', 's2'] }] })]))),
+            http.get(`${api}/turnos-instructor`, ({ request }) => new URL(request.url).searchParams.get('salonId') === 's1'
+                ? turnosAnteriores.promise
+                : HttpResponse.json([turno({ id: 'turno-vigente', salonId: 's2' })])),
+            http.get(`${api}/salones/s2/excepciones-horario`, () => HttpResponse.json([])),
+            http.get(`${api}/turnos-instructor/puntuales`, ({ request }) => HttpResponse.json(pageOf([], { number: Number(new URL(request.url).searchParams.get('page')) }))),
+        );
+        renderRoute(<CambiarSalon />, '/salones/s1/horarios');
+        await screen.findByText('Horarios del salón');
+        await userEvent.click(screen.getByRole('button', { name: 'Cambiar salón' }));
+        await waitFor(() => expect(harness.current!.turnosRecurrentes.map((t) => t.id)).toEqual(['turno-vigente']));
+        turnosAnteriores.resolve(HttpResponse.json({ message: 'Turnos anteriores no disponibles' }, { status: 503 }));
+        await waitFor(() => expect(screen.getByText(/Sede Vigente/)).toBeTruthy());
+        expect(screen.queryByText('No se pudieron cargar los horarios recurrentes.')).toBeNull();
+        expect(harness.current!.turnosRecurrentes.map((t) => t.id)).toEqual(['turno-vigente']);
+    });
+    it('mantiene el error del filtro vigente ante éxito tardío y reintenta una sola vez con los mismos parámetros', async () => {
+        const anterior = deferred<Response>();
+        const consultas: Record<string, string>[] = [];
+        let cancelaciones = 0;
+        server.use(http.get(`${api}/turnos-instructor/puntuales`, ({ request }) => {
+            const q = Object.fromEntries(new URL(request.url).searchParams);
+            consultas.push(q);
+            if (q.tipo === 'EXCEPCION') return anterior.promise;
+            if (q.tipo === 'CANCELACION') {
+                cancelaciones++;
+                return cancelaciones === 1
+                    ? HttpResponse.json({ message: 'Cancelaciones no disponibles' }, { status: 503 })
+                    : HttpResponse.json(pageOf([]));
+            }
+            return HttpResponse.json(pageOf([turno({ id: 'inicial', tipo: 'EXCEPCION', fecha: '2026-09-20' })]));
+        }));
+        await mount();
+        await choose('Tipo', 'Horario especial');
+        await waitFor(() => expect(consultas.some((q) => q.tipo === 'EXCEPCION')).toBe(true));
+        await choose('Tipo', 'Cancelación');
+        const error = (await screen.findByText('No se pudieron cargar las excepciones y cancelaciones.')).closest('[role="alert"]') as HTMLElement;
+        expect(cancelaciones).toBe(1);
+        anterior.resolve(HttpResponse.json(pageOf([turno({ id: 'respuesta-antigua', tipo: 'EXCEPCION', fecha: '2026-09-21' })])));
+        await waitFor(() => expect(screen.queryByText(/respuesta-antigua/)).toBeNull());
+        expect(screen.getByText('No se pudieron cargar las excepciones y cancelaciones.')).toBeTruthy();
+        await userEvent.click(within(error).getByRole('button', { name: 'Reintentar' }));
+        await screen.findByText('Sin excepciones ni cancelaciones registradas.');
+        expect(cancelaciones).toBe(2);
+        expect(consultas.filter((q) => q.tipo === 'CANCELACION')).toEqual(Array(2).fill({
+            salonId: 's1', page: '0', size: '10', tipo: 'CANCELACION',
+        }));
     });
 });

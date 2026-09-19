@@ -18,6 +18,33 @@ function mount(onAplicado = vi.fn().mockResolvedValue(undefined)) {
   renderWithTheme(<EditarHorarioSemanalDialog salon={salon({ horarios: [{ id: 'sun', diaSemana: 0, horaApertura: '08:30:00', horaCierre: '17:30:00' }] })} open {...callbacks} />);
   return callbacks;
 }
+it('rechaza historial de otro salón tras error vigente y reintenta exactamente una vez el salón actual', async () => {
+  const antiguo = deferred<Response>();
+  const reads: string[] = [];
+  let actuales = 0;
+  server.use(
+    http.get(`${api}/salones/s1/horarios/historial`, () => { reads.push('s1'); return antiguo.promise; }),
+    http.get(`${api}/salones/s2/horarios/historial`, () => {
+      reads.push('s2');
+      actuales++;
+      return actuales === 1 ? HttpResponse.json({ message: 'Historial no disponible' }, { status: 503 }) : HttpResponse.json([]);
+    }),
+  );
+  const callbacks = { onAplicado: vi.fn().mockResolvedValue(undefined), onClose: vi.fn(), onExito: vi.fn() };
+  const view = renderWithTheme(<EditarHorarioSemanalDialog salon={salon()} open {...callbacks} />);
+  await waitFor(() => expect(reads).toEqual(['s1']));
+  view.rerender(<EditarHorarioSemanalDialog salon={salon({ id: 's2', nombre: 'Sede Vigente' })} open {...callbacks} />);
+  const error = (await screen.findByText('No se pudo cargar el historial de horarios.')).closest('[role="alert"]') as HTMLElement;
+  expect(reads).toEqual(['s1', 's2']);
+  antiguo.resolve(HttpResponse.json([{ diaSemana: 0, horaApertura: '06:00', horaCierre: '07:00', vigenteDesde: '2026-01-01', vigenteHasta: null }]));
+  await waitFor(() => expect(screen.getByText('No se pudo cargar el historial de horarios.')).toBeTruthy());
+  await userEvent.click(within(error).getByRole('button', { name: 'Reintentar' }));
+  await waitFor(() => expect(screen.queryByText('No se pudo cargar el historial de horarios.')).toBeNull());
+  expect(reads).toEqual(['s1', 's2', 's2']);
+  await userEvent.click(screen.getAllByRole('button', { name: 'Historial' })[0]);
+  expect(screen.getAllByText('Sin historial registrado para este día.')).toHaveLength(7);
+  expect(screen.queryByText('06:00 – 07:00')).toBeNull();
+});
 it('versiona domingo con fecha local de otro año; retiene campos tras 409 y espera POST antes de sincronizar', async () => {
   const hold = deferred<Response>();
   const bodies: unknown[] = [];
@@ -72,5 +99,50 @@ it('refresh de historial fallido después de POST exitoso no convierte el guarda
   await userEvent.click(screen.getByRole('button', { name: 'Guardar horario' }));
   await waitFor(() => expect(c.onExito).toHaveBeenCalledWith(expect.stringContaining('se guardó correctamente')));
   expect(c.onAplicado).toHaveBeenCalledTimes(1);
-  expect(screen.queryByRole('alert')).toBeNull();
+  expect(screen.getByText('No se pudo cargar el historial de horarios.')).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Reintentar' })).toBeTruthy();
+});
+it.each([
+  {
+    nombre: 'versionar',
+    endpoint: `${api}/salones/s1/horarios/versiones`,
+    abrir: 'Cambiar horario',
+    guardar: 'Guardar horario',
+    errorMutacion: 'Otro cambio se guardó al mismo tiempo. Vuelve a intentarlo.',
+  },
+  {
+    nombre: 'cerrar',
+    endpoint: `${api}/salones/s1/horarios/cierres`,
+    abrir: 'Dejar de operar',
+    guardar: 'Dejar de operar',
+    errorMutacion: 'Otro cambio se guardó al mismo tiempo. Vuelve a intentarlo.',
+  },
+])('conserva error de $nombre si falla el refresh de conflicto y recupera historial con un reintento al salón actual', async ({ endpoint, abrir, guardar, errorMutacion }) => {
+  const reads: string[] = [];
+  let historyReads = 0;
+  server.use(
+    http.get(`${api}/salones/s1/horarios/historial`, ({ request }) => {
+      reads.push(new URL(request.url).pathname);
+      historyReads++;
+      return historyReads === 2
+        ? HttpResponse.json({ message: 'Historial no disponible' }, { status: 503 })
+        : HttpResponse.json([]);
+    }),
+    http.post(endpoint, () => HttpResponse.json({ codigo: 'CONFLICTO_VIGENCIA_HORARIO', message: 'Conflicto sintético' }, { status: 409 })),
+  );
+  mount();
+  await waitFor(() => expect(historyReads).toBe(1));
+  await userEvent.click(screen.getByRole('button', { name: abrir }));
+  await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: guardar }));
+
+  expect(await screen.findByText(errorMutacion)).toBeTruthy();
+  const errorHistorial = (await screen.findByText('No se pudo cargar el historial de horarios.')).closest('[role="alert"]') as HTMLElement;
+  expect(historyReads).toBe(2);
+  expect(reads).toEqual(Array(2).fill('/api/salones/s1/horarios/historial'));
+
+  await userEvent.click(within(errorHistorial).getByRole('button', { name: 'Reintentar' }));
+  await waitFor(() => expect(screen.queryByText('No se pudo cargar el historial de horarios.')).toBeNull());
+  expect(historyReads).toBe(3);
+  expect(reads).toEqual(Array(3).fill('/api/salones/s1/horarios/historial'));
+  expect(screen.getByText(errorMutacion)).toBeTruthy();
 });

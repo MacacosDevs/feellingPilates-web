@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_MILESTONE_16
-CURRENT_PHASE: M16_ACCEPTED_COMPLETE
+CURRENT_MILESTONE: WEB_UX_MILESTONE_17
+CURRENT_PHASE: M17_ACCEPTED_COMPLETE
 STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_16_PASS_CLOSED
+FUNCTIONAL_MILESTONE: WEB_UX_MILESTONE_17_PASS_CLOSED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -30,13 +30,13 @@ PROCESS_MAX_CORRECTION_CYCLES: 2
 PROCESS_AUDIT: PASS
 OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
-LAST_RUN_ID: run_09f066b63527
-LAST_GATE_ID: gate_1536a1efee5c
-LAST_ACCEPTED_CHECKPOINT: M16_CHECKPOINT_CONTAINING_THIS_STATE; discover exact SHA with git log -1 --format=%H -- auditoria/product-delivery/web-ux/WEB-UX-STATE.md
-CURRENT_CANDIDATE_MANIFEST: M16 accepted exact four-path candidate; final post-receipt fingerprint is durable in Orca Run run_09f066b63527 and checkpoint staging evidence, avoiding a recursive STATE self-hash claim
-LAST_ACCEPTED_TESTS: 412
-LAST_ACCEPTED_VITEST: 337
-LAST_ACCEPTED_PLAYWRIGHT: 75
+LAST_RUN_ID: run_a419b2147630
+LAST_GATE_ID: gate_dcb9867e754e
+LAST_ACCEPTED_CHECKPOINT: e76b750ae025666c82ad337efc76603994ad27d6
+CURRENT_CANDIDATE_MANIFEST: M17 accepted exact eight-path candidate; pre-closure audited fingerprint 641f065f9cd666c71d00a99880759e41b8ba9f6ed593a8a408fe9b4da89625da and manifest SHA256 87d4896dba987bd90e295ec86f10d9bbd94399b4f33352320fbff0bcef8b9a77; final receipt-only STATE/RUNBOOK bytes and checkpoint identity are discoverable from Git without recursive self-identity
+LAST_ACCEPTED_TESTS: 420
+LAST_ACCEPTED_VITEST: 343
+LAST_ACCEPTED_PLAYWRIGHT: 77
 CORRECTION_CYCLES_USED: 1
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
@@ -46,11 +46,11 @@ REMOTE_PUBLICATION: NOT_AUTHORIZED
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
-ACTIVE_WRITE_TASK: NONE; task_c5c663c81ac6 correction settled succeeded and released
+ACTIVE_WRITE_TASK: NONE; M17 writers and auditors complete/released
 
-ACTIVE_WRITE_DISPATCH: NONE; ctx_f82a3adfb4df correction settled succeeded and released
+ACTIVE_WRITE_DISPATCH: NONE; all M17 worker resources released
 
-FROZEN_PHASE_PLAN: M16 msg_3865d619108f / allowlist fingerprint 0cd772e6dec8a74cfc8c77eb41464ebb39401f535dfda957097b44a8733b9e3d; only Calendar/existing Calendar component test plus Root STATE/RUNBOOK; all other entry files protected
+FROZEN_PHASE_PLAN: M17 exact eight paths: Root STATE/RUNBOOK; SalonHorarios and EditarHorarioSemanalDialog; SalonHorarios main/characterization tests, weekly-dialog characterization, and Programación Chromium spec. APIs/client/shared primitive/Calendar and every other entry path protected.
 
 FEATURE_CHECKPOINT: b898a267c64510cb562ba6105560ee6d123e2ffc
 
@@ -616,3 +616,37 @@ M16_METRICS_PRECHECKPOINT: {"measurementWindow":"Run creation through Decision G
 M16_NEXT_BOUNDED_RECOMMENDATION_ONLY_NOT_AUTHORIZED: after separate human authorization, consider one finite SalonHorarios-owned slice for stale read generation guards across week/site/filter reads plus truthful recoverable feedback for current error-as-empty paths. Preserve DTOs, request methods/order/payloads, auth/session/permissions, temporal/overlap semantics, Payments/F2E authority and all accepted M16 listener behavior. Use focused synthetic characterization, browser validation, complete R1 GATE and fresh Sol-high audit. Recommendation only; no next slice is authorized.
 
 M16_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One explicit exact four-path local checkpoint follows this closure; no later slice, push or remote publication is authorized. F2E compatibility remains UNVERIFIED and clipping, resize remeasurement, stale/error and broader accessibility gaps remain deferred.
+
+## M17 HUMAN AUTHORIZATION / READ-ONLY RECON
+
+Human authorization UX-16 starts from exact accepted checkpoint `e76b750ae025666c82ad337efc76603994ad27d6`, clean tree and empty index. Run `run_a419b2147630`; entry manifest has 150 tracked paths and fingerprint `8cfbbc9390e38870a9cd2f17817ff7471fa2751970363ea5837313f39f10a74b`. Accepted baseline is 337 Vitest + 75 Chromium = 412 PASS.
+
+M17 authorizes only bounded Programación stale READ-response protection and truthful recoverable READ-error versus legitimate empty presentation. Recon must classify every relevant read flow before freezing scope. Preserve global session generation/401/AbortController/client authority; all POST/PUT/PATCH/DELETE behavior; geometry, interactions and M16 listener lifecycle; API contracts, permissions and F2E authority. No global Query migration, dependency, automatic retry, backend, Payments, responsive/resize/accessibility correction or later-slice authority. Luna-medium read-only recon precedes a finite allowlist; Sol-medium implementation, complete R1 GATE, new Sol-high audit and actual Decision Gate are mandatory. Correction budget starts 0/2.
+
+M17_RECON: `task_f66cd3061596` / `ctx_6aeea67f4fe7`, immutable launch receipt verifies `gpt-5.6-luna` medium, read-only complete and released. It confirmed stale-response risk in the initial detail/users/specialties chain, recurrent turns, weekly exceptions, punctual filtered pages and weekly-history reads. Recurrent/weekly/punctual failures currently commit empty-equivalent state; specialty failures become empty specialties; initial/history failures lack complete recoverable presentation. Global client/session behavior, APIs, mutations and Calendar geometry/listeners require no change. Scope remains bounded, with no Human Gate or cross-lane decision. The worker report self-labelled its model/effort as gpt-5/read-only audit; preserve it beside the authoritative launch receipt as M17-PROCESS-01 pending final-auditor severity.
+
+M17_FROZEN_SCOPE: exactly eight paths: Root-owned STATE/RUNBOOK; production `src/modulos/programacion/paginas/SalonHorarios.tsx` and `src/modulos/programacion/componentes/EditarHorarioSemanalDialog.tsx`; tests `src/pages/salones/SalonHorarios.test.tsx`, `src/pages/salones/SalonHorariosCaracterizacion.test.tsx`, `src/pages/salones/components/EditarHorarioSemanalDialogCaracterizacion.test.tsx`; browser `tests/e2e/programacion.spec.ts`. All APIs, `api/client`, shared ErrorRecuperable implementation, Calendar implementation/tests, packages and every other entry path are protected. A single Sol-medium writer must add deterministic RED characterization before production edits, then make the smallest local generation/error/retry change and preserve every write/mutation contract.
+
+M17_IMPLEMENTATION_AND_FULL_GATE: Luna-medium recon `task_f66cd3061596` / `ctx_6aeea67f4fe7` classified five bounded Programación read contexts; its report self-labelled the route incorrectly, preserved as `M17-PROCESS-01` for independent severity adjudication while the immutable launch receipt proves Luna-medium. Frozen authority `msg_14a0ecf4460e` contains exactly eight paths and protects the other142 entry paths. One Sol-medium writer `task_93f1b232fd8b` / `ctx_d3f3b2f7ea01` established feature-local monotonic generations for initial salon/instructor/specialty data, recurrent turns, weekly exceptions, punctual pages and weekly history; only the latest context commits data/loading/error. Legitimate empty success remains distinct from explicit recoverable failure and manual retry preserves current parameters without automatic retry. Test-first RED reproduced four failures plus the existing rejected-history gap; FAST passed66 affected Vitest and22 Chromium at375/768/1440. Fresh complete R1 GATE then passed npm integrity, lint, TypeScript, build and diff-check with341 Vitest +77 Chromium =418 PASS,0FAIL,0SKIP,0FLAKY. APIs/global client/session/401, all writes, Calendar geometry/interactions, M16 listeners, packages and all142 protected paths remain exact. Pre-receipt snapshot fingerprint `f73240dde8beb78e254fbc88d9bd6f6b1182810046f0e392d9900d081819b1c2`; the exact current manifest is kept externally to avoid recursive self-identity. NEW Sol-high audit and actual Decision Gate remain mandatory before acceptance.
+
+M17_FRESH_AUDIT_01: `task_6db68ffed3b7` / `ctx_ccce0e9cb3e4`, actual `gpt-5.6-sol` high, read-only FAIL with P0=0, P1=1 and P2=1; released. It independently matched all150 current manifest entries, all142 protected paths, full-GATE evidence and reran25 focused tests. `M17-READ-01` proves a reachable conflict mutation followed by failed history READ can reject out of the event handler before committing the mutation error, while `errorHistorial` and its manual retry are hidden because the dialog remains in versionar/cerrar. `M17-PROCESS-01` is adjudicated nonblocking P2 and must remain preserved. Scope expansion and Human Gate are false.
+
+M17_CORRECTION_01: cycle1/2 is consumed before write. Only already-frozen `EditarHorarioSemanalDialog.tsx` and its existing characterization test may change: preserve the original mutation error if its conflict-history refresh fails, present the resulting recoverable history READ error/retry in the active dialog view, and prove no unhandled rejection for both conflict branches. Preserve success-path `Promise.allSettled`, every mutation/API/payload/session/geometry/listener/F2E contract and all other paths. Targeted validation, refreshed complete GATE and a completely new Sol-high audit are mandatory; no Decision Gate before P1=0.
+
+M17_CORRECTION_01_RESULT_AND_GATE: `task_b8824cedd12a` / `ctx_8a6b76126ad6`, actual `gpt-5.6-sol` medium, PASS and released. Deterministic RED showed both versionar/cerrar conflict cases failing with two unhandled history-read rejections. The bounded fix consumes only each conflict branch's secondary history-read rejection after `cargarHistorial` records truthful error state, preserves the original mutation error, and renders the existing recoverable history error/retry in every active dialog view. The success-write `Promise.allSettled` distinction remains unchanged. GREEN passed6/6 weekly-dialog and27/27 affected tests with zero unhandled errors; explicit retry hits the current salon once. Refreshed complete R1 GATE passed npm integrity, lint, TypeScript, build and diff-check with343 Vitest +77 Chromium =420 PASS,0FAIL,0SKIP,0FLAKY. Exact eight-path scope and empty index remain; package manifests and all142 protected paths are unchanged. A completely fresh Sol-high re-audit remains mandatory before the Decision Gate.
+
+M17_FRESH_REAUDIT: `task_cb74592e19d2` / `ctx_73c13a174a27`, actual `gpt-5.6-sol` high, PASS and released. The independent auditor verified all22 acceptance criteria against the exact eight-path candidate, all142 protected entry paths and refreshed 343 Vitest +77 Chromium =420 PASS GATE evidence. `M17-READ-01` is RESOLVED for both versionar and cerrar; P0=0, P1=0. `M17-PROCESS-01` remains one nonblocking P2 historical recon-report metadata discrepancy beside the immutable Luna-medium launch receipt, preserved without retrospective rewriting. No scope expansion or Human Gate is required before the actual M17 Decision Gate.
+
+## M17 ACCEPTANCE / RECEIPT-ONLY CLOSURE
+
+Run `run_a419b2147630`; gate-only task `task_a96c64763aab`; actual Decision Gate `gate_dcb9867e754e` PASS. Five workers completed and were released: Luna-medium recon; Sol-medium writer and bounded corrector; two distinct Sol-high auditors. The final auditor prospectively accepted this Root-only STATE/RUNBOOK receipt closure while product/test/package bytes remain fixed.
+
+M17 closes with feature-local latest-generation ownership across the five confirmed Programación READ contexts. Obsolete successes and failures cannot commit over newer context; legitimate empty success remains distinct from recoverable failure; explicit retry preserves current parameters and no automatic retry, global request/session authority or write retry was introduced. The bounded correction preserves original mutation errors when conflict-history refresh fails and keeps the secondary READ error/retry visible in all active weekly-dialog views. APIs, 401/session, POST/PUT/PATCH/DELETE behavior, geometry/interactions, M16 listener lifecycle, permissions and F2E authority remain unchanged.
+
+M17_COMPLETE_GATE: npm dependency integrity, lint, TypeScript, build and diff-check PASS; 343 Vitest +77 Chromium =420 PASS, 0 FAIL, 0 SKIP, 0 FLAKY. Exact eight-path scope, empty pre-materialization index, package manifests and all142 protected entry paths PASS. `M17-READ-01` is resolved. `M17-PROCESS-01` remains P2 NONBLOCKING_HISTORICAL_METADATA_DISCREPANCY: the original recon report self-label conflicts with the immutable Luna-medium launch receipt; both are preserved without retrospective relabeling.
+
+M17_METRICS_PRECHECKPOINT: {"snapshotUTC":"2026-09-19T05:36:25Z","wallClockMinutes":60.633,"measurementWindow":"Orca Run creation through Decision Gate; final checkpoint minutes reported externally","workersLaunched":5,"lunaTasks":1,"solMediumTasks":2,"solHighTasks":2,"targetedValidations":19,"targetedDefinition":"reported RED/GREEN and independent-auditor focused command groups; complete GATE commands excluded","fullValidations":2,"correctionCycles":1,"freshAuditFindings":2,"freshAuditFindingDefinition":"unique IDs M17-READ-01 and M17-PROCESS-01; resolved P1 plus preserved P2","humanGates":1,"internalReportBytes":55738,"summaryEvidenceBytes":170500,"rawEvidenceBytes":194259,"CavemanEnabledRoles":[],"tokens":"UNREPORTED","causalSavingsClaim":false}
+
+M17_NEXT_RECOMMENDATION_NOT_AUTHORIZED: address only viewport-resize geometry remeasurement in `CalendarioHorariosInstructor`, with exact candidate paths derived by future recon and expected scope limited to Calendar plus indispensable existing geometry/Chromium characterization and Root closure docs. Risk HIGH because grid/block placement, drag and resize coordinates depend on measurements. Protect exact 56px axis, headers, x/y/width/height, overlap/adjacency, pointer targets, drag/resize results, callbacks, mutation counts/payloads and M16 cleanup at stable 375/768/1440 states; add deterministic transition evidence for 1440→768 and 768→375 showing current visual geometry is remeasured without changing temporal/F2E semantics. Require full420+ GATE, new Sol-high audit and actual gate. Responsive clipping, broader accessibility and backend F2E compatibility remain deferred/unverified. This recommendation is not authority.
+
+M17_NEXT: HUMAN_GATE_REQUIRED / MILESTONE_COMPLETE / AWAIT_HUMAN_AUTHORIZATION_FOR_NEXT_PROGRAMACION_SLICE. One exact eight-path local checkpoint follows this receipt closure; no subsequent slice, push or remote publication is authorized.

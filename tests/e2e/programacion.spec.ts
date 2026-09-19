@@ -129,23 +129,28 @@ for (const width of [375, 768, 1440]) {
     } finally { app.verify(); }
   });
 }
-test('carga diferida, vacío consultable y GET inicial 503 recuperable mediante reload', async ({ context, page, baseURL }) => {
-  await page.setViewportSize({ width: 375, height: 1100 });
-  const hold = gate();
-  const app = await isolated(context, page, baseURL!, { hold, rows: [], readOnly: true, initialFailure: true });
-  try {
-    await page.goto('/salones/s1/horarios');
-    await expect(page.getByRole('progressbar')).toBeVisible();
-    hold.resolve();
-    await expect(page.getByRole('alert')).toBeVisible();
-    // Missing retry/accurate initial-error wording is a NOT_LOCKED gap; do not
-    // assert the inherited fallback text as the canonical product contract.
-    await page.reload(); await expect(page.getByText('Jue 31/12', { exact: true })).toBeVisible();
-    await expect(page.getByText('Solo puedes consultar este calendario.')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Horario habitual' })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Editar actividades e instructores' })).toHaveCount(0);
-  } finally { hold.resolve(); app.verify(); }
-});
+for (const width of [375, 768, 1440]) {
+  test(`carga diferida distingue GET inicial 503 de vacío y reintenta el mismo salón a ${width}`, async ({ context, page, baseURL }) => {
+    await page.setViewportSize({ width, height: 1100 });
+    const hold = gate();
+    const app = await isolated(context, page, baseURL!, { hold, rows: [], readOnly: true, initialFailure: true });
+    try {
+      await page.goto('/salones/s1/horarios');
+      await expect(page.getByRole('progressbar')).toBeVisible();
+      hold.resolve();
+      const error = page.getByRole('alert').filter({ hasText: 'No se pudo cargar la información del salón.' });
+      await expect(error).toBeVisible();
+      expect(app.ledger.filter(r => r.method === 'GET' && r.url === `${api}/salones/s1`)).toHaveLength(1);
+      await error.getByRole('button', { name: 'Reintentar' }).click();
+      await expect(page.getByText('Jue 31/12', { exact: true })).toBeVisible();
+      expect(app.ledger.filter(r => r.method === 'GET' && r.url === `${api}/salones/s1`)).toHaveLength(2);
+      await expect(page.getByText('Sin excepciones ni cancelaciones registradas.')).toBeVisible();
+      await expect(page.getByText('Solo puedes consultar este calendario.')).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Horario habitual' })).toHaveCount(0);
+      await expect(page.getByRole('button', { name: 'Editar actividades e instructores' })).toHaveCount(0);
+    } finally { hold.resolve(); app.verify(); }
+  });
+}
 test('diálogo semanal retiene campos tras POST 409, reintenta y cruza semana de año por control actual', async ({ context, page, baseURL }) => {
   await page.setViewportSize({ width: 768, height: 1100 });
   const app = await isolated(context, page, baseURL!, { rows: [], postConflict: true });

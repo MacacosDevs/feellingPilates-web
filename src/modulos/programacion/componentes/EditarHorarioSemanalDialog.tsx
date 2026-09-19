@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Box,
@@ -27,6 +27,7 @@ import {
   mensajeDeErrorHorario,
 } from '../../../pages/salones/erroresHorario';
 import { FormularioHorarioSemanal } from './FormularioHorarioSemanal';
+import { ErrorRecuperable } from '../../../compartido/componentes/ErrorRecuperable';
 
 const MENSAJE_SINCRONIZACION_FALLIDA =
   'El cambio se guardó correctamente, pero no se pudo actualizar toda la información. Actualiza la pantalla para ver el estado más reciente.';
@@ -34,6 +35,10 @@ const MENSAJE_SINCRONIZACION_FALLIDA =
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 type Vista = { tipo: 'lista' } | { tipo: 'versionar'; dia: number } | { tipo: 'cerrar'; dia: number };
+
+function invalidarGeneracion(ref: { current: number }) {
+  ref.current++;
+}
 
 interface Props {
   salon: SalonDetalleResponse;
@@ -82,28 +87,53 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
   const [vista, setVista] = useState<Vista>({ tipo: 'lista' });
   const [historial, setHistorial] = useState<HorarioOperacionVersionResponse[]>([]);
   const [cargandoHistorial, setCargandoHistorial] = useState(false);
+  const [errorHistorial, setErrorHistorial] = useState<string | null>(null);
+  const [historialCargado, setHistorialCargado] = useState(false);
   const [diaExpandido, setDiaExpandido] = useState<number | null>(null);
   const [horaApertura, setHoraApertura] = useState('08:00');
   const [horaCierre, setHoraCierre] = useState('20:00');
   const [efectivoDesde, setEfectivoDesde] = useState(hoyIso());
   const [error, setError] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
+  const generacionHistorial = useRef(0);
 
   const hoy = hoyIso();
 
-  function cargarHistorial() {
+  function cargarHistorial(salonId = salon.id) {
+    const generacion = ++generacionHistorial.current;
     setCargandoHistorial(true);
-    return obtenerHistorialHorarios(salon.id)
-      .then(setHistorial)
-      .finally(() => setCargandoHistorial(false));
+    setErrorHistorial(null);
+    return obtenerHistorialHorarios(salonId)
+      .then((respuesta) => {
+        if (generacion === generacionHistorial.current) {
+          setHistorial(respuesta);
+          setHistorialCargado(true);
+        }
+      })
+      .catch((err) => {
+        if (generacion === generacionHistorial.current) setErrorHistorial('No se pudo cargar el historial de horarios.');
+        throw err;
+      })
+      .finally(() => {
+        if (generacion === generacionHistorial.current) setCargandoHistorial(false);
+      });
   }
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      generacionHistorial.current++;
+      setCargandoHistorial(false);
+      return;
+    }
     setVista({ tipo: 'lista' });
     setDiaExpandido(null);
     setError(null);
-    cargarHistorial();
+    setHistorial([]);
+    setHistorialCargado(false);
+    void cargarHistorial(salon.id).catch(() => undefined);
+    return () => {
+      invalidarGeneracion(generacionHistorial);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, salon.id]);
 
@@ -183,7 +213,7 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
     } catch (err) {
       const codigo = codigoDeError(err);
       if (codigo && CODIGOS_REQUIEREN_REFRESCO_HISTORIAL.has(codigo)) {
-        await cargarHistorial();
+        await cargarHistorial().catch(() => undefined);
       }
       setError(mensajeDeErrorHorario(err, 'No se pudo guardar el horario.'));
     } finally {
@@ -208,7 +238,7 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
     } catch (err) {
       const codigo = codigoDeError(err);
       if (codigo && CODIGOS_REQUIEREN_REFRESCO_HISTORIAL.has(codigo)) {
-        await cargarHistorial();
+        await cargarHistorial().catch(() => undefined);
       }
       setError(mensajeDeErrorHorario(err, 'No se pudo cerrar el día.'));
     } finally {
@@ -266,6 +296,14 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
       <DialogContent>
         <Stack spacing={1.5} sx={{ pt: 0.5 }}>
           {error && <Alert severity="error">{error}</Alert>}
+          {errorHistorial && (
+            <ErrorRecuperable
+              onReintentar={() => void cargarHistorial(salon.id).catch(() => undefined)}
+              disabled={cargandoHistorial}
+            >
+              {errorHistorial}
+            </ErrorRecuperable>
+          )}
 
           {vista.tipo === 'lista' && (
             <>
@@ -311,7 +349,9 @@ export function EditarHorarioSemanalDialog({ salon, open, onClose, onAplicado, o
                       )}
                     </Stack>
                     <Collapse in={expandido}>
-                      <Box sx={{ mt: 1.5 }}>{cargandoHistorial ? <Typography variant="caption">Cargando…</Typography> : renderHistorialDia(i)}</Box>
+                      <Box sx={{ mt: 1.5 }}>
+                        {cargandoHistorial && !historialCargado ? <Typography variant="caption">Cargando…</Typography> : historialCargado && renderHistorialDia(i)}
+                      </Box>
                     </Collapse>
                   </Box>
                 );
