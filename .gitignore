@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Generated testing artifacts
+test-results/
+
 # Environment files
 .env
 .env.*

@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import { validarTiposRecurso } from './tiposRecurso.schema';
 import type {
   ActividadRecursoRequest,
   ActividadRecursoResponse,
@@ -35,8 +36,8 @@ export function desactivarTipoActividad(id: string) {
   return apiClient.patch<TipoActividadResponse>(`/tipos-actividad/${id}/desactivar`).then((res) => res.data);
 }
 
-export function listarTiposRecurso() {
-  return apiClient.get<TipoRecursoResponse[]>('/tipos-recurso').then((res) => res.data);
+export function listarTiposRecurso(signal?: AbortSignal) {
+  return apiClient.get<unknown>('/tipos-recurso', { signal }).then((res) => validarTiposRecurso(res.data));
 }
 
 export function crearTipoRecurso(request: CatalogoItemRequest) {

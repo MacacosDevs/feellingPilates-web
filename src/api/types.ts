@@ -38,6 +38,7 @@ export interface UsuarioResponse {
 export interface ApiErrorBody {
   message?: string;
   error?: string;
+  codigo?: string | null;
   [key: string]: unknown;
 }
 
@@ -265,6 +266,26 @@ export interface HorarioOperacionResponse {
   horaCierre: string;
 }
 
+export interface HorarioOperacionVersionResponse {
+  diaSemana: number;
+  horaApertura: string;
+  horaCierre: string;
+  vigenteDesde: string | null;
+  vigenteHasta: string | null;
+}
+
+export interface VersionarHorarioSalonRequest {
+  diaSemana: number;
+  efectivoDesde: string;
+  horaApertura: string;
+  horaCierre: string;
+}
+
+export interface CerrarHorarioSalonRequest {
+  diaSemana: number;
+  efectivoDesde: string;
+}
+
 export interface SalonRequest {
   nombre: string;
   estadoId: number;
@@ -280,7 +301,7 @@ export interface SalonRequest {
   latitud: number | null;
   longitud: number | null;
   tipoActividadIds: string[];
-  horarios: HorarioOperacionRequest[];
+  horarios: HorarioOperacionRequest[] | null;
   recursos: RecursoItem[];
 }
 
