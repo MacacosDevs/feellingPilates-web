@@ -339,4 +339,23 @@ Human authorization granted controlled publication following audited technical c
 - Product files changed: `NO`
 - F2E compatibility and Payments authority: `DEFERRED_CROSS_LANE / UNCHANGED`
 
-Governance correction 1 records this completed publication receipt into process authority. The accepted PRODUCT checkpoint remains `aacb0816f10dd100ad7debc60613cbe714f0ea51`; any containing governance commit is strictly process-only. Web UX lane is closed at `HUMAN_GATE_REQUIRED / WEB_UX_CLOSURE_READY` and awaits final human merge authorization.
+Governance correction 1 records this completed publication receipt into process authority. The accepted PRODUCT checkpoint remains `aacb0816f10dd100ad7debc60613cbe714f0ea51`; any containing governance commit is strictly process-only.
+
+## Final post-merge verification and lane closure receipt
+
+PR #1 has been merged into canonical branch `operacion/horario-versionado-frontend` via merge commit `b34d40bc09b078422851ba29a8b56ccd699f5ca4`. Post-merge verification confirms:
+
+- Canonical branch: `operacion/horario-versionado-frontend`
+- Pull Request: PR #1 (`base: operacion/horario-versionado-frontend`, `head: ux/profesionalizacion-web-r1`)
+- PR status: `MERGED`
+- Merge commit: `b34d40bc09b078422851ba29a8b56ccd699f5ca4`
+- Accepted product checkpoint: `aacb0816f10dd100ad7debc60613cbe714f0ea51` (ancestor verified)
+- Governance Correction.1: `a56ea40562dc5d4055cc1703435efba138eee822` (ancestor verified)
+- Product-tree consistency: Verified identical to accepted product lineage, zero product files changed
+- Main branch state: `origin/main` unchanged at `b2188fb3c1ebd7d47d9b73ac80b1d412f2557feb` (not modified by this lane)
+- Deploy / release / tag: `NOT_PERFORMED`
+- Product files changed: `NO`
+- F2E compatibility and Payments authority: `DEFERRED_CROSS_LANE / UNCHANGED`
+- Lifecycle: `CLOSED`
+
+Web UX lane delivery is complete and CLOSED.
