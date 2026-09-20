@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../auth/authStore';
 import type { ApiErrorBody } from '../api/types';
-import { isAxiosError } from 'axios';
+import { isAxiosError, isCancel } from 'axios';
 
 export function Login() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
+  const mounted = useRef(false);
+  const operation = useRef(0);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -16,25 +22,34 @@ export function Login() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    const propia = ++operation.current;
+    const vigente = () => mounted.current && propia === operation.current;
+    let cancelada = false;
     setError(null);
     setCargando(true);
     try {
       await login({ correo, contrasena });
-      navigate('/');
+      if (vigente()) navigate('/');
     } catch (err) {
+      if (isCancel(err)) {
+        cancelada = true;
+        if (vigente()) setCargando(false);
+        return;
+      }
+      if (!vigente()) return;
       if (isAxiosError<ApiErrorBody>(err)) {
         setError(err.response?.data?.message ?? 'Correo o contraseña incorrectos.');
       } else {
         setError('Ocurrió un error inesperado.');
       }
     } finally {
-      setCargando(false);
+      if (vigente() && !cancelada) setCargando(false);
     }
   }
 
   return (
     <Box sx={{ maxWidth: 420 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" component="h1" gutterBottom>
         Iniciar sesión
       </Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

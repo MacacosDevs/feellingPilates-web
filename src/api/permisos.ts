@@ -1,6 +1,6 @@
 import { apiClient } from './client';
 import type { PermisoResponse } from './types';
 
-export function listarCatalogoPermisos() {
-  return apiClient.get<PermisoResponse[]>('/permisos').then((res) => res.data);
+export function listarCatalogoPermisos(signal?: AbortSignal) {
+  return apiClient.get<PermisoResponse[]>('/permisos', { signal }).then((res) => res.data);
 }
