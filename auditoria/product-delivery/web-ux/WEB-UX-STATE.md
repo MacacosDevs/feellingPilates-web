@@ -8,11 +8,11 @@ FOUNDATION_CHECKPOINT: c443b66abfc7bb9f69e36469769a9dbaa953e45b
 SHELL_CHECKPOINT: 1c4ef6b1b31e628f55fd0b0d710aec94a0b5a19a
 RUNBOOK_CHECKPOINT: 943d1e46665846613bac395efc4ea47773dceed6
 BOOTSTRAP_CORRECTION_CYCLES_USED: 1
-CURRENT_MILESTONE: WEB_UX_FINAL_HARDENING
-CURRENT_PHASE: FINAL_HARDENING_FULL_GATE_PASS_AWAITING_FRESH_AUDIT
-STATUS: MILESTONE_ACTIVE
+CURRENT_MILESTONE: WEB_UX_POST_PUBLICATION_CLOSURE
+CURRENT_PHASE: POST_PUBLICATION_VERIFIED_AWAITING_MERGE_AUTHORIZATION
+STATUS: HUMAN_GATE_REQUIRED
 PROCESS_BOOTSTRAP_STATUS: COMPLETE
-FUNCTIONAL_MILESTONE: WEB_UX_FINAL_HARDENING_AUTHORIZED
+FUNCTIONAL_MILESTONE: WEB_UX_FINAL_HARDENING_ACCEPTED
 EXECUTION_POLICY: ACTIVE
 MODEL_ROUTING_POLICY: ACTIVE
 CONTEXT_LOADING_POLICY: ACTIVE
@@ -32,17 +32,18 @@ OPTIMIZATION_DECISION_GATE: PASS
 POLICY_ACTIVATION_PROJECTION: ACTIVE
 LAST_RUN_ID: run_59f88be3c6dc
 LAST_GATE_ID: gate_d1fdc4bc97dd
-LAST_ACCEPTED_CHECKPOINT: ba542d4e557a48ffe94b003d730b6742a4382774
+ACCEPTED_PRODUCT_CHECKPOINT: aacb0816f10dd100ad7debc60613cbe714f0ea51
+LAST_ACCEPTED_CHECKPOINT: aacb0816f10dd100ad7debc60613cbe714f0ea51
 CURRENT_CANDIDATE_MANIFEST: M18 entry has 150 tracked paths with canonical fingerprint d52547d258b6a29cdab96e642920b27e79749d691405a844a72457b3ecf1a7d7 and manifest SHA256 e0a762070bdddcf126e98cf3634386d1aa6fe1ebbf2035dd21df92eec34a7d1b; no productive M18 candidate exists before reproducible geometry evidence and finite allowlist freeze
-LAST_ACCEPTED_TESTS: 420
-LAST_ACCEPTED_VITEST: 343
-LAST_ACCEPTED_PLAYWRIGHT: 77
+LAST_ACCEPTED_TESTS: 428
+LAST_ACCEPTED_VITEST: 350
+LAST_ACCEPTED_PLAYWRIGHT: 78
 CORRECTION_CYCLES_USED: 0
 MAX_CORRECTION_CYCLES: 2
 BOOTSTRAP_EFFECTIVE_CORRECTION_LIMIT: 1
-NEXT_PHASE: RECON_CHARACTERIZATION_FREEZE_IMPLEMENT_VALIDATE_AUDIT_GATE_CHECKPOINT_CLOSURE_REAUDIT
-HUMAN_GATE_REASON: NONE_DURING_AUTHORIZED_FINAL_HARDENING
-REMOTE_PUBLICATION: NOT_AUTHORIZED
+NEXT_PHASE: AWAIT_HUMAN_AUTHORIZATION_FOR_FINAL_MERGE
+HUMAN_GATE_REASON: WEB_UX_CLOSURE_READY
+REMOTE_PUBLICATION: COMPLETE
 PAYMENTS_AUTHORITY_CHANGE: NOT_AUTHORIZED
 F2E_AUTHORITY_CHANGE: NOT_AUTHORIZED
 
@@ -780,10 +781,32 @@ TECHNICAL_CLOSURE_DECISION_GATE: gate-only `task_a7d5b2a5dbc3`; Gate `gate_0419d
 FINAL_METRICS: final hardening measured approximately 101.583 minutes through its Gate; closure re-audit/checkpoint validation measured approximately 14.783 minutes through the technical-closure Gate; combined run approximately 116.367 minutes. Workers launched 8: Luna-medium 1, Sol-medium 3, Sol-high 4. Accepted complete validations 4, plus one preserved interrupted full-Vitest attempt; correction cycles 2; iterative hardening audit findings 2 under one stable P1 id, final closure P0=0/P1=0/P2=7; evidence bytes: internal JSON reports 94156, top-level summary evidence 111725, raw validation logs 152986, total evidence tree 274704; tokens UNREPORTED. No causal timing or token-savings claim.
 
 STATUS: `HUMAN_GATE_REQUIRED`.
-HUMAN_GATE_REASON: `TECHNICAL_CLOSURE_READY`.
-NEXT_PHASE: `AWAIT_HUMAN_AUTHORIZATION_FOR_WEB_UX_CONTROLLED_PUBLICATION_PREFLIGHT`.
-REMOTE_PUBLICATION: `NOT_AUTHORIZED`.
+HUMAN_GATE_REASON: `WEB_UX_CLOSURE_READY`.
+NEXT_PHASE: `AWAIT_HUMAN_AUTHORIZATION_FOR_FINAL_MERGE`.
+REMOTE_PUBLICATION: `COMPLETE`.
 F2E_COMPATIBILITY: `DEFERRED_CROSS_LANE / UNVERIFIED`.
 PAYMENTS_AUTHORITY: `DEFERRED_CROSS_LANE / UNCHANGED`.
 
-One explicit process-only checkpoint may now contain exactly STATE/RUNBOOK to materialize this audited closure receipt. No product change, push, merge, PR, tag, deployment or cutover is authorized.
+One explicit process-only checkpoint materialized the technical closure receipt at accepted product checkpoint `aacb0816f10dd100ad7debc60613cbe714f0ea51`.
+
+## WEB UX CONTROLLED PUBLICATION & CLOSURE RECEIPT
+
+Human authorization granted controlled publication following audited technical closure readiness.
+Controlled publication preflight passed all criteria with zero product changes:
+
+- Accepted product checkpoint: `aacb0816f10dd100ad7debc60613cbe714f0ea51`
+- Remote branch published: `origin/ux/profesionalizacion-web-r1` at `aacb0816f10dd100ad7debc60613cbe714f0ea51`
+- Upstream configured: `origin/ux/profesionalizacion-web-r1` (in sync, 0 ahead / 0 behind)
+- Pull Request created: PR #1 (`base: operacion/horario-versionado-frontend`, `head: ux/profesionalizacion-web-r1`, `headRefOid: aacb0816f10dd100ad7debc60613cbe714f0ea51`)
+- PR status: `OPEN` / `MERGEABLE` (`CLEAN`)
+- Remote checks/CI: None configured in repository; validation relies on audited local gates
+- Merge: `NOT_PERFORMED`
+- Deployment / cutover: `NOT_PERFORMED`
+- Product files changed: `NO`
+- F2E compatibility and Payments authority: `DEFERRED_CROSS_LANE / UNCHANGED`
+
+Governance correction 1 records this completed publication receipt into process authority. The accepted PRODUCT checkpoint remains `aacb0816f10dd100ad7debc60613cbe714f0ea51`; any containing governance commit is strictly process-only. Web UX lane is closed and awaits final human merge authorization.
+
+STATUS: `HUMAN_GATE_REQUIRED`.
+HUMAN_GATE_REASON: `WEB_UX_CLOSURE_READY`.
+NEXT_PHASE: `AWAIT_HUMAN_AUTHORIZATION_FOR_FINAL_MERGE`.

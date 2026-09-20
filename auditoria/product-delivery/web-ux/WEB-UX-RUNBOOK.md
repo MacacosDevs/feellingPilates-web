@@ -322,4 +322,21 @@ Final-hardening acceptance: completely new Sol-high `task_ac3ece5c957b` / `ctx_5
 
 Final-hardening checkpoint `10bda0101dd3b38d0ddeaa3bec1edaad1a708970` contains exactly the accepted 15 product/test paths plus STATE/RUNBOOK. A fresh post-checkpoint complete R1 GATE passed npm, lint, TypeScript, `350 Vitest + 78 Chromium = 428`, build and diff-check with zero failure/skip/required flaky. Distinct final closure auditor `task_d65f2f2eb670` / `ctx_19629c485f66` PASS P0=0/P1=0/P2=7 and released; no residual is `BLOCKING_FOR_WEB_UX_CLOSURE`. Gate-only `task_a7d5b2a5dbc3` / technical-closure Gate `gate_0419d5a79438` resolved PASS.
 
-Close the Web UX technical lane at `HUMAN_GATE_REQUIRED / TECHNICAL_CLOSURE_READY / AWAIT_HUMAN_AUTHORIZATION_FOR_WEB_UX_CONTROLLED_PUBLICATION_PREFLIGHT`. F2E compatibility remains `UNVERIFIED / DEFERRED_CROSS_LANE`; Payments authority remains separate and unchanged. Publication, PR, push, merge, rebase, tag, deployment and cutover remain unauthorized. Materialize this receipt in one explicit STATE/RUNBOOK-only local checkpoint and require final clean worktree/empty index.
+The Web UX technical lane completed at `HUMAN_GATE_REQUIRED / TECHNICAL_CLOSURE_READY`. F2E compatibility remains `UNVERIFIED / DEFERRED_CROSS_LANE`; Payments authority remains separate and unchanged. This receipt was materialized in process checkpoint `aacb0816f10dd100ad7debc60613cbe714f0ea51`.
+
+## Controlled publication and post-publication closure receipt
+
+Human authorization granted controlled publication following audited technical closure readiness. Controlled publication preflight passed all criteria with zero product changes:
+
+- Accepted product checkpoint: `aacb0816f10dd100ad7debc60613cbe714f0ea51`
+- Remote branch published: `origin/ux/profesionalizacion-web-r1` at `aacb0816f10dd100ad7debc60613cbe714f0ea51`
+- Upstream configured: `origin/ux/profesionalizacion-web-r1` (in sync, 0 ahead / 0 behind)
+- Pull Request created: PR #1 (`base: operacion/horario-versionado-frontend`, `head: ux/profesionalizacion-web-r1`, `headRefOid: aacb0816f10dd100ad7debc60613cbe714f0ea51`)
+- PR status: `OPEN` / `MERGEABLE` (`CLEAN`)
+- Remote checks/CI: None configured in repository; validation relies on audited local gates
+- Merge: `NOT_PERFORMED`
+- Deployment / cutover: `NOT_PERFORMED`
+- Product files changed: `NO`
+- F2E compatibility and Payments authority: `DEFERRED_CROSS_LANE / UNCHANGED`
+
+Governance correction 1 records this completed publication receipt into process authority. The accepted PRODUCT checkpoint remains `aacb0816f10dd100ad7debc60613cbe714f0ea51`; any containing governance commit is strictly process-only. Web UX lane is closed at `HUMAN_GATE_REQUIRED / WEB_UX_CLOSURE_READY` and awaits final human merge authorization.
