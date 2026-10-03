@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Alert, Avatar, Box, Button, Snackbar, TextField, Typography } from '@mui/material';
 import { useAuthStore } from '../auth/authStore';
 import { actualizarMiPerfil } from '../api/usuarios';
 import type { ApiErrorBody } from '../api/types';
-import { isAxiosError } from 'axios';
+import { isAxiosError, isCancel } from 'axios';
 
 export function Perfil() {
   const usuario = useAuthStore((state) => state.usuario);
+  const generacion = useAuthStore((state) => state.generacion);
+  const mounted = useRef(false);
+  const operation = useRef(0);
+  const draftGeneration = useRef(generacion);
+  const draftPending = useRef(false);
   const refrescarPerfil = useAuthStore((state) => state.refrescarPerfil);
   const [nombre, setNombre] = useState(usuario?.nombre ?? '');
   const [telefono, setTelefono] = useState(usuario?.telefono ?? '');
@@ -16,26 +21,56 @@ export function Perfil() {
   const [guardado, setGuardado] = useState(false);
   const [cargando, setCargando] = useState(false);
 
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+
+  useEffect(() => {
+    if (draftGeneration.current !== generacion) {
+      draftGeneration.current = generacion;
+      draftPending.current = true;
+      operation.current++;
+      setNombre('');
+      setTelefono('');
+      setDescripcion('');
+      setError(null);
+      setGuardado(false);
+      setCargando(false);
+    }
+    if (draftPending.current && usuario) {
+      draftPending.current = false;
+      setNombre(usuario.nombre);
+      setTelefono(usuario.telefono ?? '');
+      setDescripcion(usuario.descripcion ?? '');
+    }
+  }, [generacion, usuario]);
+
   if (!usuario) {
     return null;
   }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    const sesion = useAuthStore.getState().generacion;
+    const propia = ++operation.current;
+    const vigente = () => mounted.current && sesion === useAuthStore.getState().generacion && propia === operation.current;
     setError(null);
     setCargando(true);
     try {
       await actualizarMiPerfil({ nombre, telefono, descripcion });
+      if (!vigente()) return;
       await refrescarPerfil();
-      setGuardado(true);
+      if (vigente()) setGuardado(true);
     } catch (err) {
+      if (!vigente() || isCancel(err)) return;
       if (isAxiosError<ApiErrorBody>(err)) {
         setError(err.response?.data?.message ?? 'No se pudo actualizar el perfil.');
       } else {
         setError('Ocurrió un error inesperado.');
       }
     } finally {
-      setCargando(false);
+      if (vigente()) setCargando(false);
     }
   }
 

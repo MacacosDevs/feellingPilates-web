@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import {
   Alert,
@@ -19,13 +19,19 @@ import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../auth/authStore';
 import type { ApiErrorBody } from '../api/types';
-import { isAxiosError } from 'axios';
+import { isAxiosError, isCancel } from 'axios';
 import logoMark from '../assets/images/logo-mark.png';
 import { publicColors } from '../theme/publicTheme';
 
 export function Login() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
+  const mounted = useRef(false);
+  const operation = useRef(0);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
@@ -34,19 +40,28 @@ export function Login() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    const propia = ++operation.current;
+    const vigente = () => mounted.current && propia === operation.current;
+    let cancelada = false;
     setError(null);
     setCargando(true);
     try {
       await login({ correo, contrasena });
-      navigate('/');
+      if (vigente()) navigate('/');
     } catch (err) {
+      if (isCancel(err)) {
+        cancelada = true;
+        if (vigente()) setCargando(false);
+        return;
+      }
+      if (!vigente()) return;
       if (isAxiosError<ApiErrorBody>(err)) {
         setError(err.response?.data?.message ?? 'Correo o contraseña incorrectos.');
       } else {
         setError('Ocurrió un error inesperado al iniciar sesión.');
       }
     } finally {
-      setCargando(false);
+      if (vigente() && !cancelada) setCargando(false);
     }
   }
 
@@ -136,6 +151,7 @@ export function Login() {
             <Typography sx={{ color: publicColors.sage, fontSize: '1rem', fontWeight: 800 }}>✦</Typography>
             <Typography
               variant="h4"
+              component="p"
               sx={{
                 fontFamily: '"Playfair Display", Georgia, serif',
                 fontWeight: 700,
@@ -147,6 +163,9 @@ export function Login() {
             </Typography>
           </Box>
 
+          <Typography variant="h6" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
+            Iniciar sesión
+          </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.9rem', maxWidth: 320, mx: 'auto' }}>
             Bienestar y movimiento que ilumina tu día a día. Ingresa para acceder a tu portal.
           </Typography>
@@ -168,7 +187,7 @@ export function Login() {
           )}
 
           <TextField
-            label="Correo electrónico"
+            label="Correo"
             type="email"
             value={correo}
             onChange={(e) => setCorreo(e.target.value)}
@@ -240,7 +259,7 @@ export function Login() {
               },
             }}
           >
-            {cargando ? 'Ingresando...' : 'Iniciar sesión'}
+            {cargando ? 'Ingresando...' : 'Ingresar'}
           </Button>
 
           <Box

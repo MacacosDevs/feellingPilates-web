@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Alert, Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isAxiosError } from 'axios';
-import { completarInvitacion, obtenerInvitacion } from '../api/auth';
-import { setToken } from '../api/client';
+import { isAxiosError, isCancel } from 'axios';
+import { obtenerInvitacion } from '../api/auth';
 import { useAuthStore } from '../auth/authStore';
 import type { ApiErrorBody } from '../api/types';
 
 export function InvitacionAceptar() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const refrescarPerfil = useAuthStore((state) => state.refrescarPerfil);
+  const completarInvitacion = useAuthStore((state) => state.completarInvitacion);
+  const mounted = useRef(false);
+  const operation = useRef(0);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   const [nombre, setNombre] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,11 +27,21 @@ export function InvitacionAceptar() {
   const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
-    if (!token) return;
-    obtenerInvitacion(token)
-      .then((info) => setNombre(info.nombre))
-      .catch(() => setError('Este enlace de invitación no es válido o ya expiró.'))
-      .finally(() => setCargandoInfo(false));
+    let vigente = true;
+    operation.current++;
+    setEnviando(false);
+    setNombre(null);
+    setError(null);
+    setCargandoInfo(true);
+    if (!token) {
+      setCargandoInfo(false);
+      return;
+    }
+    void obtenerInvitacion(token)
+      .then((info) => { if (vigente) setNombre(info.nombre); })
+      .catch(() => { if (vigente) setError('Este enlace de invitación no es válido o ya expiró.'); })
+      .finally(() => { if (vigente) setCargandoInfo(false); });
+    return () => { vigente = false; };
   }, [token]);
 
   async function handleSubmit(event: FormEvent) {
@@ -39,20 +54,27 @@ export function InvitacionAceptar() {
       return;
     }
 
+    const propia = ++operation.current;
+    const vigente = () => mounted.current && propia === operation.current;
+    let cancelada = false;
     setEnviando(true);
     try {
-      const { token: jwt } = await completarInvitacion({ token, contrasena });
-      setToken(jwt);
-      await refrescarPerfil();
-      navigate('/');
+      await completarInvitacion({ token, contrasena });
+      if (vigente()) navigate('/');
     } catch (err) {
+      if (isCancel(err)) {
+        cancelada = true;
+        if (vigente()) setEnviando(false);
+        return;
+      }
+      if (!vigente()) return;
       if (isAxiosError<ApiErrorBody>(err)) {
         setError(err.response?.data?.message ?? 'No se pudo completar el registro.');
       } else {
         setError('Ocurrió un error inesperado.');
       }
     } finally {
-      setEnviando(false);
+      if (vigente() && !cancelada) setEnviando(false);
     }
   }
 

@@ -1,10 +1,13 @@
 import { apiClient } from './client';
 import type {
+  CerrarHorarioSalonRequest,
   GuardarExcepcionSalonRequest,
+  HorarioOperacionVersionResponse,
   SalonDetalleResponse,
   SalonHorarioExcepcionResponse,
   SalonRequest,
   SalonResponse,
+  VersionarHorarioSalonRequest,
 } from './types';
 
 export function listarSalones() {
@@ -37,4 +40,24 @@ export function guardarExcepcionSalon(salonId: string, request: GuardarExcepcion
 
 export function eliminarExcepcionSalon(salonId: string, id: string) {
   return apiClient.delete(`/salones/${salonId}/excepciones-horario/${id}`);
+}
+
+export function versionarHorarioSalon(salonId: string, request: VersionarHorarioSalonRequest) {
+  return apiClient
+    .post<HorarioOperacionVersionResponse>(`/salones/${salonId}/horarios/versiones`, request)
+    .then((res) => res.data);
+}
+
+export function cerrarHorarioSalon(salonId: string, request: CerrarHorarioSalonRequest) {
+  return apiClient
+    .post<HorarioOperacionVersionResponse>(`/salones/${salonId}/horarios/cierres`, request)
+    .then((res) => res.data);
+}
+
+export function obtenerHistorialHorarios(salonId: string, diaSemana?: number) {
+  return apiClient
+    .get<HorarioOperacionVersionResponse[]>(`/salones/${salonId}/horarios/historial`, {
+      params: diaSemana === undefined ? undefined : { diaSemana },
+    })
+    .then((res) => res.data);
 }

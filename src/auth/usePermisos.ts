@@ -2,14 +2,20 @@ import { useEffect } from 'react';
 import { useAuthStore } from './authStore';
 import { usePermisoCatalogoStore } from './permisoCatalogoStore';
 
+const SIN_PERMISOS: readonly string[] = Object.freeze([]);
+
 export function usePermisos() {
-  const permisos = useAuthStore((state) => state.usuario?.permisos ?? []);
+  const usuario = useAuthStore((state) => state.usuario);
+  const generacion = useAuthStore((state) => state.generacion);
+  const permisos = useAuthStore((state) => state.usuario?.permisos ?? SIN_PERMISOS);
   const descripciones = usePermisoCatalogoStore((state) => state.descripciones);
   const cargarCatalogo = usePermisoCatalogoStore((state) => state.cargar);
 
   useEffect(() => {
-    cargarCatalogo();
-  }, [cargarCatalogo]);
+    // Description failures belong to this optional hook request, never grants.
+    if (!usuario) return;
+    void cargarCatalogo(generacion).catch(() => undefined);
+  }, [cargarCatalogo, generacion, usuario]);
 
   const tiene = (codigo: string) => permisos.includes(codigo);
 
