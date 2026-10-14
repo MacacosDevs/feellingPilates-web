@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Typography } from '@mui/material';
+import { Box, Container, Divider, Grid, IconButton, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
@@ -202,9 +202,18 @@ export function PublicFooter() {
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}
+            sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}
           >
-            Creado para tu bienestar <FavoriteBorderIcon sx={{ fontSize: 14, color: 'primary.main' }} />
+            Creado para tu bienestar
+            <IconButton
+              component={NavLink}
+              to="/propuesta-logos"
+              size="small"
+              aria-label="Ver propuesta de logos"
+              sx={{ color: 'primary.main', p: 0.5 }}
+            >
+              <FavoriteBorderIcon sx={{ fontSize: 14 }} />
+            </IconButton>
           </Typography>
         </Box>
       </Container>
