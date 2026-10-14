@@ -12,6 +12,7 @@ const seccionesPrivacidad = [
   { numero: '08', titulo: 'Conservación de datos y eliminación de cuenta' },
   { numero: '09', titulo: 'Seguridad de la información' },
   { numero: '10', titulo: 'Actualizaciones al aviso de privacidad' },
+  { numero: '11', titulo: 'Contacto' },
 ];
 
 export function AvisoPrivacidad() {
@@ -23,7 +24,7 @@ export function AvisoPrivacidad() {
       secciones={seccionesPrivacidad}
     >
       <Typography variant="body1" color="text.secondary">
-        Aviso de Privacidad de Feeling Good (Aquatic &amp; Fitness Center), Feeling Studio Pilates y Feeling
+        Aviso de Privacidad de Feeling Good (Aquatic &amp; Fitness Center), Feeling Pilates y Feeling
         Match (Padel Center), conforme a la Ley Federal de Protección de Datos Personales en Posesión de los
         Particulares (LFPDPPP). Quien recolecta los datos de los usuarios y responde legalmente ante ellos es el
         operador de estos centros, no el equipo de desarrollo de la aplicación.
@@ -32,7 +33,7 @@ export function AvisoPrivacidad() {
       <Seccion numero="01" titulo="Identidad y domicilio del responsable">
         <Typography variant="body1" color="text.secondary">
           <Placeholder>NOMBRE DE LA EMPRESA / RAZÓN SOCIAL</Placeholder>, operador de Feeling Good, Feeling
-          Studio Pilates y Feeling Match en Cadereyta de Montes, Querétaro, con domicilio ubicado en{' '}
+          Pilates y Feeling Match en Cadereyta de Montes, Querétaro, con domicilio ubicado en{' '}
           <Placeholder>DIRECCIÓN COMPLETA</Placeholder>, es el responsable del tratamiento y protección de sus
           datos personales. Para cualquier asunto relacionado con su privacidad, puede contactarnos a través del
           correo: <Placeholder>CORREO DE PRIVACIDAD</Placeholder>.
@@ -175,7 +176,7 @@ export function AvisoPrivacidad() {
             <ListItemText primary="Mostrar a los alumnos el perfil profesional de los instructores." />
           </ListItem>
           <ListItem sx={{ display: 'list-item', px: 0, py: 0.5 }}>
-            <ListItemText primary="Brindar soporte técnico y atención a dudas o aclaraciones." />
+            <ListItemText primary="Atender sus solicitudes y brindarle soporte técnico y atención a dudas o aclaraciones." />
           </ListItem>
         </List>
         <Typography variant="body1" color="text.secondary">
@@ -184,16 +185,17 @@ export function AvisoPrivacidad() {
         </Typography>
         <List sx={{ listStyleType: 'disc', pl: 3, py: 0 }}>
           <ListItem sx={{ display: 'list-item', px: 0, py: 0.5 }}>
-            <ListItemText primary="Enviarle promociones, novedades y eventos de Feeling Good, Feeling Studio Pilates y Feeling Match." />
+            <ListItemText primary="Enviarle promociones, novedades y eventos de Feeling Good, Feeling Pilates y Feeling Match." />
           </ListItem>
           <ListItem sx={{ display: 'list-item', px: 0, py: 0.5 }}>
             <ListItemText primary="Invitarle a responder encuestas de satisfacción sobre nuestros servicios." />
           </ListItem>
         </List>
         <Typography variant="body1" color="text.secondary">
-          Si no desea que sus datos se usen para las finalidades secundarias, puede indicarlo en cualquier
-          momento escribiendo a <Placeholder>CORREO DE PRIVACIDAD</Placeholder>. Su negativa no afectará los
-          servicios que contrató.
+          El envío de publicidad o promociones se realizará únicamente conforme a las autorizaciones que nos
+          otorgue y respetando los mecanismos de oposición aplicables. Si no desea que sus datos se usen para
+          las finalidades secundarias, puede indicarlo en cualquier momento escribiendo a{' '}
+          <Placeholder>CORREO DE PRIVACIDAD</Placeholder>. Su negativa no afectará los servicios que contrató.
         </Typography>
         <Typography variant="body1" color="text.secondary">
           No comercializamos ni vendemos sus datos personales.
@@ -247,7 +249,7 @@ export function AvisoPrivacidad() {
         </List>
         <Typography variant="body1" color="text.secondary">
           Cualquier transferencia de datos que por ley requiera su consentimiento se realizará conforme a la
-          normativa aplicable.
+          normativa aplicable. No comercializamos datos personales.
         </Typography>
       </Seccion>
 
@@ -266,6 +268,9 @@ export function AvisoPrivacidad() {
           </ListItem>
           <ListItem sx={{ display: 'list-item', px: 0, py: 0.5 }}>
             <ListItemText primary="Correo electrónico asociado a su cuenta." />
+          </ListItem>
+          <ListItem sx={{ display: 'list-item', px: 0, py: 0.5 }}>
+            <ListItemText primary="Medio de contacto para recibir la respuesta a su solicitud." />
           </ListItem>
         </List>
         <Typography variant="body1" color="text.secondary">
@@ -313,13 +318,25 @@ export function AvisoPrivacidad() {
         </Typography>
       </Seccion>
 
-      <Seccion numero="10" titulo="Actualizaciones">
+      <Seccion numero="10" titulo="Actualizaciones al aviso de privacidad">
         <Typography variant="body1" color="text.secondary">
           Cualquier modificación a este aviso se publicará en esta misma página web, dentro de la aplicación y/o
-          en los canales oficiales de Feeling Good, Feeling Studio Pilates y Feeling Match.
+          en los canales oficiales de Feeling Good, Feeling Pilates y Feeling Match.
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Fecha de entrada en vigor: <Placeholder>CONFIRMAR FECHA</Placeholder>.
+        </Typography>
+      </Seccion>
+
+      <Seccion numero="11" titulo="Contacto">
+        <Typography variant="body1" color="text.secondary">
+          Feeling Good | Feeling Pilates | Feeling Match
+          <br />
+          Cadereyta de Montes, Querétaro, México
+          <br />
+          Domicilio: <Placeholder>DIRECCIÓN COMPLETA</Placeholder>
+          <br />
+          Correo de privacidad: <Placeholder>CORREO DE PRIVACIDAD</Placeholder>
         </Typography>
       </Seccion>
     </DocumentoLegal>
