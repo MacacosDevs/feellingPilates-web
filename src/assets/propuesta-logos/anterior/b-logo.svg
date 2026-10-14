@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 420">
+  <defs><style>@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;display=swap');text{font-family:Outfit,'Century Gothic',sans-serif}</style></defs>
+  <g transform="translate(-10 -20) scale(0.43)"><g stroke="#FFFFFF" stroke-width="26" stroke-linejoin="round">
+    <path d="M286 628 A226 226 0 0 0 738 628 Z" fill="#FFB938"/>
+    <path d="M390 236 C390 236 236 420 236 518 A154 154 0 0 0 544 518 C544 420 390 236 390 236 Z" fill="#22C1EE"/>
+    <circle cx="636" cy="518" r="154" fill="#4F46E5"/>
+  </g>
+  <path d="M584 420 Q632 518 584 616 M688 420 Q640 518 688 616" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/></g>
+  <text x="420" y="248" font-size="190" font-weight="600" letter-spacing="-4" fill="#1E1B4B">feeling</text>
+  <text x="426" y="330" font-size="44" font-weight="500" letter-spacing="10" fill="#4F46E5">SWIM · PILATES · PADEL</text>
+</svg>

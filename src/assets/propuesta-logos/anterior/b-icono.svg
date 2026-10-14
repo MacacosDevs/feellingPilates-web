@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Opción B · Trío: gota (natación), pelota (pádel) y media luna = postura de pilates -->
+  <rect width="1024" height="1024" fill="#FFFFFF"/>
+  <g transform="translate(512 512) scale(1.02) translate(-512 -540)"><g stroke="#FFFFFF" stroke-width="26" stroke-linejoin="round">
+    <path d="M286 628 A226 226 0 0 0 738 628 Z" fill="#FFB938"/>
+    <path d="M390 236 C390 236 236 420 236 518 A154 154 0 0 0 544 518 C544 420 390 236 390 236 Z" fill="#22C1EE"/>
+    <circle cx="636" cy="518" r="154" fill="#4F46E5"/>
+  </g>
+  <path d="M584 420 Q632 518 584 616 M688 420 Q640 518 688 616" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="14" stroke-linecap="round"/></g>
+</svg>

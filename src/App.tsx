@@ -6,6 +6,7 @@ import { Inicio } from './pages/publico/Inicio';
 import { Contacto } from './pages/publico/Contacto';
 import { TerminosCondiciones } from './pages/publico/TerminosCondiciones';
 import { AvisoPrivacidad } from './pages/publico/AvisoPrivacidad';
+import { PropuestaLogos } from './pages/publico/PropuestaLogos';
 import { Raiz } from './pages/Raiz';
 import { InvitacionAceptar } from './pages/InvitacionAceptar';
 import { Usuarios } from './modulos/usuarios/paginas/Usuarios';
@@ -28,6 +29,7 @@ function App() {
   return (
     <Routes>
       <Route path="/invitacion/:token" element={<InvitacionAceptar />} />
+      <Route path="/propuesta-logos" element={<PropuestaLogos />} />
       <Route element={<PublicLayout />}>
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/contacto" element={<Contacto />} />
